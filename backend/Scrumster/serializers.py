@@ -12,3 +12,14 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
+
+
+def serialize_users(users):
+    data = []
+    for user in users:
+        data.append({
+            'username': user.username,
+            'email': user.email,
+
+        })
+    return data
