@@ -1,0 +1,68 @@
+.login-window{
+    background-color: aliceblue;
+    font-family: monospace, Arial, Helvetica, sans-serif;
+    border: solid 3px hsl(0, 0%, 95%);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50%;
+    max-width: 800px;
+    max-height: 600px;
+    padding: 25px;
+}
+
+.login-window h2{
+    font-size: 3rem;
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.input-login{
+    margin: 15px 20px;
+    font-size: 1.5rem;
+    border: 1px solid hsl(0, 0%, 95%);
+    border-radius: 25px;
+}
+
+
+.button-login{
+    font-size: 1rem;
+    background-color: hsl(192, 100%, 45%);
+    transition: 0.5s ease;
+    border: none;
+    margin: 25px;
+    padding: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-login:hover{
+    background-color: hsl(192, 100%, 40%);
+    transition: 0.5s ease;
+    cursor: pointer;
+}
+
+.button-register{
+    font-size: 1rem;
+    background-color: hsl(192, 100%, 45%);
+    transition: 0.5s ease;
+    border: none;
+    margin: 25px;
+    padding: 25px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button-register:hover{
+    background-color: hsl(192, 100%, 40%);
+    transition: 0.5s ease;
+    cursor: pointer;
+}
+
+.buttons-div{
+    display: flex;
+    flex-direction: row;
+
+}
