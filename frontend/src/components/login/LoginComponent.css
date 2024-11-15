@@ -1,5 +1,5 @@
 .login-window{
-    background-color: aliceblue;
+    background-color: hsl(208, 89%, 85%);
     font-family: monospace, Arial, Helvetica, sans-serif;
     border: solid 3px hsl(0, 0%, 95%);
     border-radius: 25px;
@@ -29,7 +29,7 @@
 
 .button-login{
     font-size: 1rem;
-    background-color: hsl(192, 100%, 45%);
+    background-color: hsl(192, 100%, 100%);
     transition: 0.5s ease;
     border: none;
     margin: 25px;

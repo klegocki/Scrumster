@@ -1,7 +1,10 @@
-from django.urls import path
+from django.urls import include, path
 from . import views
 
 
 urlpatterns = [
-    path('', views.users_list),
+
+    path('loginUser', views.login_user),
+    path('logoutUser', views.logout_user),
+
 ]

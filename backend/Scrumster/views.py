@@ -1,19 +1,46 @@
+import json
+from http.client import HTTPResponse
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import Group, User
 from rest_framework import permissions, viewsets
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
 from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
 
 from django.views.generic import TemplateView
 from react.mixins import ReactMixin
 
-from backend.Scrumster.serializers import serialize_users
+from backend.Scrumster.serializers import serialize_users_credentials
+
+@api_view(['POST'])
+def login_user(request):
+    credentials = request.data
+    serializer_response = serialize_users_credentials(credentials)
+
+    if serializer_response.status_code == 400:
+        return serializer_response
+
+    user = authenticate(request, username=credentials['username'], password=credentials['password'])
+
+    if user is not None:
+        login(request, user)
+        return JsonResponse("OK.", status=200, safe=False)
+    else:
+        return JsonResponse({"message": "Nieprawidłowa nazwa użytkownika, lub hasło."}, status=400,)
 
 
-def users_list(request):
-    users = User.objects.all()
-    return JsonResponse(serialize_users(users), safe=False)
+@api_view(['POST'])
+def logout_user(request):
+    if request.user.is_authenticated:
+        logout(request)
+        return JsonResponse({"message": "Wylogowano pomyślnie."}, status=200)
+    return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
+
+
+
 
 
 class IndexView(ReactMixin, TemplateView):
