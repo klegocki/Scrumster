@@ -6,7 +6,20 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': 'http://localhost:8000', // URL backendu Django
+      '/api': 'http://localhost:8000', 
     },
   },
+  build: {
+    outDir: '../backend/static/frontend', 
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/index-build.js',
+        chunkFileNames: 'assets/index-build.js',
+        assetFileNames: 'assets/index-build.css',
+        
+
+      },
+    },
+},
 })

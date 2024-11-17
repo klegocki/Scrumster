@@ -51,6 +51,18 @@ function LoginComponent(){
     }
 
     const handleLogin = () =>{
+
+        const getCsrfToken = () => {
+            const csrfToken = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('csrftoken='))
+                ?.split('=')[1];
+            return csrfToken;
+
+        
+
+
+        };
         if(username.current.trim() === "" || password.current.trim() === "")
         {
             handleOpen("Logowanie nie powiodło się", "Proszę wpisać nazwę użytkownika lub hasło");
@@ -66,16 +78,16 @@ function LoginComponent(){
           .post("/api/loginUser", JSON.stringify(payload), {
             headers: {
               "Content-Type": "application/json",
+              "X-CSRFToken": getCsrfToken(),
               
             },
             withCredentials: true 
           })
           .then((response) => {
-            navigate('app/dashboard');
+            navigate('/app/dashboard');
           })
           .catch((error) => {
-            console.log(error)
-            handleOpen("Logowanie nie powiodło się", error.response.data.message);
+            handleOpen("Logowanie nie powiodło się", error.response.data.message ? error.response.data.message : "Nie udało połączyć się z serwerem");
           }); 
         }
 

@@ -1,22 +1,28 @@
 import json
+import os
 from http.client import HTTPResponse
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import Group, User
 from rest_framework import permissions, viewsets
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
-
 from django.views.generic import TemplateView
 from react.mixins import ReactMixin
 
 from backend.Scrumster.serializers import serialize_users_credentials
 
+
+
+def index(request):
+    return render(request, 'index.html')
+
 @api_view(['POST'])
 def login_user(request):
+    if isinstance(request.user, User):
+        logout(request)
     credentials = request.data
     serializer_response = serialize_users_credentials(credentials)
 
