@@ -1,8 +1,7 @@
-import LoginComponent from "../components/login/LoginComponent";
-import '../components/login/LoginComponent.css'
+import RegisterComponent from "../components/register/RegisterComponent";
 
 export default function Register(){
     return(<>
-        <h2>TEST</h2>
+        <RegisterComponent></RegisterComponent>
     </>)
 }

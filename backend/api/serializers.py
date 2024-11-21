@@ -29,7 +29,7 @@ def serialize_users_credentials(credentials):
     try:
         user = User.objects.get(username=credentials["username"])
     except:
-        return JsonResponse({"message": "Nieprawidłowa nazwa użytkownika"}, status=400)
+        return JsonResponse({"message": "Nieprawidłowa nazwa użytkownika, lub hasło."}, status=400)
 
     data["username"] = user.username
     data["password"] = user.password

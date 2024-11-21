@@ -12,7 +12,7 @@ from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
 from django.views.generic import TemplateView
 from react.mixins import ReactMixin
 
-from backend.Scrumster.serializers import serialize_users_credentials
+from backend.api.serializers import serialize_users_credentials
 
 
 

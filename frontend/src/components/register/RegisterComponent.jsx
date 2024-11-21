@@ -1,16 +1,17 @@
 import { useRef, useState } from "react";
-import './LoginComponent.css'
+import './RegisterComponent.css'
 import axios from "axios";
 import { Button, Modal, Box, Typography} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ModalComponent from "../modal/ModalComponent";
-import { getCsrfToken } from "../../functions/utils.jsx"
 
-
-function LoginComponent(){
+export default function RegisterComponent(){
 
     const password = useRef('');
     const username = useRef('');
+    const email = useRef('');
+    const firstName = useRef('');
+    const lastName = useRef('');
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [modalHeader, setModalHeader] = useState("");
@@ -20,9 +21,6 @@ function LoginComponent(){
         setModalHeader(prevModalHeader => prevModalHeader = header);
         setModalMainText(prevModalMainText => prevModalMainText = mainText);
     };
-    
-    const handleClose = () => setOpen(false);
-
 
     const setPassword = (e) => {
         password.current = e.target.value;
@@ -33,35 +31,63 @@ function LoginComponent(){
         
 
     }
+    const setEmail = (e) => {
+        email.current = e.target.value;
+        
+
+    }
+    const setFirstName = (e) => {
+        firstName.current = e.target.value;
+        
+
+    }
+    const setLastName = (e) => {
+        lastName.current = e.target.value;
+        
+
+    }
+    
+    const handleClose = () => setOpen(false);
+
 
     const buttonLoginStyle = {
         marginTop: '10px',
-        marginRight: '50px'
+        marginLeft: '70px',
 
     }
     const buttonRegisterStyle = {
+        
+
         marginTop: '10px',
-        marginLeft: '50px',
+        marginRight: '70px'
         
 
     }
 
-
-    const goToRegister = () => {
-        navigate('/register');
+    const goToLogin = () => {
+        navigate('/login');
     }
 
-    const handleLogin = () =>{
+    const handleRegister = () =>{
 
         const payload = { 
             username: username.current, 
-            password: password.current 
+            password: password.current,
+            email: email.current,
+            firstName: firstName.current,
+            lastName: lastName.current,
         };
         
 
-        if(username.current.trim() === "" || password.current.trim() === "")
+        if(username.current.trim() === "" ||
+           password.current.trim() === "" ||
+           email.current.trim() === "" ||
+           firstName.current.trim() === "" ||
+           lastName.current.trim() === ""
+          )
         {
-            handleOpen("Logowanie nie powiodło się", "Proszę wpisać nazwę użytkownika lub hasło");
+            handleOpen("Rejestracja nie powiodła się", 
+                       "Proszę uzupełnić wszystkie pola");
         }
         else
         {
@@ -71,7 +97,7 @@ function LoginComponent(){
         };
 
         axios
-          .post("/api/loginUser", payload, {
+          .post("/api/registerUser", JSON.stringify(payload), {
             headers: {
               "Content-Type": "application/json",
               "X-CSRFToken": getCsrfToken(),
@@ -83,19 +109,19 @@ function LoginComponent(){
             navigate('/app/dashboard');
           })
           .catch((error) => {
-            handleOpen("Logowanie nie powiodło się", error.response.data.message ? error.response.data.message : "Nie udało połączyć się z serwerem");
+            handleOpen("Rejestracja nie powiodła się", error.response.data.message ? error.response.data.message : "Nie udało połączyć się z serwerem");
           }); 
         }
     }
-    
+
 
     return(<>
-
-        <div className="login-window">
+     <div className="register-window">
         <img src="/static/frontend/ScrumSter.svg" alt="ScrumSter" />
 
 
-            <h2>Zaloguj się</h2>
+            <h2>Zarejestruj się</h2>
+            
             <label>Nazwa użytkownika</label>
             <input type="text" 
                    placeholder="Podaj nazwę użytkownika"   
@@ -110,13 +136,35 @@ function LoginComponent(){
                    onChange={setPassword}>
             </input>
 
+            <label>Adres email</label>
+            <input type="email" 
+                   placeholder="Podaj adres email" 
+                   className="input-login" 
+                   onChange={setEmail}>
+            </input>
+
+            <label>Imię</label>
+            <input type="text" 
+                   placeholder="Podaj imię" 
+                   className="input-login" 
+                   onChange={setFirstName}>
+            </input>
+
+            <label>Nazwisko</label>
+            <input type="text" 
+                   placeholder="Podaj nazwisko" 
+                   className="input-login" 
+                   onChange={setLastName}>
+            </input>
+            
+
             <div className="buttons-div">
 
                 <Button  
                     variant="outlined" 
-                    style={buttonLoginStyle} 
-                    onClick={() => handleLogin()}>
-                    Zaloguj
+                    style={buttonRegisterStyle} 
+                    onClick={() => handleRegister()}>
+                    Zarejestruj
                 </Button>
 
                     <ModalComponent open={open} 
@@ -126,9 +174,9 @@ function LoginComponent(){
                     </ModalComponent>
 
                 <Button variant="outlined" 
-                        style={buttonRegisterStyle} 
-                        onClick={goToRegister}> 
-                        Rejestracja
+                        style={buttonLoginStyle} 
+                        onClick={goToLogin}> 
+                        Logowanie
                 </Button>
 
             </div>
@@ -136,5 +184,3 @@ function LoginComponent(){
         </div>
     </>);
 }
-
-export default LoginComponent;

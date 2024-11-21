@@ -6,7 +6,7 @@ body{
     align-items: center;
    }
 
-.login-window{
+.register-window{
     background-color: hsl(208, 89%, 85%);
     font-family: monospace, Arial, Helvetica, sans-serif;
     border: solid 3px hsl(0, 0%, 95%);
@@ -15,30 +15,30 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 25%;
     max-width: 800px;
-    max-height: 600px;
+    max-height: 750px;
     padding: 25px;
     box-shadow: 5px 5px 5px hsl(0, 0%, 0%,0.3);
 
 }
 
-.login-window h2{
+.register-window h2{
     font-size: 3rem;
     margin-left: 25px;
     margin-right: 25px;
 }
 
-.login-window img{
+.register-window img{
     width: 200px;
     height: 200px; 
 }
 
-.login-window label{
+.register-window label{
+    font-family: Arial, Helvetica, sans-serif;
         
 }
 
-.input-login{
+.input-register{
     margin: 15px 20px;
     font-size: 1.5rem;
     border: 1px solid hsl(0, 0%, 95%);
@@ -85,3 +85,6 @@ body{
     flex-direction: row;
 
 }
+
+
+
