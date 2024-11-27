@@ -11,10 +11,10 @@ from rest_framework.decorators import api_view
 from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
 from django.views.generic import TemplateView
 from react.mixins import ReactMixin
-
-from backend.api.serializers import serialize_users_credentials
-
-
+from django.contrib.auth.forms import UserCreationForm
+from backend.api.serializers import serialize_users_credentials, CustomUserCreationForm
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 def index(request):
     return render(request, 'index.html')
@@ -46,7 +46,35 @@ def logout_user(request):
     return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
 
+@api_view(['POST'])
+def register_user(request):
+    if isinstance(request.user, User):
+        logout(request)
+    credentials = request.data
 
+    if User.objects.filter(username=credentials['username']).exists():
+        return JsonResponse({"message": "Nazwa użytkownika jest już zajęta."}, status=400)
+
+    if credentials['password1'] != credentials['password2']:
+        return JsonResponse({"message": "Podane hasła są różne."}, status=400)
+
+    try:
+        validate_email(credentials['email'])
+    except ValidationError:
+        return JsonResponse({"message": "Podaj poprawny adres email."}, status=400)
+
+    if User.objects.filter(email=credentials['email']).exists():
+        return JsonResponse({"message": "Podany adres email jest już używany."}, status=400)
+
+    form = CustomUserCreationForm(credentials)
+    if form.is_valid():
+        user = form.save(commit=False)
+        user.username = user.username.lower()
+        user.save()
+        login(request, user)
+        return JsonResponse("", status=200, safe=False)
+
+    return JsonResponse({"message":"Wystąpił nieoczekiwany błąd."}, status=400)
 
 
 class IndexView(ReactMixin, TemplateView):

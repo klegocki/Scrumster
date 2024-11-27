@@ -4,10 +4,12 @@ import axios from "axios";
 import { Button, Modal, Box, Typography} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ModalComponent from "../modal/ModalComponent";
+import { getCsrfToken } from "../../functions/utils.jsx"
 
 export default function RegisterComponent(){
 
-    const password = useRef('');
+    const password1 = useRef('');
+    const password2 = useRef('');
     const username = useRef('');
     const email = useRef('');
     const firstName = useRef('');
@@ -22,8 +24,12 @@ export default function RegisterComponent(){
         setModalMainText(prevModalMainText => prevModalMainText = mainText);
     };
 
-    const setPassword = (e) => {
-        password.current = e.target.value;
+    const setPassword1 = (e) => {
+        password1.current = e.target.value;
+    }
+
+    const setPassword2 = (e) => {
+        password2.current = e.target.value;
     }
 
     const setUsername = (e) => {
@@ -72,15 +78,17 @@ export default function RegisterComponent(){
 
         const payload = { 
             username: username.current, 
-            password: password.current,
+            password1: password1.current,
+            password2: password2.current,
             email: email.current,
-            firstName: firstName.current,
-            lastName: lastName.current,
+            first_name: firstName.current,
+            last_name: lastName.current,
         };
         
 
         if(username.current.trim() === "" ||
-           password.current.trim() === "" ||
+           password1.current.trim() === "" ||
+           password2.current.trim() === "" ||
            email.current.trim() === "" ||
            firstName.current.trim() === "" ||
            lastName.current.trim() === ""
@@ -91,11 +99,6 @@ export default function RegisterComponent(){
         }
         else
         {
-        const payload = { 
-            username: username.current, 
-            password: password.current 
-        };
-
         axios
           .post("/api/registerUser", JSON.stringify(payload), {
             headers: {
@@ -109,6 +112,7 @@ export default function RegisterComponent(){
             navigate('/app/dashboard');
           })
           .catch((error) => {
+
             handleOpen("Rejestracja nie powiodła się", error.response.data.message ? error.response.data.message : "Nie udało połączyć się z serwerem");
           }); 
         }
@@ -125,35 +129,42 @@ export default function RegisterComponent(){
             <label>Nazwa użytkownika</label>
             <input type="text" 
                    placeholder="Podaj nazwę użytkownika"   
-                   className="input-login" 
+                   className="input-register" 
                    onChange={setUsername}>
             </input>
 
             <label>Hasło</label>
             <input type="password" 
                    placeholder="Podaj hasło" 
-                   className="input-login" 
-                   onChange={setPassword}>
+                   className="input-register" 
+                   onChange={setPassword1}>
+            </input>
+
+            <label>Powtórz hasło</label>
+            <input type="password" 
+                   placeholder="Podaj hasło ponownie" 
+                   className="input-register" 
+                   onChange={setPassword2}>
             </input>
 
             <label>Adres email</label>
             <input type="email" 
                    placeholder="Podaj adres email" 
-                   className="input-login" 
+                   className="input-register" 
                    onChange={setEmail}>
             </input>
 
             <label>Imię</label>
             <input type="text" 
                    placeholder="Podaj imię" 
-                   className="input-login" 
+                   className="input-register" 
                    onChange={setFirstName}>
             </input>
 
             <label>Nazwisko</label>
             <input type="text" 
                    placeholder="Podaj nazwisko" 
-                   className="input-login" 
+                   className="input-register" 
                    onChange={setLastName}>
             </input>
             

@@ -1,8 +1,14 @@
 import json
-
+from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
+
+
+class CustomUserCreationForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'password1','password2', 'email', 'first_name', 'last_name']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,7 +23,6 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name']
 
 
-import json
 
 
 def serialize_users_credentials(credentials):
