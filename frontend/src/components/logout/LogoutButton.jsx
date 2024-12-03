@@ -20,10 +20,7 @@ export default function LogoutButton(){
 
     const navigate = useNavigate();
 
-    const buttonLoginStyle = {
-        marginTop: '10px',
-        marginRight: '30px'
-    }
+
 
     const getCsrfToken = () => {
         const csrfToken = document.cookie
@@ -50,13 +47,13 @@ export default function LogoutButton(){
             navigate('/login');
         })
         .catch(error => {
-            handleOpen("Błąd wylogowywania", error.response.data.message);
+            handleOpen("Błąd wylogowywania", error.response.data.message ? error.response.data.message : "Nie jesteś zalogowany.");
         });
     };
     
 
     return(<>
-        <Button  variant="outlined" style={buttonLoginStyle} onClick={() => handleLogout()}>
+        <Button  variant="outlined" onClick={() => handleLogout()}>
             Wyloguj
         </Button>
         <ModalComponent open={open} handleClose={handleClose} header={modalHeader} mainText={modalMainText}></ModalComponent>

@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
-import './LoginComponent.css'
 import axios from "axios";
-import { Button, Modal, Box, Typography} from "@mui/material";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ModalComponent from "../modal/ModalComponent";
 import { getCsrfToken } from "../../functions/utils.jsx"

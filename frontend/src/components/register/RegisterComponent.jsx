@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
-import './RegisterComponent.css'
 import axios from "axios";
-import { Button, Modal, Box, Typography} from "@mui/material";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ModalComponent from "../modal/ModalComponent";
 import { getCsrfToken } from "../../functions/utils.jsx"
@@ -18,6 +17,7 @@ export default function RegisterComponent(){
     const [open, setOpen] = useState(false);
     const [modalHeader, setModalHeader] = useState("");
     const [modalMainText, setModalMainText] = useState("");
+
     const handleOpen = (header, mainText) => {
         setOpen(true);
         setModalHeader(prevModalHeader => prevModalHeader = header);
@@ -28,9 +28,11 @@ export default function RegisterComponent(){
         password1.current = e.target.value;
     }
 
+
     const setPassword2 = (e) => {
         password2.current = e.target.value;
     }
+
 
     const setUsername = (e) => {
         username.current = e.target.value;
