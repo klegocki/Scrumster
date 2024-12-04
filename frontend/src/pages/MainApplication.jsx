@@ -1,6 +1,7 @@
-import UserInformation from "../components/dashboard/UserInformation";
-import LogoutBox from "../components/dashboard/LogoutBox";
-import LogoText from "../components/dashboard/LogoText";
+import UserInformation from "../components/projects/UserInformation";
+import LogoutBox from "../components/projects/LogoutBox";
+import LogoText from "../components/projects/LogoText";
+import Projects from "../components/projects/Projects";
 
 export default function MainApplication(){
 
@@ -9,8 +10,11 @@ export default function MainApplication(){
     return(<>
     <div className="dashboard-top">
         <UserInformation></UserInformation>
-        <LogoText text="Panel Główny"></LogoText>
+        <LogoText text1="Panel" text2="Główny"></LogoText>
         <LogoutBox></LogoutBox>
+    </div>
+    <div className="dashboard-bottom">
+        <Projects></Projects>
     </div>
     </>);
 }

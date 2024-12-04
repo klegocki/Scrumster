@@ -1,7 +1,4 @@
-html, body{
-    height: 99%;
-    width: 99%;
-}
+
 
 .register-window {
     position: absolute;
@@ -105,7 +102,7 @@ html, body{
 .user-information-component{
 
     background-color: hsl(208, 89%, 85%);
-    font-family: monospace, Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     border: solid 3px hsl(208, 79%, 72%);
     border-radius: 25px;
     display: flex;
@@ -123,7 +120,6 @@ html, body{
 
 .user-image{
     background-color: hsl(208, 100%, 92%);
-    font-family: monospace, Arial, Helvetica, sans-serif;
     border: solid 3px hsl(208, 79%, 72%);
     border-radius: 25px;
     max-width: 90px;
@@ -147,38 +143,136 @@ html, body{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 100%;
 }
 
 .logout-box{
     background-color: hsl(208, 89%, 85%);
-    font-family: monospace, Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     border: solid 3px hsl(208, 79%, 72%);
     border-radius: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 20%;
+    min-width: 300px;
     min-height: 180px;
     margin: 20px;
-    margin-right: 0px;
     box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
 }
 
 .logo-text{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
+    width: auto;
     min-height: 180px;
 }
 .logo-text p{
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 2rem;
+    font-size: 4.5rem;
+    display: flex;
+    width: 300px;
     font-weight: bold;
 }
 
 .logo-text img{
     max-width: 140px;
     max-height: 140px;
+}
+
+.dashboard-projects{
+    background-color: hsl(208, 89%, 85%);
+    font-family: Arial, Helvetica, sans-serif;    border: solid 3px hsl(208, 79%, 72%);
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    min-height: 530px;
+    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
+}
+
+.dashboard-bottom{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dashboard-projects{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.project-component-parent{
+    background-color: hsl(208, 96%, 79%);
+    font-family: Arial, Helvetica, sans-serif;    border: solid 3px hsl(208, 79%, 72%);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    justify-content: flex-start; 
+    align-items: center; 
+    width: 80%; 
+    height: 400px; 
+    margin: 15px;
+    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
+}
+
+.project-component-parent::-webkit-scrollbar {
+    width: 8px;
+}
+
+.project-component-parent::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.project-component-parent::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.project-component-child{
+    background-color: hsl(128, 55%, 76%);
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 3px hsl(128, 55%, 70%);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 80%; 
+    height: 250px; 
+    margin: 15px;
+    padding: 10px;
+    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
+}
+
+.project-description-box{
+    background-color: hsl(128, 55%, 76%);
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 3px hsl(128, 55%, 70%);
+    border-radius: 10px;
+    width: calc(100% - 10px);
+    height: 100px;
+    margin: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.project-description-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.project-description-box::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.project-description-box::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
