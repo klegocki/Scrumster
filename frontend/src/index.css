@@ -151,6 +151,7 @@
     border: solid 3px hsl(208, 79%, 72%);
     border-radius: 25px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 20%;

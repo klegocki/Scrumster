@@ -60,15 +60,17 @@ export default function RegisterComponent(){
 
     const buttonLoginStyle = {
         marginTop: '10px',
-        marginLeft: '70px',
+        marginLeft: '40px',
+        width: '120px'
+
 
     }
     const buttonRegisterStyle = {
         
 
         marginTop: '10px',
-        marginRight: '70px'
-        
+        marginRight: '40px',
+        width: '120px'
 
     }
 
@@ -111,7 +113,7 @@ export default function RegisterComponent(){
             withCredentials: true 
           })
           .then((response) => {
-            navigate('/app/dashboard');
+            navigate('/app/projects');
           })
           .catch((error) => {
 
