@@ -35,13 +35,14 @@ function LoginComponent(){
 
     const buttonLoginStyle = {
         marginTop: '10px',
-        marginRight: '50px'
+        marginRight: '40px',
+        width: '120px'
 
     }
     const buttonRegisterStyle = {
         marginTop: '10px',
-        marginLeft: '50px',
-        
+        marginLeft: '40px',
+        width: '120px'
 
     }
 
@@ -79,7 +80,7 @@ function LoginComponent(){
             withCredentials: true 
           })
           .then((response) => {
-            navigate('/app/dashboard');
+            navigate('/app/projects');
           })
           .catch((error) => {
             handleOpen("Logowanie nie powiodło się", error.response.data.message ? error.response.data.message : "Nie udało połączyć się z serwerem");

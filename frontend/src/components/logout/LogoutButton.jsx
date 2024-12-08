@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ModalComponent from "../modal/ModalComponent";
 import React, { useState } from "react";
 import axios from "axios";
+import { getCsrfToken } from "../../functions/utils";
 
 export default function LogoutButton(){
 
@@ -18,17 +19,12 @@ export default function LogoutButton(){
     };
 
 
+    const buttonStyle= {
+        margin: '15px',
+        width: '120px',
+    }
+
     const navigate = useNavigate();
-
-
-
-    const getCsrfToken = () => {
-        const csrfToken = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('csrftoken='))
-            ?.split('=')[1];
-        return csrfToken;
-    };
 
     const handleLogout = () => {
         const csrfToken = getCsrfToken();
@@ -53,7 +49,7 @@ export default function LogoutButton(){
     
 
     return(<>
-        <Button  variant="outlined" onClick={() => handleLogout()}>
+        <Button style={buttonStyle} variant="outlined" onClick={() => handleLogout()}>
             Wyloguj
         </Button>
         <ModalComponent open={open} handleClose={handleClose} header={modalHeader} mainText={modalMainText}></ModalComponent>
