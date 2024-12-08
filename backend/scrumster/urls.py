@@ -1,4 +1,4 @@
-"""backend URL Configuration
+"""scrumster URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -15,22 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path, re_path
-from rest_framework import routers
 
-from tutorial.quickstart import views
-from backend.api.views import index
 #router = routers.DefaultRouter()
 #router.register(r'users', views.UserViewSet)
 #router.register(r'groups', views.GroupViewSet)
+from django.shortcuts import render
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
+
+def index(request):
+    return render(request, 'index.html')
 
 urlpatterns = [
     #path('', include(router.urls)),
     #path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('', index, name='index'),
     re_path(r'^(?!api/|admin/).*$', index, name='index'),
-    path('api/', include('backend.api.urls')),
+    path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
 ]

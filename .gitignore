@@ -1,5 +1,5 @@
 /database/pgadmin_data
 /database/postgres_data
 **/__pycache__/
-/backend/venv
+/backend/venv/
 /frontend/node_modules/

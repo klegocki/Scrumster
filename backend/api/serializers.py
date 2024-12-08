@@ -11,33 +11,29 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ['username', 'password1','password2', 'email', 'first_name', 'last_name']
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['url', 'username', 'email', 'groups']
 
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
 
+class UserRegistrationSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=30)
+    email = serializers.EmailField()
+    password1 = serializers.CharField(max_length=30)
+    password2 = serializers.CharField(max_length=30)
+    first_name = serializers.CharField(max_length=30, required=True)
+    last_name = serializers.CharField(max_length=30, required=True)
+
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=30)
+    password = serializers.CharField(max_length=30)
 
 
 
-def serialize_users_credentials(credentials):
-    data = {}
-
-    if isinstance(credentials, str):
-        credentials = json.loads(credentials)
-
-    try:
-        user = User.objects.get(username=credentials["username"])
-    except:
-        return JsonResponse({"message": "Nieprawidłowa nazwa użytkownika, lub hasło."}, status=400)
-
-    data["username"] = user.username
-    data["password"] = user.password
-
-    return JsonResponse(data, status=200)
 
