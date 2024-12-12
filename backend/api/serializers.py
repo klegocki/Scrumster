@@ -14,7 +14,7 @@ class CustomUserCreationForm(UserCreationForm):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups']
+        fields = '__all__'
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class UserRegistrationSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=30)
-    email = serializers.EmailField()
+    email = serializers.CharField(max_length=50)
     password1 = serializers.CharField(max_length=30)
     password2 = serializers.CharField(max_length=30)
     first_name = serializers.CharField(max_length=30, required=True)

@@ -104,7 +104,7 @@ export default function RegisterComponent(){
         else
         {
         axios
-          .post("/api/registerUser", JSON.stringify(payload), {
+          .post("/api/users/register", JSON.stringify(payload), {
             headers: {
               "Content-Type": "application/json",
               "X-CSRFToken": getCsrfToken(),

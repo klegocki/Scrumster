@@ -42,11 +42,6 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'api.apps.ScrumsterConfig',
     'users.apps.UsersConfig',
-    'sprints.apps.SprintsConfig',
-    'tasks.apps.TasksConfig',
-
-
-
 ]
 
 MIDDLEWARE = [
@@ -144,6 +139,7 @@ ROOT_URLCONF = 'scrumster.urls'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+LOGIN_URL = '/login/'
 
 
 # Default primary key field type

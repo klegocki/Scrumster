@@ -1,35 +1,55 @@
 import { Button } from "@mui/material"
 import ProjectComponent from "./ProjectComponent"
+import axios from "axios";
+import { getCsrfToken } from "../../functions/utils";
+import { useState, useEffect } from "react";
 
-export default function Projects(){
 
-const mockInfo = {
-    0:{
-        first_name: "Kamil",
-        last_name: "Kornacki",
-        role: "Scrum Master",
-        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    },
-    1:{
-        first_name: "Jurek",
-        last_name: "Witecki",
-        role: "Product Owner",
-        description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    },
-    }
+export default function Projects(props){
+
+const [projectInfo, setProjectInfo] = useState({
+  first_name: '',
+  last_name: '',
+  role: '',
+  description: ''
+});
 
 const buttonStyle = {
     marginBottom: '15px',
 }
 
+const fetchUserProjects = () => {
+    axios
+      .get("/api/projects/get", {
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken(),
+        },
+        withCredentials: true 
+      })
+      .then((response) => {
+        setProjectInfo(prevProjectInfo => prevProjectInfo=response.data);
+        console.log(response.data)
+
+      })
+      .catch((error) => {
+        console.log(error)
+    });
+  };
+
+  useEffect(() => {
+    fetchUserProjects(); 
+  }, []); 
+
     return(<>
         <div className="dashboard-projects">
             <h2>Twoje projekty</h2>
             <div className="project-component-parent">
-            {Object.entries(mockInfo).map(([key, value]) => (
+              
+            {Object.entries(projectInfo).map(([key, value]) => (
                 <ProjectComponent key={key}
-                                  first_name={value.first_name}
-                                  last_name={value.last_name}
+                                  first_name={value.project_owner_first_name}
+                                  last_name={value.project_owner_last_name}
                                   role={value.role}
                                   description={value.description}>
                 </ProjectComponent>

@@ -29,7 +29,7 @@ export default function LogoutButton(){
     const handleLogout = () => {
         const csrfToken = getCsrfToken();
         axios.post(
-            "/api/logoutUser",
+            "/api/users/logout",
             {}, 
             {
                 headers: {
@@ -43,7 +43,7 @@ export default function LogoutButton(){
             navigate('/login');
         })
         .catch(error => {
-            handleOpen("Błąd wylogowywania", error.response.data.message ? error.response.data.message : "Nie jesteś zalogowany.");
+            navigate('/login');
         });
     };
     

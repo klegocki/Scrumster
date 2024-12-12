@@ -71,7 +71,7 @@ function LoginComponent(){
         };
 
         axios
-          .post("/api/loginUser", payload, {
+          .post("/api/users/login", payload, {
             headers: {
               "Content-Type": "application/json",
               "X-CSRFToken": getCsrfToken(),

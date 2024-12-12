@@ -1,29 +1,25 @@
 
+export default function UserInformation(props) {
 
-export default function UserInformation(){
 
-    const userInfo = {
-        username: 'jkowalski',
-        first_name: 'Jan',
-        last_name: 'Kowalski',
-    }
+  const paragraphStyle = {
+    fontWeight: 'bold'
+  };
 
-    const paragraphStyle = {
-        fontWeight: 'bold'
-    }
 
-    return(<>
-        <div className="user-information-component">
-            <div className="user-image">
-                <img src="/static/frontend/userImage.svg" alt="userImage"/>
-            </div>
-            <div className="user-info">
-            <p style={paragraphStyle}>Nazwa użytkownika:</p>
-                <p>{userInfo.username}</p>
-                    <br/>
-                <p style={paragraphStyle}>Imię i nazwisko:</p>
-                <p>{userInfo.first_name} {userInfo.last_name}</p>
-            </div>
-        </div>
-    </>)
+  return (
+    <div className="user-information-component">
+      <div className="user-image">
+        <img src="/static/frontend/userImage.svg" alt="userImage" />
+      </div>
+      <div className="user-info">
+        <p style={paragraphStyle}>Nazwa użytkownika:</p>
+        <p>{props.username}</p>
+        <p style={paragraphStyle}>Imię i nazwisko:</p>
+        <p>{props.first_name} {props.last_name}</p>
+        <p style={paragraphStyle}>Adres Email:</p>
+        <p>{props.email}</p>
+      </div>
+    </div>
+  );
 }

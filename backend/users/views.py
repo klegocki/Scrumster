@@ -1,60 +1,46 @@
+import json
 
-from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.models import User
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
-from api.serializers import CustomUserCreationForm
-from django.core.validators import validate_email
-from django.core.exceptions import ValidationError
+from api.serializers import UserRegistrationSerializer, UserLoginSerializer, UserSerializer
+from users.dao import handle_login_user, handle_register_user, logged_in_user_data_parsing
 
 
-
-def handle_login_user(request, data):
-    if isinstance(data, User):
-        logout(request)
-    try:
-        check = User.objects.get(username=data["username"])
-    except:
-        return JsonResponse({"message": "Nieprawidłowa nazwa użytkownika, lub hasło."}, status=400)
-
-    user = authenticate(request, username=data['username'], password=data['password'])
-
-    if user is not None:
-        login(request, user)
-        return JsonResponse("OK.", status=200, safe=False)
+@api_view(['POST'])
+def login_user(request):
+    serializer = UserLoginSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_login_user(request, serializer.data)
+        return response
     else:
-        return JsonResponse({"message": "Nieprawidłowa nazwa użytkownika, lub hasło."}, status=400,)
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
 
-def handle_register_user(request, data):
-    if isinstance(data, User):
+@api_view(['POST'])
+def logout_user(request):
+    if request.user.is_authenticated:
         logout(request)
-
-    for value in data.values():
-        if ' ' in value:
-            return JsonResponse({"message": "Nie można używać spacji."}, status=400)
-
-    if User.objects.filter(username=data['username'].lower()).exists():
-        return JsonResponse({"message": "Nazwa użytkownika jest już zajęta."}, status=400)
-
-    if data['password1'] != data['password2']:
-        return JsonResponse({"message": "Podane hasła są różne."}, status=400)
-
-    try:
-        validate_email(data['email'])
-    except ValidationError:
-        return JsonResponse({"message": "Podaj poprawny adres email."}, status=400)
-
-    if User.objects.filter(email=data['email']).exists():
-        return JsonResponse({"message": "Podany adres email jest już używany."}, status=400)
-
-    form = CustomUserCreationForm(data)
-    if form.is_valid():
-        user = form.save(commit=False)
-        user.username = user.username.lower()
-        user.save()
-        login(request, user)
-        return JsonResponse({"message": "Rejestracja użytkownika przeszła pomyślnie."}, status=200)
-
+        return JsonResponse({"message": "Wylogowano pomyślnie."}, status=200)
     return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+@api_view(['POST'])
+def register_user(request):
+    serializer = UserRegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_register_user(request, serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@api_view(['GET'])
+def get_logged_in_user(request):
+    if request.user.is_authenticated:
+        serializer = UserSerializer(instance=request.user)
+        response = logged_in_user_data_parsing(serializer.data)
+        return JsonResponse(response, status=200)
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+

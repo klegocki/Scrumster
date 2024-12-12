@@ -9,32 +9,6 @@ from api.serializers import UserRegistrationSerializer, UserLoginSerializer
 from users.views import handle_register_user, handle_login_user
 
 
-@api_view(['POST'])
-def login_user(request):
-    serializer = UserLoginSerializer(data=request.data)
-    if serializer.is_valid():
-        response = handle_login_user(request, serializer.data)
-        return response
-    else:
-        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
-
-
-@api_view(['POST'])
-def logout_user(request):
-    if request.user.is_authenticated:
-        logout(request)
-        return JsonResponse({"message": "Wylogowano pomyślnie."}, status=200)
-    return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
-
-
-@api_view(['POST'])
-def register_user(request):
-    serializer = UserRegistrationSerializer(data=request.data)
-    if serializer.is_valid():
-        response = handle_register_user(request, serializer.data)
-        return response
-    else:
-        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
 
 class UserViewSet(viewsets.ModelViewSet):
