@@ -78,7 +78,7 @@ def get_users_projects_dashboard(data):
 
     try:
         projects = Project.objects.filter(
-            Q(project_owner=data['id']) | Q(project_users=data['id']) #do zmiany data["admin"]['id']
+            Q(project_owner=data['id']) | Q(project_users=data['id'])
         ).distinct()
 
         projects_list = []
@@ -86,7 +86,6 @@ def get_users_projects_dashboard(data):
 
             development_team = DevelopmentTeam.objects.filter(project=project.id)
             project_users = project.project_users.all()
-            users_data = []
             role = None
 
             for user in project_users:
@@ -98,6 +97,7 @@ def get_users_projects_dashboard(data):
             project_data = {
                 'id': project.id,
                 'title': project.title,
+                'project_owner_username': project.project_owner.username,
                 'project_owner_first_name': project.project_owner.first_name,
                 'project_owner_last_name': project.project_owner.last_name,
                 'role': role,
@@ -111,3 +111,16 @@ def get_users_projects_dashboard(data):
     except error:
 
         return JsonResponse(error, status=400, safe=False)
+
+
+def handle_remove_project(request, data):
+    pass
+
+def handle_delete_project(request, data):
+    project = Project.objects.get(id=data['id'])
+    try:
+        project = Project.objects.get(id=data['id'])        # Delete the record
+        project.delete()
+        return JsonResponse({"message": "Usunięto projekt pomyślnie."}, status=200, safe=False)
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas usuwania projektu."}, status=400, safe=False)

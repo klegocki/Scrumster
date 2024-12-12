@@ -11,7 +11,8 @@ const [projectInfo, setProjectInfo] = useState({
   first_name: '',
   last_name: '',
   role: '',
-  description: ''
+  description: '',
+  id: ""
 });
 
 const buttonStyle = {
@@ -51,7 +52,11 @@ const fetchUserProjects = () => {
                                   first_name={value.project_owner_first_name}
                                   last_name={value.project_owner_last_name}
                                   role={value.role}
-                                  description={value.description}>
+                                  description={value.description}
+                                  title = {value.title}
+                                  project_owner_username = {value.project_owner_username}
+                                  logged_user_username = {props.username}
+                                  id = {value.id}>
                 </ProjectComponent>
             ))}
             </div>

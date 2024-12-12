@@ -1,6 +1,8 @@
 import { IconButton } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from "axios";
+import { getCsrfToken } from "../../functions/utils";
 
 export default function ProjectComponent(props){
 
@@ -10,14 +12,15 @@ export default function ProjectComponent(props){
         role: props.role,
         first_name: props.first_name,
         last_name: props.last_name,
+        title: props.title,
         
     };
 
-    if(data.description == ""){
+    if(data.description == "" || data.description == null){
         data.description = "Brak opisu."
     }
 
-    if(data.role == ""){
+    if(data.role == "" || data.role == null){
         data.role = "Brak roli"
     }
 
@@ -72,10 +75,43 @@ export default function ProjectComponent(props){
         width: '85%',
     }
 
+    const payload = {
+        id: props.id,
+
+    }
+    
+    const handleRemoveButton = () => {
+        if(props.logged_user_username == props.project_owner_username){
+            axios
+            .post("/api/projects/delete", payload,{
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken(),
+              },
+              withCredentials: true 
+            })
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        }
+        else{
+            console.log("Ten projekt nie jest twój")
+
+        }
+    }
+
     return(<>
         <div className="project-component-child">
             <div style={leftDiv}>
+
                 <div style={parentBoxStyle}>
+                    <div style={childBoxStyle}>
+                        Tytuł projektu:<br/>
+                        <strong>{data.title}</strong>
+                    </div>
                     <div style={childBoxStyle}>
                         Właściciel projektu:<br/>
                         <strong>{data.first_name} {data.last_name}</strong>
@@ -84,12 +120,13 @@ export default function ProjectComponent(props){
                         Twoja rola:<br/>
                         <strong>{data.role}</strong>
                     </div>
-
                 </div>
+
                 <div className="project-description-box">
                     Opis:<br/>
                     {data.description}
                 </div>
+
             </div>
             <div style={rightDiv}>
 
@@ -97,7 +134,7 @@ export default function ProjectComponent(props){
                     <SendIcon />
                 </IconButton>
 
-                <IconButton style={buttonRemoveStyle}>
+                <IconButton style={buttonRemoveStyle} onClick={handleRemoveButton}>
                     <DeleteIcon />
                 </IconButton>
             </div>

@@ -34,6 +34,14 @@ class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=30)
     password = serializers.CharField(max_length=30)
 
+class DeleteProjectSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+
+
+class LeaveProjectSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+
+
 
 
 
