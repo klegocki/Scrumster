@@ -4,6 +4,23 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function ProjectComponent(props){
 
+
+    let data = {
+        description: props.description,
+        role: props.role,
+        first_name: props.first_name,
+        last_name: props.last_name,
+        
+    };
+
+    if(data.description == ""){
+        data.description = "Brak opisu."
+    }
+
+    if(data.role == ""){
+        data.role = "Brak roli"
+    }
+
     const buttonRemoveStyle = {
         width: '50px',
         height: '50px',
@@ -61,17 +78,17 @@ export default function ProjectComponent(props){
                 <div style={parentBoxStyle}>
                     <div style={childBoxStyle}>
                         Właściciel projektu:<br/>
-                        <strong>{props.first_name} {props.last_name}</strong>
+                        <strong>{data.first_name} {data.last_name}</strong>
                     </div>
                     <div style={childBoxStyle}>
                         Twoja rola:<br/>
-                        <strong>{props.role}</strong>
+                        <strong>{data.role}</strong>
                     </div>
 
                 </div>
                 <div className="project-description-box">
                     Opis:<br/>
-                    {props.description}
+                    {data.description}
                 </div>
             </div>
             <div style={rightDiv}>
