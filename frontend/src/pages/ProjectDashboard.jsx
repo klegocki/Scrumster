@@ -1,12 +1,13 @@
-import Projects from "../components/projects/Projects";
 import axios from "axios";
 import { getCsrfToken } from "../functions/utils";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import TopBar from "../components/projects/TopBar";
 import MainBox from "../components/projects/MainBox";
+import { useParams } from 'react-router-dom';
 
-export default function MainApplication(){
+export default function ProjectDashboard(){
+    const { id } = useParams();
 
     const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ export default function MainApplication(){
     return(<>
     
       <TopBar userInfo={userInfo}></TopBar>
-      <MainBox content={<Projects  username={userInfo.username}></Projects>}>
+      <MainBox content={<h1>Placeholder</h1>}>
         
       </MainBox>
 

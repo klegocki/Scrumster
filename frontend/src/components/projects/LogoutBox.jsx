@@ -2,14 +2,14 @@ import { Button } from '@mui/material';
 import LogoutButton from '../logout/LogoutButton.jsx'
 import ModalComponent from '../modal/ModalComponent.jsx'
 import { useState } from 'react';
+import ModalForm from '../modal/ModalForm.jsx';
 
 export default function LogoutBox(){
     const [open, setOpen] = useState(false);
-    const [modalHeader, setModalHeader] = useState("");
-    const handleOpen = (header, mainText) => {
+
+
+    const handleOpen = () => {
         setOpen(true);
-        setModalHeader(prevModalHeader => prevModalHeader = header);
-        setModalMainText(prevModalMainText => prevModalMainText = mainText);
     };
 
     const buttonStyle= {
@@ -17,7 +17,6 @@ export default function LogoutBox(){
         width: '120px',
     }
     
-    const handleClose = () => setOpen(false);
 
 
 
@@ -30,6 +29,10 @@ export default function LogoutBox(){
                 Ustawienia
             </Button>
             <LogoutButton></LogoutButton>
+            {open ? (<ModalForm header='test'
+                                    mainText='test 2'
+                                    setOpen={setOpen}
+                                    open={open}></ModalForm>) : (null)}
         </div>
     </>)
 }

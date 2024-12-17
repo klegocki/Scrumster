@@ -2,9 +2,12 @@ import { IconButton } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { getCsrfToken } from "../../functions/utils";
 
 export default function ProjectComponent(props){
+
+    const navigate = useNavigate();
 
 
     let data = {
@@ -13,8 +16,11 @@ export default function ProjectComponent(props){
         first_name: props.first_name,
         last_name: props.last_name,
         title: props.title,
+        id: props.id
         
     };
+
+    const id = data.id;
 
     if(data.description == "" || data.description == null){
         data.description = "Brak opisu."
@@ -57,14 +63,18 @@ export default function ProjectComponent(props){
         fontFamily: "Arial, Helvetica, sans-serif",
         border: "solid 3px hsl(128, 55%, 70%)",
         borderRadius: "10px",
-        width: "50%",
-        height: "35px",
+        width: "calc(100% - 10px)",
+        height: "65px",
         margin: "5px",
+        maxWidth: '700px',
         padding: "10px",
-    }
+        boxSizing: "border-box",
+
+    };
+    
 
     const rightDiv = {
-        width: '15%',
+        width: '20%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -72,16 +82,22 @@ export default function ProjectComponent(props){
     }
 
     const leftDiv = {
-        width: '85%',
-    }
-
-    const payload = {
-        id: props.id,
-
-    }
+        width: '80%',
+        overflow: 'hidden',
+        wordWrap: 'break-word',
+        boxSizing: 'border-box',
+    };
     
-    const handleRemoveButton = () => {
+
+    
+    const handleRemoveButton = (id) => {
+
+        const payload = {
+            id: props.id,
+        }
+
         if(props.logged_user_username == props.project_owner_username){
+
             axios
             .post("/api/projects/delete", payload,{
               headers: {
@@ -91,50 +107,103 @@ export default function ProjectComponent(props){
               withCredentials: true 
             })
             .then((response) => {
+                props.setProjectInfo(prevProjectInfo => prevProjectInfo.filter((currentProject)=>currentProject.id !== id))
                 console.log(response);
             })
             .catch((error) => {
                 console.log(error);
             });
+
+
         }
         else{
-            console.log("Ten projekt nie jest twój")
+
+            axios
+            .post("/api/projects/leave", payload,{
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCsrfToken(),
+              },
+              withCredentials: true 
+            })
+            .then((response) => {
+                props.setProjectInfo(prevProjectInfo => prevProjectInfo.filter((currentProject)=>currentProject.id !== id))
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+
 
         }
     }
 
+    const navigateToProject = () => {
+        navigate(`/app/project/${id}`);
+    }
+    
+    
     return(<>
         <div className="project-component-child">
             <div style={leftDiv}>
 
-                <div style={parentBoxStyle}>
-                    <div style={childBoxStyle}>
-                        Tytuł projektu:<br/>
-                        <strong>{data.title}</strong>
+                    <div style={childBoxStyle} className="project-top-boxes">
+                    <strong>Tytuł projektu:</strong><br/>
+                        {data.title}
                     </div>
-                    <div style={childBoxStyle}>
-                        Właściciel projektu:<br/>
-                        <strong>{data.first_name} {data.last_name}</strong>
+
+                    <div style={childBoxStyle} className="project-top-boxes">
+                    <strong>Właściciel projektu:</strong><br/>
+                        {data.first_name} {data.last_name}
                     </div>
-                    <div style={childBoxStyle}>
-                        Twoja rola:<br/>
-                        <strong>{data.role}</strong>
+
+                    <div style={childBoxStyle} className="project-top-boxes">
+                    <strong>Twoja rola:</strong><br/>
+                        {data.role}
                     </div>
-                </div>
+                
 
                 <div className="project-description-box">
-                    Opis:<br/>
+                <strong>Opis:</strong><br/>
                     {data.description}
                 </div>
 
             </div>
             <div style={rightDiv}>
 
-                <IconButton style={buttonEnterStyle}>
+                <IconButton     sx={{
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: '10px',
+                                    margin: '20px',
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    fontSize: '2rem',
+                                    backgroundColor: 'hsl(125, 100%, 42%)',
+                                    '&:hover': {
+                                        backgroundColor: 'hsl(125, 100%, 37%)',
+                                    }
+                                }} 
+                                className="project-component-enter-button"
+                                onClick={navigateToProject}>
                     <SendIcon />
                 </IconButton>
 
-                <IconButton style={buttonRemoveStyle} onClick={handleRemoveButton}>
+                <IconButton    sx={{
+                                    width: 50,
+                                    height: 50,
+                                    backgroundColor: 'hsl(0, 100%, 43%)',
+                                    borderRadius: '10px',
+                                    margin: '20px',
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    fontSize: '2rem',
+                                    '&:hover': {
+                                        backgroundColor: 'hsl(0, 100%, 37%)',
+                                    }
+                                }}  
+                                className="project-component-remove-button"
+                                onClick={() => handleRemoveButton(id)}>
                     <DeleteIcon />
                 </IconButton>
             </div>

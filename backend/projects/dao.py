@@ -114,13 +114,23 @@ def get_users_projects_dashboard(data):
 
 
 def handle_remove_project(request, data):
-    pass
-
-def handle_delete_project(request, data):
-    project = Project.objects.get(id=data['id'])
     try:
-        project = Project.objects.get(id=data['id'])        # Delete the record
+        user_in_project = DevelopmentTeam.objects.filter(user_id=request.user.id, project_id=data['id'])
+        project = Project.objects.get(id=data['id'])
+        user_to_remove = User.objects.get(id=request.user.id)
+
+        project.project_users.remove(user_to_remove)
+        user_in_project.delete()
+
+        return JsonResponse({"message": "Opuszczono projekt pomyślnie."}, status=200, safe=False)
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas opuszczania projektu."}, status=400, safe=False)
+
+def handle_delete_project(data):
+    try:
+        project = Project.objects.get(id=data['id'])
         project.delete()
+
         return JsonResponse({"message": "Usunięto projekt pomyślnie."}, status=200, safe=False)
     except Project.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd podczas usuwania projektu."}, status=400, safe=False)

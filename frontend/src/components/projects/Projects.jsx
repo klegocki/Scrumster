@@ -8,11 +8,7 @@ import { useState, useEffect } from "react";
 export default function Projects(props){
 
 const [projectInfo, setProjectInfo] = useState({
-  first_name: '',
-  last_name: '',
-  role: '',
-  description: '',
-  id: ""
+
 });
 
 const buttonStyle = {
@@ -30,11 +26,9 @@ const fetchUserProjects = () => {
       })
       .then((response) => {
         setProjectInfo(prevProjectInfo => prevProjectInfo=response.data);
-        console.log(response.data)
 
       })
       .catch((error) => {
-        console.log(error)
     });
   };
 
@@ -43,11 +37,9 @@ const fetchUserProjects = () => {
   }, []); 
 
     return(<>
-        <div className="dashboard-projects">
             <h2>Twoje projekty</h2>
             <div className="project-component-parent">
-              
-            {Object.entries(projectInfo).map(([key, value]) => (
+              {projectInfo.length ? (<div>{Object.entries(projectInfo).map(([key, value]) => (
                 <ProjectComponent key={key}
                                   first_name={value.project_owner_first_name}
                                   last_name={value.project_owner_last_name}
@@ -56,15 +48,16 @@ const fetchUserProjects = () => {
                                   title = {value.title}
                                   project_owner_username = {value.project_owner_username}
                                   logged_user_username = {props.username}
-                                  id = {value.id}>
+                                  id = {value.id}
+                                  setProjectInfo = {setProjectInfo}>
                 </ProjectComponent>
-            ))}
+            ))}</div>) : (<h3>Użytkownik nie posiada lub nie jest przypisany do żadnego projektu.</h3>)}
+            
             </div>
             <Button 
                     variant="outlined" 
                     style={buttonStyle}>
                 Stwórz projekt
             </Button>
-        </div>
     </>)
 }

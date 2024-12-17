@@ -20,7 +20,7 @@ def get_projects(request):
 def delete_project(request):
     serializer = DeleteProjectSerializer(data=request.data)
     if serializer.is_valid():
-        response = handle_delete_project(request, serializer.data)
+        response = handle_delete_project(serializer.data)
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)

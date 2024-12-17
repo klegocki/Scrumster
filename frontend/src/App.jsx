@@ -2,6 +2,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import MainApplication from './pages/MainApplication'
 import NoPage from './pages/NoPage'
+import ProjectDashboard from './pages/ProjectDashboard'
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/register" element={<Register></Register>}></Route>
             <Route path="*" element={<NoPage/>}></Route>
             <Route path="/app/projects" element={<MainApplication></MainApplication>}></Route>
+            <Route path="/app/project/:id" element={<ProjectDashboard></ProjectDashboard>}></Route>
 
           </Routes>
         </BrowserRouter>
