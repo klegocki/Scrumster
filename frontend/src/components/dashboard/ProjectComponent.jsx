@@ -3,12 +3,34 @@ import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
 import { getCsrfToken } from "../../functions/utils";
+import DialogRemoveLeaveProject from "../dialog/DialogRemoveLeaveProject";
+import ModalComponent from "../modal/ModalComponent";
 
 export default function ProjectComponent(props){
 
-    const navigate = useNavigate();
+    const [openModal, setOpenModal] = useState(false);
+    const [modalHeader, setModalHeader] = useState("");
+    const [modalMainText, setModalMainText] = useState("");
+    const handleOpenModal = (header, mainText) => {
+        setModalHeader(prevModalHeader => prevModalHeader = header);
+        setModalMainText(prevModalMainText => prevModalMainText = mainText);
+        setOpenModal(true);
 
+    };
+    const handleCloseModal = () => {
+        setOpenModal(false);
+      };
+
+    const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
+    const header = useRef('');
+    const body = useRef('');
+    const [handleEvent, setHandleEvent] = useState(null)
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     let data = {
         description: props.description,
@@ -22,11 +44,11 @@ export default function ProjectComponent(props){
 
     const id = data.id;
 
-    if(data.description == "" || data.description == null){
+    if(data.description == null || data.description.trim() == ""){
         data.description = "Brak opisu."
     }
 
-    if(data.role == "" || data.role == null){
+    if(data.role == null || data.role.trim() == ""){
         data.role = "Brak roli"
     }
 
@@ -89,53 +111,77 @@ export default function ProjectComponent(props){
     };
     
 
-    
-    const handleRemoveButton = (id) => {
+    const deleteProjectRequest = () => {
 
         const payload = {
-            id: props.id,
+            id: id,
         }
+
+        axios
+        .post("/api/projects/delete", payload,{
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken(),
+          },
+          withCredentials: true 
+        })
+        .then((response) => {
+            props.setProjectInfo(prevProjectInfo => prevProjectInfo.filter((currentProject)=>currentProject.id !== id))
+            handleClose();
+            handleOpenModal("Usunięcie projektu.", response.data.message);
+        })
+        .catch((error) => {
+            handleClose();
+            handleOpenModal("Usunięcie projektu.", error.response.data.message);
+
+        });
+    }
+
+    const leaveProjectRequest = () => {
+
+        const payload = {
+            id: id,
+        }
+
+        axios
+        .post("/api/projects/leave", payload,{
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken(),
+          },
+          withCredentials: true 
+        })
+        .then((response) => {
+            props.setProjectInfo(prevProjectInfo => prevProjectInfo.filter((currentProject)=>currentProject.id !== id))
+            handleClose();
+            handleOpenModal("Opuszczenie projektu.", response.data.message);
+
+        })
+        .catch((error) => {
+            handleClose();
+            handleOpenModal("Opuszczenie projektu.", error.response.data.message);
+
+        });
+    }
+
+    
+    const handleRemoveButton = () => {
+
 
         if(props.logged_user_username == props.project_owner_username){
 
-            axios
-            .post("/api/projects/delete", payload,{
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCsrfToken(),
-              },
-              withCredentials: true 
-            })
-            .then((response) => {
-                props.setProjectInfo(prevProjectInfo => prevProjectInfo.filter((currentProject)=>currentProject.id !== id))
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-
+            header.current = "Usunięcie projektu."
+            body.current = "Czy chcesz usunąć projekt? Proces jest nieodwracalny."
+            setHandleEvent(() => deleteProjectRequest);
         }
         else{
 
-            axios
-            .post("/api/projects/leave", payload,{
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": getCsrfToken(),
-              },
-              withCredentials: true 
-            })
-            .then((response) => {
-                props.setProjectInfo(prevProjectInfo => prevProjectInfo.filter((currentProject)=>currentProject.id !== id))
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-
-
+            header.current = "Opuszczenie projektu."
+            body.current = "Czy chcesz opuścić projekt?"
+            setHandleEvent(() => leaveProjectRequest);
         }
+        handleOpen()
+
     }
 
     const navigateToProject = () => {
@@ -203,10 +249,22 @@ export default function ProjectComponent(props){
                                     }
                                 }}  
                                 className="project-component-remove-button"
-                                onClick={() => handleRemoveButton(id)}>
+                                onClick={handleRemoveButton}>
                     <DeleteIcon />
                 </IconButton>
             </div>
+
         </div>
+        <DialogRemoveLeaveProject   header={header.current}
+                                    body={body.current}
+                                    handleEvent={handleEvent}
+                                    openParent={open}
+                                    handleClose={handleClose}>
+        </DialogRemoveLeaveProject>
+        <ModalComponent   open={openModal} 
+                        handleClose={handleCloseModal} 
+                        header={modalHeader} 
+                        mainText={modalMainText}>
+      </ModalComponent>
     </>);
 }

@@ -1,10 +1,10 @@
-import Projects from "../components/projects/Projects";
+import Projects from "../components/dashboard/Projects";
 import axios from "axios";
 import { getCsrfToken } from "../functions/utils";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import TopBar from "../components/projects/TopBar";
-import MainBox from "../components/projects/MainBox";
+import TopBar from "../components/dashboard/TopBar";
+import MainBox from "../components/dashboard/MainBox";
 
 export default function MainApplication(){
 

@@ -3,7 +3,7 @@ import { Modal, Box, Typography, Button, IconButton} from "@mui/material";
 
 export default function ModalForm(props){
 
-    const { open, setOpen, header, mainText } = props
+    const { open, setOpen, header, body } = props
 
     const handleClose = () => {
         setOpen(false); 
@@ -61,7 +61,7 @@ export default function ModalForm(props){
 
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    {mainText}
+                    {body}
                 </Typography>
             </Box>
         </Modal>

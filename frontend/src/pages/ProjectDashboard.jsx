@@ -2,8 +2,8 @@ import axios from "axios";
 import { getCsrfToken } from "../functions/utils";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import TopBar from "../components/projects/TopBar";
-import MainBox from "../components/projects/MainBox";
+import TopBar from "../components/dashboard/TopBar";
+import MainBox from "../components/dashboard/MainBox";
 import { useParams } from 'react-router-dom';
 
 export default function ProjectDashboard(){

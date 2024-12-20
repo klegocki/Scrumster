@@ -126,6 +126,7 @@ def handle_remove_project(request, data):
     except Project.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd podczas opuszczania projektu."}, status=400, safe=False)
 
+
 def handle_delete_project(data):
     try:
         project = Project.objects.get(id=data['id'])
@@ -134,3 +135,33 @@ def handle_delete_project(data):
         return JsonResponse({"message": "Usunięto projekt pomyślnie."}, status=200, safe=False)
     except Project.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd podczas usuwania projektu."}, status=400, safe=False)
+
+
+def handle_join_project(user, data):
+    try:
+        project = Project.objects.get(invite_code=data['invite_code'])
+        user_to_add = User.objects.get(id=user.id)
+        if project.project_users.filter(id=user.id).exists():
+            return JsonResponse({"message": "Użytkownik już jest przypisany do tego projektu."}, status=400, safe=False)
+
+        if project.invite_code == data["invite_code"]:
+            project.project_users.add(user_to_add)
+
+            project_data = {
+                'id': project.id,
+                'title': project.title,
+                'project_owner_username': project.project_owner.username,
+                'project_owner_first_name': project.project_owner.first_name,
+                'project_owner_last_name': project.project_owner.last_name,
+                'role': "",
+                'description': project.description,
+            }
+
+            return JsonResponse({"message": "Dołączono do projektu pomyślnie."}, status=200, safe=False)
+        else:
+            return JsonResponse({"message": "Podany kod jest błędny."}, status=400, safe=False)
+
+    except Exception as e:
+        return JsonResponse({"message": "Wystąpił błąd podczas dołączania do projektu.", "error": str(e)}, status=400, safe=False)
+
+

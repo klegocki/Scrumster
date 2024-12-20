@@ -41,6 +41,9 @@ class DeleteProjectSerializer(serializers.Serializer):
 class LeaveProjectSerializer(serializers.Serializer):
     id = serializers.UUIDField()
 
+class JoinProjectSerializer(serializers.Serializer):
+    invite_code = serializers.CharField(max_length=10)
+
 
 
 

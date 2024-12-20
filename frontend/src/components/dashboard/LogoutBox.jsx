@@ -30,7 +30,7 @@ export default function LogoutBox(){
             </Button>
             <LogoutButton></LogoutButton>
             {open ? (<ModalForm header='test'
-                                    mainText='test 2'
+                                    body='test 2'
                                     setOpen={setOpen}
                                     open={open}></ModalForm>) : (null)}
         </div>

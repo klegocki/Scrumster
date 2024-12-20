@@ -3,6 +3,7 @@ import ProjectComponent from "./ProjectComponent"
 import axios from "axios";
 import { getCsrfToken } from "../../functions/utils";
 import { useState, useEffect } from "react";
+import DialogJoinProject from "../dialog/DialogJoinProject"
 
 
 export default function Projects(props){
@@ -12,7 +13,10 @@ const [projectInfo, setProjectInfo] = useState({
 });
 
 const buttonStyle = {
-    marginBottom: '15px',
+  width: '80%',
+  display: 'flex',
+  justifyContent: 'space-between',
+  marginBottom: '15px',
 }
 
 const fetchUserProjects = () => {
@@ -54,10 +58,15 @@ const fetchUserProjects = () => {
             ))}</div>) : (<h3>Użytkownik nie posiada lub nie jest przypisany do żadnego projektu.</h3>)}
             
             </div>
-            <Button 
-                    variant="outlined" 
-                    style={buttonStyle}>
-                Stwórz projekt
-            </Button>
+            <div style={buttonStyle}>
+              <Button 
+                      variant="outlined" 
+                      >
+                  Stwórz projekt
+              </Button>
+              <DialogJoinProject setProjectInfo = {setProjectInfo}
+                                 fetchUserProjects={fetchUserProjects}>
+              </DialogJoinProject>
+            </div>
     </>)
 }
