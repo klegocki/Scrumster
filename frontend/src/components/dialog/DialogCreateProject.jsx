@@ -10,7 +10,7 @@ import { getCsrfToken } from '../../functions/utils';
 import axios from 'axios';
 import ModalComponent from '../modal/ModalComponent';
 
-export default function DialogJoinProject(props) {
+export default function DialogCreateProject(props) {
 
     const [openModal, setOpenModal] = useState(false);
     const [modalHeader, setModalHeader] = useState("");
@@ -35,14 +35,15 @@ export default function DialogJoinProject(props) {
     setOpen(false);
   };
 
-  const projectJoinRequest = (code) => {
+  const createProjectRequest = (data) => {
 
     const payload = {
-        invite_code: code,
+        title: data.title,
+        description: data.description,
     }
 
     axios
-    .post("/api/projects/join", payload,{
+    .post("/api/projects/create", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
@@ -52,18 +53,18 @@ export default function DialogJoinProject(props) {
     .then((response) => {
         props.fetchUserProjects();
         handleClose();
-        handleOpenModal("Dołącz do projektu", response.data.message);
+        handleOpenModal("Stwórz projekt", response.data.message);
     })
     .catch((error) => {
         handleClose();
-        handleOpenModal("Dołącz do projektu", error.response.data.message);
+        handleOpenModal("Stwórz projekt", error.response.data.message);
     });
   }
 
   return (
     <>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Dołącz do projektu
+        Stwórz projekt
       </Button>
       <Dialog
         open={open}
@@ -75,34 +76,46 @@ export default function DialogJoinProject(props) {
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries(formData.entries());
             const code = formJson.code;
-            projectJoinRequest(code);
+            createProjectRequest(formJson);
             handleClose();
           },
         }}
       >
         <DialogTitle>            
-            Dołącz do projektu
+            Stwórz projekt
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Aby dołączyć do zespołu, podaj kod projektu podany przez właściciela.
+            Aby stworzyć projekt, proszę podaj niezbędne informacje.
           </DialogContentText>
           <TextField
             autoFocus
             required
             margin="dense"
             id="name"
-            name="code"
-            label="Podaj kod zespołu"
+            name="title"
+            label="Podaj tytuł projektu"
             type="text"
             fullWidth
             variant="standard"
-            inputProps={{ maxLength: 10 }}
+            inputProps={{ maxLength: 200 }}
           />
+            <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            name="description"
+            label="Podaj opis projektu (opcjonalne)"
+            type="textarea"
+            fullWidth
+            variant="standard"
+            inputProps={{ maxLength: 3000 }}
+            />
         </DialogContent>
+        
         <DialogActions>
           <Button onClick={handleClose}>Odrzuć</Button>
-          <Button type="submit">Dołącz</Button>
+          <Button type="submit">Stwórz</Button>
         </DialogActions>
       </Dialog>
       <ModalComponent   open={openModal} 

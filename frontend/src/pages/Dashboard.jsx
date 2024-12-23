@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import TopBar from "../components/dashboard/TopBar";
 import MainBox from "../components/dashboard/MainBox";
 
-export default function MainApplication(){
+export default function Dashboard(){
 
     const navigate = useNavigate();
 
@@ -17,7 +17,6 @@ export default function MainApplication(){
       email: ''
     });
 
-    const mainDashboardText = "Panel Główny";
 
     const fetchUserInfo = () => {
         axios
@@ -47,7 +46,9 @@ export default function MainApplication(){
 
     return(<>
     
-      <TopBar userInfo={userInfo}></TopBar>
+      <TopBar userInfo={userInfo}
+              textLeft="Panel"
+              textRight="Główny"></TopBar>
       <MainBox content={<Projects  username={userInfo.username}></Projects>}>
         
       </MainBox>

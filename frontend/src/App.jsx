@@ -1,6 +1,6 @@
 import Login from './pages/Login'
 import Register from './pages/Register'
-import MainApplication from './pages/MainApplication'
+import Dashboard from './pages/Dashboard'
 import NoPage from './pages/NoPage'
 import ProjectDashboard from './pages/ProjectDashboard'
 import './App.css'
@@ -17,7 +17,7 @@ function App() {
             <Route path="/login" element={<Login></Login>}></Route>
             <Route path="/register" element={<Register></Register>}></Route>
             <Route path="*" element={<NoPage/>}></Route>
-            <Route path="/app/projects" element={<MainApplication></MainApplication>}></Route>
+            <Route path="/app/projects" element={<Dashboard></Dashboard>}></Route>
             <Route path="/app/project/:id" element={<ProjectDashboard></ProjectDashboard>}></Route>
 
           </Routes>

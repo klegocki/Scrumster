@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
-from api.serializers import UserSerializer, DeleteProjectSerializer, LeaveProjectSerializer, JoinProjectSerializer
-from projects.dao import get_users_projects_dashboard, handle_remove_project, handle_delete_project, handle_join_project
+from api.serializers import UserSerializer, DeleteProjectSerializer, LeaveProjectSerializer, JoinProjectSerializer, \
+    CreateProjectSerializer
+from projects.dao import get_users_projects_dashboard, handle_remove_project, handle_delete_project, \
+    handle_join_project, handle_create_project
 
 
 # Create your views here.
@@ -39,6 +41,15 @@ def join_project(request):
     serializer = JoinProjectSerializer(data=request.data)
     if serializer.is_valid():
         response = handle_join_project(request.user, serializer.initial_data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+@api_view(['POST'])
+def create_project(request):
+    serializer = CreateProjectSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_create_project(request.user, serializer.initial_data)
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)

@@ -4,7 +4,10 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .models import Project, DevelopmentTeam
 from django.db.models import Q
+import random
+import string
 
+from .utils import generate_random_string
 
 """def get_users_projects(data):
 
@@ -139,29 +142,46 @@ def handle_delete_project(data):
 
 def handle_join_project(user, data):
     try:
+
         project = Project.objects.get(invite_code=data['invite_code'])
         user_to_add = User.objects.get(id=user.id)
         if project.project_users.filter(id=user.id).exists():
             return JsonResponse({"message": "Użytkownik już jest przypisany do tego projektu."}, status=400, safe=False)
 
-        if project.invite_code == data["invite_code"]:
-            project.project_users.add(user_to_add)
-
-            project_data = {
-                'id': project.id,
-                'title': project.title,
-                'project_owner_username': project.project_owner.username,
-                'project_owner_first_name': project.project_owner.first_name,
-                'project_owner_last_name': project.project_owner.last_name,
-                'role': "",
-                'description': project.description,
-            }
-
-            return JsonResponse({"message": "Dołączono do projektu pomyślnie."}, status=200, safe=False)
-        else:
-            return JsonResponse({"message": "Podany kod jest błędny."}, status=400, safe=False)
+        project.project_users.add(user_to_add)
+        return JsonResponse({"message": "Dołączono do projektu pomyślnie."}, status=200, safe=False)
 
     except Exception as e:
-        return JsonResponse({"message": "Wystąpił błąd podczas dołączania do projektu.", "error": str(e)}, status=400, safe=False)
+        return JsonResponse({"message": "Podany kod jest błędny."}, status=400, safe=False)
 
+
+def handle_create_project(user, data):
+
+    invite_code = generate_random_string(10)
+
+    while True:
+        if Project.objects.filter(invite_code=invite_code).exists():
+            invite_code = generate_random_string(10)
+        else:
+            break
+
+    try:
+
+        if data['description'].strip() == "":
+            data['description'] = ""
+
+        project = Project(
+            title=data['title'],
+            project_owner=user,
+            description=data['description'],
+            product_owner=None,
+            scrum_master=None,
+            invite_code=invite_code
+        )
+        project.save()
+
+        return JsonResponse({"message": "Stworzono projekt pomyślnie."}, status=200, safe=False)
+
+    except Exception as e:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd.", "error": str(e)}, status=400, safe=False)
 

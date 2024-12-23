@@ -3,7 +3,7 @@ import LogoText from "./LogoText";
 import UserInformation from "./UserInformation";
 export default function TopBar(props){
 
-    const {userInfo} = props;
+    const {userInfo, textLeft, textRight} = props;
 
     return(<>
         <div className="dashboard-top">
@@ -13,7 +13,7 @@ export default function TopBar(props){
             email={userInfo.email}
             last_name={userInfo.last_name}
         ></UserInformation>
-        <LogoText text1="Panel" text2="Główny"></LogoText>
+        <LogoText textLeft={textLeft} textRight={textRight}></LogoText>
         <LogoutBox></LogoutBox>
     </div>
     </>);

@@ -19,9 +19,8 @@ export default function ProjectComponent(props){
         setOpenModal(true);
 
     };
-    const handleCloseModal = () => {
-        setOpenModal(false);
-      };
+    
+    const handleCloseModal = () => setOpenModal(false);
 
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);

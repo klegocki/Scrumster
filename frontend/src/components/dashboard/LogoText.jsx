@@ -1,5 +1,5 @@
 
-export default function LogoText({text1, text2}){
+export default function LogoText(props){
 
 
     const leftParagraphStyle = {
@@ -12,9 +12,9 @@ export default function LogoText({text1, text2}){
 
     return(<>
     <div className="logo-text">
-        <p style={leftParagraphStyle}>{text1}</p>
+        <p style={leftParagraphStyle}>{props.textLeft}</p>
             <img src="/static/frontend/ScrumSter.svg" alt="scrumsterLogo"></img>
-        <p style={rightParagraphStyle}>{text2}</p>
+        <p style={rightParagraphStyle}>{props.textRight}</p>
     </div>
     </>);
 }

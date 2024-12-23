@@ -44,6 +44,11 @@ class LeaveProjectSerializer(serializers.Serializer):
 class JoinProjectSerializer(serializers.Serializer):
     invite_code = serializers.CharField(max_length=10)
 
+class CreateProjectSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=200)
+    description = serializers.CharField(max_length=3000, allow_null=True, allow_blank=True)
+
+
 
 
 

@@ -1,9 +1,9 @@
-import { Button } from "@mui/material"
 import ProjectComponent from "./ProjectComponent"
 import axios from "axios";
 import { getCsrfToken } from "../../functions/utils";
 import { useState, useEffect } from "react";
 import DialogJoinProject from "../dialog/DialogJoinProject"
+import DialogCreateProject from "../dialog/DialogCreateProject";
 
 
 export default function Projects(props){
@@ -59,14 +59,8 @@ const fetchUserProjects = () => {
             
             </div>
             <div style={buttonStyle}>
-              <Button 
-                      variant="outlined" 
-                      >
-                  Stwórz projekt
-              </Button>
-              <DialogJoinProject setProjectInfo = {setProjectInfo}
-                                 fetchUserProjects={fetchUserProjects}>
-              </DialogJoinProject>
+              <DialogCreateProject fetchUserProjects={fetchUserProjects}></DialogCreateProject>
+              <DialogJoinProject fetchUserProjects={fetchUserProjects}></DialogJoinProject>
             </div>
     </>)
 }

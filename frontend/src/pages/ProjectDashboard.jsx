@@ -18,7 +18,6 @@ export default function ProjectDashboard(){
       email: ''
     });
 
-    const mainDashboardText = "Panel Główny";
 
     const fetchUserInfo = () => {
         axios
@@ -48,7 +47,9 @@ export default function ProjectDashboard(){
 
     return(<>
     
-      <TopBar userInfo={userInfo}></TopBar>
+      <TopBar userInfo={userInfo}              
+              textLeft="Panel"
+              textRight="Projektu"></TopBar>
       <MainBox content={<h1>Placeholder</h1>}>
         
       </MainBox>
