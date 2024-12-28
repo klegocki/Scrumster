@@ -325,3 +325,72 @@
 .project-component-enter-button:hover {
     background-color: hsl(125, 100%, 37%);
 }
+
+
+.box-component{
+    background-color: hsl(208, 96%, 79%);
+    font-family: Arial, Helvetica, sans-serif;    border: solid 3px hsl(208, 79%, 72%);
+    border-radius: 10px;
+    width: 100%; 
+    height: 300px; 
+    margin: 15px;
+    padding: 20px;
+    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
+}
+
+.box-component-body{
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    display: flex;
+    justify-content: center;
+    width: 100%; 
+    height: 80%; 
+}
+
+.box-component-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.box-component-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.box-component-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.project-dashboard-body{    
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.project-boxes{
+    display: flex;
+    flex-direction: row;
+    width:80%;
+    justify-content: center;
+    align-items: center;
+}
+
+.task-box{
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: row;
+    align-items: center;
+    background-color: hsl(214, 97%, 75%);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: black;
+    transition: background-color 0.5s ease;
+}
+
+.task-box:hover{
+    background-color: hsl(214, 97%, 70%);
+    cursor: pointer;
+}

@@ -97,6 +97,8 @@ class Task(models.Model):
         blank=False,
         related_name="project_backlog_tasks"
     )
+    created = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return self.title

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import TopBar from "../components/dashboard/TopBar";
 import MainBox from "../components/dashboard/MainBox";
 import { useParams } from 'react-router-dom';
+import ProjectBody from "../components/projectDashboard/ProjectBody";
 
 export default function ProjectDashboard(){
     const { id } = useParams();
@@ -50,7 +51,7 @@ export default function ProjectDashboard(){
       <TopBar userInfo={userInfo}              
               textLeft="Panel"
               textRight="Projektu"></TopBar>
-      <MainBox content={<h1>Placeholder</h1>}>
+      <MainBox content={<ProjectBody id={id}></ProjectBody>}>
         
       </MainBox>
 

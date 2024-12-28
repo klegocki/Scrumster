@@ -37,6 +37,8 @@ class UserLoginSerializer(serializers.Serializer):
 class DeleteProjectSerializer(serializers.Serializer):
     id = serializers.UUIDField()
 
+class GetProjectSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
 
 class LeaveProjectSerializer(serializers.Serializer):
     id = serializers.UUIDField()

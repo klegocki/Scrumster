@@ -4,58 +4,70 @@ import { getCsrfToken } from "../../functions/utils";
 import { useState, useEffect } from "react";
 import DialogJoinProject from "../dialog/DialogJoinProject"
 import DialogCreateProject from "../dialog/DialogCreateProject";
+import { Skeleton } from "@mui/material";
 
 
 export default function Projects(props){
 
-const [projectInfo, setProjectInfo] = useState({
+  const [isLoading, setIsLoading] = useState(true);
+  const [projectInfo, setProjectInfo] = useState({});
 
-});
+  const buttonStyle = {
+    width: '80%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '15px',
+  }
 
-const buttonStyle = {
-  width: '80%',
-  display: 'flex',
-  justifyContent: 'space-between',
-  marginBottom: '15px',
-}
 
-const fetchUserProjects = () => {
-    axios
-      .get("/api/projects/get", {
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCsrfToken(),
-        },
-        withCredentials: true 
-      })
-      .then((response) => {
-        setProjectInfo(prevProjectInfo => prevProjectInfo=response.data);
 
-      })
-      .catch((error) => {
-    });
-  };
+  const fetchUserProjects = () => {
+      axios
+        .get("/api/projects/get", {
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken(),
+          },
+          withCredentials: true 
+        })
+        .then((response) => {
+          setProjectInfo(prevProjectInfo => prevProjectInfo=response.data);
+          console.log(projectInfo)
+        })
+        .catch((error) => {
+      });
+    };
 
   useEffect(() => {
     fetchUserProjects(); 
+    setTimeout(()=>{
+      setIsLoading(false);
+    },2000)
   }, []); 
 
     return(<>
             <h2>Twoje projekty</h2>
             <div className="project-component-parent">
-              {projectInfo.length ? (<div>{Object.entries(projectInfo).map(([key, value]) => (
-                <ProjectComponent key={key}
-                                  first_name={value.project_owner_first_name}
-                                  last_name={value.project_owner_last_name}
-                                  role={value.role}
-                                  description={value.description}
-                                  title = {value.title}
-                                  project_owner_username = {value.project_owner_username}
-                                  logged_user_username = {props.username}
-                                  id = {value.id}
-                                  setProjectInfo = {setProjectInfo}>
-                </ProjectComponent>
-            ))}</div>) : (<h3>Użytkownik nie posiada lub nie jest przypisany do żadnego projektu.</h3>)}
+              
+              {isLoading ? (<Skeleton variant="rectangle" 
+                                      animation='wave'
+                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                                      :
+                                       (projectInfo.length ? (<div>{Object.entries(projectInfo).map(([key, value]) => (
+                  <ProjectComponent key={key}
+                                    first_name={value.project_owner_first_name}
+                                    last_name={value.project_owner_last_name}
+                                    role={value.role}
+                                    description={value.description}
+                                    title = {value.title}
+                                    project_owner_username = {value.project_owner_username}
+                                    logged_user_username = {props.username}
+                                    id = {value.id}
+                                    setProjectInfo = {setProjectInfo}>
+                  </ProjectComponent>
+            ))}</div>) : (<h3>Użytkownik nie posiada lub nie jest przypisany do żadnego projektu.</h3>))
+              
+              }
             
             </div>
             <div style={buttonStyle}>
