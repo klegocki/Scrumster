@@ -97,6 +97,13 @@ class Task(models.Model):
         blank=False,
         related_name="project_backlog_tasks"
     )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='assigned_user_to_task',
+        null=True,
+        blank=True
+    )
     created = models.DateTimeField(auto_now_add=True)
 
 

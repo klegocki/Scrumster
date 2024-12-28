@@ -342,6 +342,7 @@
     overflow-y: auto; 
     overflow-x: hidden; 
     display: flex;
+    font-size: 14px;
     justify-content: center;
     width: 100%; 
     height: 80%; 
@@ -393,4 +394,57 @@
 .task-box:hover{
     background-color: hsl(214, 97%, 70%);
     cursor: pointer;
+}
+
+.task-box:active{
+    background-color: hsl(214, 97%, 65%);
+
+}
+
+
+.box-ongoing-sprint-component-body{
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    display: flex;
+    font-size: 14px;
+    justify-content: center;
+    width: 100%; 
+    height: 20%; 
+}
+
+.box-ongoing-sprint-component-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.box-ongoing-sprint-component-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.box-ongoing-sprint-component-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
+.box-future-sprint-component-body{
+    overflow-y: auto; 
+    overflow-x: hidden; 
+    display: flex;
+    font-size: 14px;
+    justify-content: center;
+    width: 100%; 
+    height: 40%; 
+}
+
+.box-future-sprint-component-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.box-future-sprint-component-body::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.box-future-sprint-component-body::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

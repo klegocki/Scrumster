@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from api.serializers import UserSerializer, DeleteProjectSerializer, LeaveProjectSerializer, JoinProjectSerializer, \
     CreateProjectSerializer, GetProjectSerializer
 from projects.dao import get_users_projects_dashboard, handle_remove_project, handle_delete_project, \
-    handle_join_project, handle_create_project, handle_get_project
+    handle_join_project, handle_create_project, handle_get_project, handle_get_project_backlog, handle_get_sprints
 
 
 # Create your views here.
@@ -16,6 +16,7 @@ def get_projects(request):
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
 
 @api_view(['GET'])
 def get_project(request):
@@ -29,6 +30,33 @@ def get_project(request):
     else:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
+@api_view(['GET'])
+def get_project_backlog(request):
+    if request.user.is_authenticated:
+        serializer = GetProjectSerializer(data=request.query_params)
+        if serializer.is_valid():
+            response = handle_get_project_backlog(serializer.data)
+            return response
+        else:
+            return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+    else:
+        return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
+
+
+@api_view(['GET'])
+def get_project_sprints(request):
+    if request.user.is_authenticated:
+        serializer = GetProjectSerializer(data=request.query_params)
+        if serializer.is_valid():
+            response = handle_get_sprints(serializer.data)
+            return response
+        else:
+            return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+    else:
+        return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
+
+
+
 @api_view(['POST'])
 def delete_project(request):
     serializer = DeleteProjectSerializer(data=request.data)
@@ -37,6 +65,7 @@ def delete_project(request):
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
 
 @api_view(['POST'])
 def leave_project(request):
@@ -47,6 +76,7 @@ def leave_project(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
+
 @api_view(['POST'])
 def join_project(request):
     serializer = JoinProjectSerializer(data=request.data)
@@ -55,6 +85,7 @@ def join_project(request):
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
 
 @api_view(['POST'])
 def create_project(request):

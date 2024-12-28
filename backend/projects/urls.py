@@ -9,5 +9,6 @@ urlpatterns = [
     path('join', views.join_project),
     path('create', views.create_project),
     path('get/project', views.get_project),
-
+    path('get/backlog', views.get_project_backlog),
+    path('get/sprints', views.get_project_sprints),
 ]
