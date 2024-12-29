@@ -105,6 +105,7 @@ class Task(models.Model):
         blank=True
     )
     created = models.DateTimeField(auto_now_add=True)
+    estimated_hours = models.IntegerField(null=True, blank=True)
 
 
     def __str__(self):
@@ -137,6 +138,7 @@ class TaskHistory(models.Model):
         related_name="project_backlog_history_tasks"
     )
     changed_at = models.DateTimeField(auto_now_add=True)
+    estimated_hours = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"History: {self.title} ({self.changed_at})"

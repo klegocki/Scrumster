@@ -50,8 +50,12 @@ class CreateProjectSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=200)
     description = serializers.CharField(max_length=3000, allow_null=True, allow_blank=True)
 
+class DeleteTaskSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    taskId = serializers.UUIDField()
 
-
-
+class DeleteSprintSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    sprintId = serializers.UUIDField()
 
 

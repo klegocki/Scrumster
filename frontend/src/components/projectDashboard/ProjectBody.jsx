@@ -9,6 +9,7 @@ import SpringDashboardComponent from "./SprintDashboardComponent";
 
 export default function ProjectBody(props){
 
+    const [projectData, setProjectData] = useState([]);
     const [tasksData, setTasksData] = useState([]);
     const [sprintsData, setSprintsData] = useState([]);
 
@@ -29,6 +30,30 @@ export default function ProjectBody(props){
 
     const fetchProject = () => {
 
+      const payload = {
+          id: props.id,
+      }
+
+      axios
+        .get("/api/projects/get/project", {
+          params: payload,
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken(),
+          },
+          withCredentials: true 
+        })
+        .then((response) => {
+          console.log(response.data)
+
+          setProjectData(prevProjectData => prevProjectData = response.data)
+        })
+        .catch((error) => {
+      });
+    };
+
+    const fetchTasks = () => {
+
         const payload = {
             id: props.id,
         }
@@ -43,7 +68,6 @@ export default function ProjectBody(props){
             withCredentials: true 
           })
           .then((response) => {
-            console.log(response.data)
             setTasksData(prevTasksData => prevTasksData = response.data)
           })
           .catch((error) => {
@@ -75,47 +99,56 @@ export default function ProjectBody(props){
 
       useEffect(() => {
         fetchProject()
+        fetchTasks()
         fetchSprints()
+
       },[])
 
     return(<>
     <div className="project-dashboard-body">
         <h2 className="project-body-title" style={titleStyle}>
-            aaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aa
+          {projectData.title}
         </h2>
         <div className="project-boxes">
             <BoxComponent header="Backlog produktu" body={<div>{tasksData.map((task, index) => (
                 <TaskBoxComponent 
-                key={task.id || index}
+                key={task.id}
                 title={task.title}
-                id={task.id}
-                setProjectData={setTasksData}
+                taskId={task.id}
+                projectId={props.id}
+                setTasksData={setTasksData}
                 />
             ))}</div>}></BoxComponent>
             <BoxSprintComponent 
-              ongoingSprints={<div>{sprintsData[0]?.ongoing?.map((task, index) => (
+              ongoingSprints={<div>{sprintsData[0]?.ongoing?.map((sprint, index) => (
                   <SpringDashboardComponent 
-                  key={task.id || index}
-                  title={task.title}
-                  id={task.id}
-                  setProjectData={setSprintsData}
+                  key={sprint.id}
+                  title={sprint.title}
+                  sprintId={sprint.id}
+                  projectId={props.id}
+                  onGoingSprint={true}
+                  setSprintsData={setSprintsData}
                   />
               ))}</div>}
-              futureSprints={<div>{sprintsData[0]?.future?.map((task, index) => (
+              futureSprints={<div>{sprintsData[0]?.future?.map((sprint, index) => (
                 <SpringDashboardComponent 
-                key={task.id || index}
-                title={task.title}
-                id={task.id}
-                setProjectData={setSprintsData}
+                key={sprint.id}
+                title={sprint.title}
+                sprintId={sprint.id}
+                projectId={props.id}
+                onGoingSprint={false}
+                setSprintsData={setSprintsData}
                 />
             ))}</div>}
               ></BoxSprintComponent>
-            <BoxComponent header="Zakończone sprinty" body={<div>{sprintsData[0]?.ended?.map((task, index) => (
+            <BoxComponent header="Zakończone sprinty" body={<div>{sprintsData[0]?.ended?.map((sprint, index) => (
                 <SpringDashboardComponent 
-                key={task.id || index}
-                title={task.title}
-                id={task.id}
-                setProjectData={setSprintsData}
+                key={sprint.id}
+                title={sprint.title}
+                sprintId={sprint.id}
+                projectId={props.id}
+                onGoingSprint={false}
+                setSprintsData={setSprintsData}
                 />
             ))}</div>}></BoxComponent>
 

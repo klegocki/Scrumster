@@ -19,6 +19,7 @@ def save_task_history(sender, instance, **kwargs):
                     status=previous_instance.status,
                     sprint=previous_instance.sprint,
                     project_backlog=previous_instance.project_backlog,
+                    estimated_hours=previous_instance.estimated_hours,
                 )
         except Task.DoesNotExist:
             pass

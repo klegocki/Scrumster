@@ -11,38 +11,11 @@ from .utils import generate_random_string
 
 def handle_get_project(data):
     try:
+
         project = Project.objects.get(id=data['id'])
-        tasks = Task.objects.filter(project_backlog=project.id)
-        sprints = Sprint.objects.filter(project=project.id)
-        sprints_data = [model_to_dict(sprint) for sprint in sprints]
-
-
         development_team = DevelopmentTeam.objects.filter(project=project.id)
         project_users = project.project_users.all()
         users_data = []
-        tasks_data = []
-
-        for task in tasks:
-
-            tasks_history = TaskHistory.objects.filter(task=task.id)
-            tasks_history_json = [model_to_dict(task_history)for task_history in tasks_history]
-
-            task_sprint = ""
-            if task.sprint is not None:
-                task_sprint = task.sprint.id
-
-            tasks_data.append({
-                "id": task.id,
-                "title": task.title,
-                "description": task.description,
-                "status": task.status,
-                "sprint": task_sprint,
-                "project_backlog": task.project_backlog.id,
-                "created": task.created,
-                "tasks_history": tasks_history_json
-            })
-
-
 
         for user in project_users:
             role = None
@@ -87,8 +60,7 @@ def handle_get_project(data):
                 'last_name': project.product_owner.last_name
             } if project.product_owner else None,
             'description': project.description,
-            'sprints': sprints_data,
-            'tasks': tasks_data,
+
         }
         return JsonResponse(project_data, status=200, safe=False)
 
@@ -308,3 +280,24 @@ def handle_create_project(user, data):
     except Exception as e:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd.", "error": str(e)}, status=400, safe=False)
 
+
+def handle_remove_task(data):
+    try:
+        task = Task.objects.get(id=data['taskId'])
+        task.delete()
+
+        return JsonResponse({"message": "Usunięto task pomyślnie."}, status=200, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas usuwania taska."}, status=400, safe=False)
+
+
+def handle_remove_sprint(data):
+    try:
+        sprint = Sprint.objects.get(id=data['sprintId'])
+        sprint.delete()
+
+        return JsonResponse({"message": "Usunięto sprint pomyślnie."}, status=200, safe=False)
+
+    except Sprint.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas usuwania sprintu."}, status=400, safe=False)

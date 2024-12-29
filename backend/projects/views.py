@@ -1,10 +1,11 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from api.serializers import UserSerializer, DeleteProjectSerializer, LeaveProjectSerializer, JoinProjectSerializer, \
-    CreateProjectSerializer, GetProjectSerializer
+    CreateProjectSerializer, GetProjectSerializer, DeleteTaskSerializer, DeleteSprintSerializer
 from projects.dao import get_users_projects_dashboard, handle_remove_project, handle_delete_project, \
-    handle_join_project, handle_create_project, handle_get_project, handle_get_project_backlog, handle_get_sprints
+    handle_join_project, handle_create_project, handle_get_project, handle_get_project_backlog, handle_get_sprints, \
+    handle_remove_task, handle_remove_sprint
+from projects.decorators import product_owner, project_owner, scrum_master
 
 
 # Create your views here.
@@ -56,7 +57,7 @@ def get_project_sprints(request):
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
 
-
+@project_owner
 @api_view(['POST'])
 def delete_project(request):
     serializer = DeleteProjectSerializer(data=request.data)
@@ -92,6 +93,28 @@ def create_project(request):
     serializer = CreateProjectSerializer(data=request.data)
     if serializer.is_valid():
         response = handle_create_project(request.user, serializer.initial_data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@product_owner
+@api_view(['POST'])
+def delete_task(request):
+    serializer = DeleteTaskSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_remove_task(serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+#@scrum_master
+@api_view(['POST'])
+def delete_sprint(request):
+    serializer = DeleteSprintSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_remove_sprint(serializer.data)
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
