@@ -20,7 +20,7 @@ export default function ProjectBody(props){
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        width: "100%",
+        width: "90%",
         height: "50px",
 
     }
@@ -113,13 +113,18 @@ export default function ProjectBody(props){
 
     
     <div className="project-dashboard-body">
-
-
-            <h2 className="project-body-title" style={titleStyle}>
-              {projectData.title}
-            </h2>
+    {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '50%', 
+                                      height: '90px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(            
+                    <h2 className="project-body-title" style={titleStyle}>
+                      {projectData.title}
+                    </h2>)}
             <div className="project-boxes">
-
             <BoxComponent header="Backlog produktu" body={isLoading ? (<Skeleton variant="rounded" 
                                 animation='wave'
                                 sx={{ width: '100%', height: '100%' }}></Skeleton>) 
