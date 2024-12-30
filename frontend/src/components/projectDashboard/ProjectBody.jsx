@@ -6,8 +6,11 @@ import { useEffect, useState } from "react";
 import TaskBoxComponent from "./TaskBoxComponent";
 import BoxSprintComponent from "./BoxSprintComponent";
 import SpringDashboardComponent from "./SprintDashboardComponent";
+import { Skeleton } from "@mui/material";
 
 export default function ProjectBody(props){
+
+  const [isLoading, setIsLoading] = useState(true);
 
     const [projectData, setProjectData] = useState([]);
     const [tasksData, setTasksData] = useState([]);
@@ -101,56 +104,76 @@ export default function ProjectBody(props){
         fetchProject()
         fetchTasks()
         fetchSprints()
-
+        setTimeout(()=>{
+          setIsLoading(false);
+        },2000)
       },[])
 
     return(<>
+
+    
     <div className="project-dashboard-body">
-        <h2 className="project-body-title" style={titleStyle}>
-          {projectData.title}
-        </h2>
-        <div className="project-boxes">
-            <BoxComponent header="Backlog produktu" body={<div>{tasksData.map((task, index) => (
-                <TaskBoxComponent 
-                key={task.id}
-                title={task.title}
-                taskId={task.id}
-                projectId={props.id}
-                setTasksData={setTasksData}
-                />
-            ))}</div>}></BoxComponent>
+
+
+            <h2 className="project-body-title" style={titleStyle}>
+              {projectData.title}
+            </h2>
+            <div className="project-boxes">
+
+            <BoxComponent header="Backlog produktu" body={isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                    :(<div>{tasksData.map((task, index) => (
+
+                      <TaskBoxComponent 
+                      key={task.id}
+                      title={task.title}
+                      taskId={task.id}
+                      projectId={props.id}
+                      setTasksData={setTasksData}
+                      />
+              ))}</div>)}></BoxComponent>
             <BoxSprintComponent 
-              ongoingSprints={<div>{sprintsData[0]?.ongoing?.map((sprint, index) => (
+              ongoingSprints={isLoading ? (<Skeleton variant="rounded" 
+                animation='wave'
+                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                  :(<div>{sprintsData[0]?.ongoing?.map((sprint, index) => (
+                      <SpringDashboardComponent 
+                      key={sprint.id}
+                      title={sprint.title}
+                      sprintId={sprint.id}
+                      projectId={props.id}
+                      onGoingSprint={true}
+                      setSprintsData={setSprintsData}
+                      />
+              ))}</div>)}
+              futureSprints={isLoading ? (<Skeleton variant="rounded" 
+                animation='wave'
+                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                :(<div>{sprintsData[0]?.future?.map((sprint, index) => (
+                      <SpringDashboardComponent 
+                      key={sprint.id}
+                      title={sprint.title}
+                      sprintId={sprint.id}
+                      projectId={props.id}
+                      onGoingSprint={false}
+                      setSprintsData={setSprintsData}
+                      />
+                    ))}</div>)}
+              ></BoxSprintComponent>
+            <BoxComponent header="Zakończone sprinty" body={isLoading ? (<Skeleton variant="rounded" 
+                animation='wave'
+                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                :(<div>{sprintsData[0]?.ended?.map((sprint, index) => (
                   <SpringDashboardComponent 
                   key={sprint.id}
                   title={sprint.title}
                   sprintId={sprint.id}
                   projectId={props.id}
-                  onGoingSprint={true}
+                  onGoingSprint={false}
                   setSprintsData={setSprintsData}
                   />
-              ))}</div>}
-              futureSprints={<div>{sprintsData[0]?.future?.map((sprint, index) => (
-                <SpringDashboardComponent 
-                key={sprint.id}
-                title={sprint.title}
-                sprintId={sprint.id}
-                projectId={props.id}
-                onGoingSprint={false}
-                setSprintsData={setSprintsData}
-                />
-            ))}</div>}
-              ></BoxSprintComponent>
-            <BoxComponent header="Zakończone sprinty" body={<div>{sprintsData[0]?.ended?.map((sprint, index) => (
-                <SpringDashboardComponent 
-                key={sprint.id}
-                title={sprint.title}
-                sprintId={sprint.id}
-                projectId={props.id}
-                onGoingSprint={false}
-                setSprintsData={setSprintsData}
-                />
-            ))}</div>}></BoxComponent>
+              ))}</div>)}></BoxComponent>
 
         </div>
         <div style={buttonsStyle}>
@@ -158,6 +181,8 @@ export default function ProjectBody(props){
             <Button variant="outlined">Dodaj zadanie</Button>
             <Button variant="outlined">Zaplanuj sprint</Button>
         </div>
+        
+
     </div>
 
     </>);

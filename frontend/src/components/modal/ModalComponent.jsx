@@ -4,7 +4,6 @@ import { Modal, Box, Typography} from "@mui/material";
 
 export default function ModalComponent({open, handleClose, header, mainText}){
 
-
     const boxStyle = {
         position: 'absolute',
         top: '50%',

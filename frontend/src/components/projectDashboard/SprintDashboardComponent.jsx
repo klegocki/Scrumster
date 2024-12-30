@@ -1,10 +1,12 @@
-import { IconButton } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from "react";
-import axios from "axios";
-import { getCsrfToken } from "../../functions/utils";
+import DialogRemoveSprint from "../dialog/DialogRemoveSprint";
 
 export default function SpringDashboardComponent(props){
+
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     const {title, onGoingSprint, sprintId, projectId} = props
 
@@ -54,35 +56,31 @@ export default function SpringDashboardComponent(props){
 
                 return [updatedSprints];
             })
-        
+            handleClose();
+
         })
         .catch((error) => {
 
+            handleClose();
+        
         });
     }
 
+    
     return(<>
         <div className="task-box">
             <div style={titleStyle}>
                 {title}
             </div>
-            {onGoingSprint ? (null) : (
-                <IconButton sx={{
-                        width: 30,
-                        height: 30,
-                        backgroundColor: 'hsl(0, 100%, 43%)',
-                        borderRadius: '5px',
-                        margin: '10px',
-                        color: 'black',
-                        fontWeight: 'bold',
-                        fontSize: '2rem',
-                        '&:hover': {
-                            backgroundColor: 'hsl(0, 100%, 37%)',
-                        }}}  
-                        className="project-component-remove-button"
-                        onClick={deleteSprint}>
-                    <DeleteIcon/>
-            </IconButton>)}
+            
+            <DialogRemoveSprint setSprintsData={props.setSprintsData}
+                                projectId={projectId}
+                                sprintId={sprintId}
+                                openParent={open}
+                                handleClose={handleClose}
+                                onGoingSprint={onGoingSprint}>
+            </DialogRemoveSprint>
         </div>
+
         </>)
 }

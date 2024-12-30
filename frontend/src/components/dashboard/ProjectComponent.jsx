@@ -21,6 +21,9 @@ export default function ProjectComponent(props){
     };
     
     const handleCloseModal = () => setOpenModal(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
 
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
@@ -28,8 +31,6 @@ export default function ProjectComponent(props){
     const body = useRef('');
     const [handleEvent, setHandleEvent] = useState(null)
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
 
     let data = {
         description: props.description,
@@ -252,18 +253,18 @@ export default function ProjectComponent(props){
                     <DeleteIcon />
                 </IconButton>
             </div>
-
-        </div>
-        <DialogRemoveLeaveProject   header={header.current}
+            <DialogRemoveLeaveProject   header={header.current}
                                     body={body.current}
                                     handleEvent={handleEvent}
                                     openParent={open}
                                     handleClose={handleClose}>
         </DialogRemoveLeaveProject>
-        <ModalComponent   open={openModal} 
+        <ModalComponent open={openModal} 
                         handleClose={handleCloseModal} 
                         header={modalHeader} 
                         mainText={modalMainText}>
-      </ModalComponent>
+        </ModalComponent>
+        </div>
+
     </>);
 }
