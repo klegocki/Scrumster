@@ -32,7 +32,6 @@ export default function Projects(props){
         })
         .then((response) => {
           setProjectInfo(prevProjectInfo => prevProjectInfo=response.data);
-          console.log(projectInfo)
         })
         .catch((error) => {
       });

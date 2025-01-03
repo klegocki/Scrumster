@@ -7,6 +7,7 @@ import TaskBoxComponent from "./TaskBoxComponent";
 import BoxSprintComponent from "./BoxSprintComponent";
 import SpringDashboardComponent from "./SprintDashboardComponent";
 import { Skeleton } from "@mui/material";
+import DialogProjectInfo from "../dialog/DialogProjectInfo";
 
 export default function ProjectBody(props){
 
@@ -47,8 +48,6 @@ export default function ProjectBody(props){
           withCredentials: true 
         })
         .then((response) => {
-          console.log(response.data)
-
           setProjectData(prevProjectData => prevProjectData = response.data)
         })
         .catch((error) => {
@@ -93,7 +92,6 @@ export default function ProjectBody(props){
             withCredentials: true 
           })
           .then((response) => {
-            console.log(response.data)
             setSprintsData(prevSprintsData => prevSprintsData = response.data)
           })
           .catch((error) => {
@@ -109,8 +107,9 @@ export default function ProjectBody(props){
         },2000)
       },[])
 
+      
     return(<>
-
+    
     
     <div className="project-dashboard-body">
     {isLoading ? (<Skeleton variant="rounded" 
@@ -137,7 +136,9 @@ export default function ProjectBody(props){
                       projectId={props.id}
                       setTasksData={setTasksData}
                       />
-              ))}</div>)}></BoxComponent>
+              ))}
+              {(tasksData.length > 0) ? (null) : (<h3>Brak tasków</h3>)}
+              </div>)}></BoxComponent>
             <BoxSprintComponent 
               ongoingSprints={isLoading ? (<Skeleton variant="rounded" 
                 animation='wave'
@@ -151,7 +152,9 @@ export default function ProjectBody(props){
                       onGoingSprint={true}
                       setSprintsData={setSprintsData}
                       />
-              ))}</div>)}
+              ))}
+                {(sprintsData[0]?.ongoing?.length > 0) ? (null) : (<h3>Brak obecnych sprintów</h3>)}
+              </div>)}
               futureSprints={isLoading ? (<Skeleton variant="rounded" 
                 animation='wave'
                 sx={{ width: '100%', height: '100%' }}></Skeleton>) 
@@ -164,7 +167,9 @@ export default function ProjectBody(props){
                       onGoingSprint={false}
                       setSprintsData={setSprintsData}
                       />
-                    ))}</div>)}
+                    ))}
+                    {(sprintsData[0]?.future?.length > 0) ? (null) : (<h3>Brak przyszłych sprintów</h3>)}
+                    </div>)}
               ></BoxSprintComponent>
             <BoxComponent header="Zakończone sprinty" body={isLoading ? (<Skeleton variant="rounded" 
                 animation='wave'
@@ -178,18 +183,15 @@ export default function ProjectBody(props){
                   onGoingSprint={false}
                   setSprintsData={setSprintsData}
                   />
-              ))}</div>)}></BoxComponent>
-
+              ))}
+              {(sprintsData[0]?.ended?.length > 0) ? (null) : (<h3>Brak zakończonych sprintów</h3>)}
+              </div>)}></BoxComponent>
         </div>
         <div style={buttonsStyle}>
-            <Button variant="outlined">Informacje o projekcie</Button>
+            <DialogProjectInfo projectData={projectData}></DialogProjectInfo>
             <Button variant="outlined">Dodaj zadanie</Button>
             <Button variant="outlined">Zaplanuj sprint</Button>
         </div>
-        
-
     </div>
-
     </>);
-
 }

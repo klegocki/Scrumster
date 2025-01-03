@@ -449,3 +449,63 @@
 .box-future-sprint-component-body::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+
+.dialog-project-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.dialog-project-info-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    color: #222;
+    margin-bottom: 10px;
+}
+
+.dialog-project-info-description {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.dialog-project-info-invite-code {
+    font-size: 1.1rem;
+    color: #444;
+    font-weight: bold;
+    text-align: center;
+    background-color: #d1dfd7;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.5s ease;
+}
+
+.dialog-project-info-invite-code:hover {
+    cursor: pointer;
+    background-color: #c1ccc6;
+}
+
+.dialog-project-info-user {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.dialog-project-info-user p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
