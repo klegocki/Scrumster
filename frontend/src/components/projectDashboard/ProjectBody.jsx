@@ -8,6 +8,7 @@ import BoxSprintComponent from "./BoxSprintComponent";
 import SpringDashboardComponent from "./SprintDashboardComponent";
 import { Skeleton } from "@mui/material";
 import DialogProjectInfo from "../dialog/DialogProjectInfo";
+import DialogCreateTask from "../dialog/DialogCreateTask";
 
 export default function ProjectBody(props){
 
@@ -189,7 +190,9 @@ export default function ProjectBody(props){
         </div>
         <div style={buttonsStyle}>
             <DialogProjectInfo projectData={projectData}></DialogProjectInfo>
-            <Button variant="outlined">Dodaj zadanie</Button>
+            <DialogCreateTask id={props.id}
+                              fetchTasks={fetchTasks}>
+            </DialogCreateTask>
             <Button variant="outlined">Zaplanuj sprint</Button>
         </div>
     </div>

@@ -13,5 +13,6 @@ urlpatterns = [
     path('get/sprints', views.get_project_sprints),
     path('task/delete', views.delete_task),
     path('sprint/delete', views.delete_sprint),
+    path('task/create', views.create_task),
 
 ]

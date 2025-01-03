@@ -58,4 +58,7 @@ class DeleteSprintSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     sprintId = serializers.UUIDField()
 
-
+class CreateTaskSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    title = serializers.CharField(max_length=200)
+    description = serializers.CharField(max_length=3000, allow_null=True, allow_blank=True)

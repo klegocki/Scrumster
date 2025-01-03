@@ -1,5 +1,3 @@
-from xxlimited_35 import error
-
 from django.utils.timezone import now
 from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
@@ -64,8 +62,8 @@ def handle_get_project(data):
         }
         return JsonResponse(project_data, status=200, safe=False)
 
-    except Exception as e:
-        return JsonResponse({"message": "Wystąpił błąd podczas usuwania projektu.", "error": str(e)}, status=400, safe=False)
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Nie ma takiego projektu."}, status=400, safe=False)
 
 
 def handle_get_project_backlog(data):
@@ -100,8 +98,8 @@ def handle_get_project_backlog(data):
 
         return JsonResponse(tasks_data, status=200, safe=False)
 
-    except Exception as e:
-        return JsonResponse({"message": "Wystąpił błąd podczas usuwania projektu.", "error": str(e)}, status=400, safe=False)
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
 
 def handle_get_sprints(data):
     try:
@@ -167,8 +165,8 @@ def handle_get_sprints(data):
 
         return JsonResponse(sprints_data, status=200, safe=False)
 
-    except Exception as e:
-        return JsonResponse({"message": "Wystąpił błąd podczas usuwania projektu.", "error": str(e)}, status=400, safe=False)
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
 
 
 
@@ -206,9 +204,9 @@ def get_users_projects_dashboard(data):
 
         return JsonResponse(projects_list, status=200, safe=False)
 
-    except error:
+    except Project.DoesNotExist:
 
-        return JsonResponse(error, status=400, safe=False)
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
 
 
 def handle_remove_project(request, data):
@@ -222,7 +220,7 @@ def handle_remove_project(request, data):
 
         return JsonResponse({"message": "Opuszczono projekt pomyślnie."}, status=200, safe=False)
     except Project.DoesNotExist:
-        return JsonResponse({"message": "Wystąpił błąd podczas opuszczania projektu."}, status=400, safe=False)
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
 
 
 def handle_delete_project(data):
@@ -232,7 +230,7 @@ def handle_delete_project(data):
 
         return JsonResponse({"message": "Usunięto projekt pomyślnie."}, status=200, safe=False)
     except Project.DoesNotExist:
-        return JsonResponse({"message": "Wystąpił błąd podczas usuwania projektu."}, status=400, safe=False)
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
 
 
 def handle_join_project(user, data):
@@ -246,7 +244,7 @@ def handle_join_project(user, data):
         project.project_users.add(user_to_add)
         return JsonResponse({"message": "Dołączono do projektu pomyślnie."}, status=200, safe=False)
 
-    except Exception as e:
+    except Project.DoesNotExist:
         return JsonResponse({"message": "Podany kod jest błędny."}, status=400, safe=False)
 
 
@@ -301,3 +299,31 @@ def handle_remove_sprint(data):
 
     except Sprint.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd podczas usuwania sprintu."}, status=400, safe=False)
+
+
+def handle_create_task(data):
+
+    try:
+        project = Project.objects.get(id=data['id'])
+
+        if data['title'].strip() == "":
+            return JsonResponse({"message": "Tytuł nie może być pusty"}, status=400, safe=False)
+
+        if data['description'].strip() == "":
+            data['description'] = ""
+
+        task = Task(
+            title=data['title'],
+            description=data['description'],
+            status="To Do",
+            sprint=None,
+            project_backlog=project,
+            user=None,
+            estimated_hours=None,
+        )
+        task.save()
+
+        return JsonResponse({"message": "Stworzono zadanie pomyślnie."}, status=200, safe=False)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)

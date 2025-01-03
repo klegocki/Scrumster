@@ -80,7 +80,7 @@ class Sprint(models.Model):
 
 class Task(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(null=False, blank=False, max_length=200)
+    title = models.CharField(null=False, blank=False, max_length=60)
     description = models.TextField(max_length=3000, null=True, blank=True)
     status = models.CharField(max_length=60, null=True, blank=True)
     sprint = models.ForeignKey(
@@ -120,7 +120,7 @@ class TaskHistory(models.Model):
         blank=True,
         related_name="project_backlog_tasks"
     )
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=60)
     description = models.TextField(max_length=3000, null=True, blank=True)
     status = models.CharField(max_length=60, null=True, blank=True)
     sprint = models.ForeignKey(
