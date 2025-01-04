@@ -11,9 +11,6 @@ export default function DialogProjectInfo(props) {
 
     const {projectData, projectTasks, projectSprints} = props
 
-    console.log(projectData)
-    console.log(projectTasks)
-    console.log(projectSprints)
 
     const [open, setOpen] = useState(false);
 

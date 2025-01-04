@@ -14,5 +14,6 @@ urlpatterns = [
     path('task/delete', views.delete_task),
     path('sprint/delete', views.delete_sprint),
     path('task/create', views.create_task),
+    path('sprint/create', views.create_sprint),
 
 ]

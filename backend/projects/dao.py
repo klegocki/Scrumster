@@ -327,3 +327,29 @@ def handle_create_task(data):
 
     except Project.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
+
+
+def handle_create_sprint(data):
+    task_ids = data['task_ids']
+    if data['start_date'] > data['end_date']:
+        return JsonResponse({"message": "Data początkowa, nie może być późniejsza, niż data końcowa."}, status=400, safe=False)
+
+    try:
+        project = Project.objects.get(id=data['id'])
+        sprint = Sprint(
+            start_date=data['start_date'],
+            end_date=data['end_date'],
+            daily_meet_link=data['daily_meet_link'],
+            project=project
+
+        )
+        sprint.save()
+        for task_id in task_ids:
+            task = Task.objects.get(id=task_id)
+            task.sprint = sprint
+            task.save()
+
+        return JsonResponse({"message": "Stworzono sprint pomyślnie."}, status=200, safe=False)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
