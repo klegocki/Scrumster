@@ -152,6 +152,7 @@ export default function ProjectBody(props){
                       title={sprint.title}
                       sprintId={sprint.id}
                       projectId={props.id}
+                      fetchTasks={fetchTasks}
                       onGoingSprint={true}
                       setSprintsData={setSprintsData}
                       />
@@ -167,6 +168,7 @@ export default function ProjectBody(props){
                       title={sprint.title}
                       sprintId={sprint.id}
                       projectId={props.id}
+                      fetchTasks={fetchTasks}
                       onGoingSprint={false}
                       setSprintsData={setSprintsData}
                       />
@@ -184,6 +186,7 @@ export default function ProjectBody(props){
                   sprintId={sprint.id}
                   projectId={props.id}
                   onGoingSprint={false}
+                  fetchTasks={fetchTasks}
                   setSprintsData={setSprintsData}
                   />
               ))}

@@ -54,7 +54,7 @@ export default function DialogRemoveSprint(props) {
       withCredentials: true 
     })
     .then((response) => {
-
+        props.fetchTasks();
         props.setSprintsData(prevSprintsData => {
             if (!prevSprintsData.length) return prevSprintsData;
 

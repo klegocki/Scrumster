@@ -35,6 +35,7 @@ export default function SprintDashboardComponent(props){
                                 projectId={projectId}
                                 sprintId={sprintId}
                                 openParent={open}
+                                fetchTasks={props.fetchTasks}
                                 handleClose={handleClose}
                                 onGoingSprint={onGoingSprint}>
             </DialogRemoveSprint>

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.utils.timezone import now
 from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
@@ -348,8 +350,16 @@ def handle_create_task(data):
 
 
 def handle_create_sprint(data):
+
     task_ids = data['task_ids']
-    if data['start_date'] > data['end_date']:
+    today = now().date()
+    start_date = datetime.strptime(data['start_date'], "%Y-%m-%d").date()
+    end_date = datetime.strptime(data['end_date'], "%Y-%m-%d").date()
+
+    if today > start_date or today > end_date:
+        return JsonResponse({"message": "Nie można stworzyć sprintu, który się zakończył"}, status=400, safe=False)
+
+    if start_date > end_date:
         return JsonResponse({"message": "Data początkowa, nie może być późniejsza, niż data końcowa."}, status=400, safe=False)
 
     if not task_ids:
