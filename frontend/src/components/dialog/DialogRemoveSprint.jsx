@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 import { getCsrfToken } from "../../functions/utils";
 
-export default function DialogJoinProject(props) {
+export default function DialogRemoveSprint(props) {
 
 
     const [openModal, setOpenModal] = useState(false);

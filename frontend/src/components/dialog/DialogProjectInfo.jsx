@@ -22,9 +22,6 @@ export default function DialogProjectInfo(props) {
         setOpen(false);
     };
 
-    const usersStyle = {
-
-    }
 
     return (
         <>
@@ -60,7 +57,7 @@ export default function DialogProjectInfo(props) {
                     >
                         {projectData.invite_code}
                     </div>
-                    <div style={usersStyle}>
+                    <div>
                         Zespół:<br/>
                         <div className='dialog-project-info-user'>
                         Administrator projektu:

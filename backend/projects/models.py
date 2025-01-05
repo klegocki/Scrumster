@@ -85,7 +85,7 @@ class Task(models.Model):
     status = models.CharField(max_length=60, null=True, blank=True)
     sprint = models.ForeignKey(
         Sprint,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name="sprint_tasks"
@@ -137,8 +137,15 @@ class TaskHistory(models.Model):
         blank=False,
         related_name="project_backlog_history_tasks"
     )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='assigned_user_to_task_history',
+        null=True,
+        blank=True
+    )
     changed_at = models.DateTimeField(auto_now_add=True)
-    estimated_hours = models.IntegerField(null=True, blank=True)
+    estimated_hours = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return f"History: {self.title} ({self.changed_at})"

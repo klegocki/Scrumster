@@ -1,4 +1,5 @@
 from django.db.models.signals import pre_save
+from django.contrib.auth.models import User
 from django.dispatch import receiver
 from .models import Task, TaskHistory
 
@@ -11,7 +12,10 @@ def save_task_history(sender, instance, **kwargs):
                previous_instance.description != instance.description or \
                previous_instance.status != instance.status or \
                previous_instance.sprint != instance.sprint or \
-               previous_instance.project_backlog != instance.project_backlog:
+               previous_instance.project_backlog != instance.project_backlog or \
+               previous_instance.estimated_hours != instance.estimated_hours or \
+               previous_instance.user != instance.user:
+
                 TaskHistory.objects.create(
                     task=instance,
                     title=previous_instance.title,
@@ -20,6 +24,9 @@ def save_task_history(sender, instance, **kwargs):
                     sprint=previous_instance.sprint,
                     project_backlog=previous_instance.project_backlog,
                     estimated_hours=previous_instance.estimated_hours,
+                    user=previous_instance.user,
                 )
         except Task.DoesNotExist:
-            pass
+            print(f"Task with pk={instance.pk} does not exist.")
+        except Exception as e:
+            print(f"Unexpected exception: {e}")

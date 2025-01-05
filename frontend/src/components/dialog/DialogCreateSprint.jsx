@@ -7,8 +7,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import { Card, CardContent, CardActions, Typography } from '@mui/material';
 import { getCsrfToken } from '../../functions/utils';
 import axios from 'axios';
@@ -25,7 +23,6 @@ export default function DialogCreateSprint(props) {
     const [openModal, setOpenModal] = useState(false);
     const [modalHeader, setModalHeader] = useState("");
     const [modalMainText, setModalMainText] = useState("");
-    console.log(selectedTasks)
 
     const handleOpenModal = (header, mainText) => {
         setModalHeader(prevModalHeader => prevModalHeader = header);

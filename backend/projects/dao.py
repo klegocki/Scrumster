@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .models import Project, DevelopmentTeam, Task, TaskHistory, Sprint
 from django.db.models import Q
-from .utils import generate_random_string
+from .utils import generate_random_string, parse_date
 
 
 def handle_get_project(data):
@@ -72,28 +72,46 @@ def handle_get_project_backlog(data):
         tasks = Task.objects.filter(Q(project_backlog=project.id) & Q(sprint=None))
 
         tasks_data = []
+        tasks_history_data = []
         for task in tasks:
 
             tasks_history = TaskHistory.objects.filter(task=task.id)
-            tasks_history_json = [model_to_dict(task_history)for task_history in tasks_history]
-
-            task_sprint = ""
-            task_user = ""
-            if task.sprint is not None:
-                task_sprint = task.sprint.id
-            if task.user is not None:
-                task_user = task.user.id
+            for task_history in tasks_history:
+                tasks_history_data.append({
+                    "id": task_history.id,
+                    "title": task_history.title,
+                    "description": task_history.description,
+                    "status": task_history.status,
+                    "sprint": "Sprint " + str(task_history.sprint.start_date) + " " + str(
+                        task_history.sprint.end_date) if task_history.sprint else None,
+                    'user': {
+                        'id': task_history.user.id,
+                        'username': task_history.user.username,
+                        'email': task_history.user.email,
+                        'first_name': task_history.user.first_name,
+                        'last_name': task_history.user.last_name
+                    } if task_history.user else None,
+                    "changed_at": parse_date(task_history.changed_at),
+                    "estimated_hours": task_history.estimated_hours,
+                })
+                pass
 
             tasks_data.append({
                 "id": task.id,
                 "title": task.title,
                 "description": task.description,
                 "status": task.status,
-                "sprint": task_sprint,
+                "sprint": "Sprint " + str(task.sprint.start_date) + " " + str(task.sprint.end_date) if task.sprint else None,
                 "project_backlog": task.project_backlog.id,
-                "user": task_user,
-                "created": task.created,
-                "tasks_history": tasks_history_json
+                'user': {
+                    'id': task.user.id,
+                    'username': task.user.username,
+                    'email': task.user.email,
+                    'first_name': task.user.first_name,
+                    'last_name': task.user.last_name
+            } if task.user else None,
+                "created": parse_date(task.created),
+                "tasks_history": tasks_history_data[::-1]
             })
 
         return JsonResponse(tasks_data, status=200, safe=False)
@@ -333,6 +351,9 @@ def handle_create_sprint(data):
     task_ids = data['task_ids']
     if data['start_date'] > data['end_date']:
         return JsonResponse({"message": "Data początkowa, nie może być późniejsza, niż data końcowa."}, status=400, safe=False)
+
+    if not task_ids:
+        return JsonResponse({"message": "Aby utworzyć sprint, musisz przypisać do niego zadania."}, status=400, safe=False)
 
     try:
         project = Project.objects.get(id=data['id'])

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import DialogRemoveSprint from "../dialog/DialogRemoveSprint";
 
-export default function SpringDashboardComponent(props){
+export default function SprintDashboardComponent(props){
 
     const [open, setOpen] = useState(false);
 
@@ -23,48 +23,6 @@ export default function SpringDashboardComponent(props){
         color: 'black',
         fontWeight: "bold",
     }  
-    
-    const deleteSprint = () => {
-
-        const payload = {
-            id: projectId,
-            sprintId: sprintId,
-        }
-
-        axios
-        .post("/api/projects/sprint/delete", payload,{
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCsrfToken(),
-          },
-          withCredentials: true 
-        })
-        .then((response) => {
-            props.setSprintsData(prevSprintsData => {
-                if (!prevSprintsData.length) return prevSprintsData;
-
-                const updatedSprints = { ...prevSprintsData[0] };
-                updatedSprints.ongoing = updatedSprints.ongoing.filter(
-                    (currentSprint) => currentSprint.id !== sprintId
-                );
-                updatedSprints.future = updatedSprints.future.filter(
-                    (currentSprint) => currentSprint.id !== sprintId
-                );
-                updatedSprints.ended = updatedSprints.ended.filter(
-                    (currentSprint) => currentSprint.id !== sprintId
-                );
-
-                return [updatedSprints];
-            })
-            handleClose();
-
-        })
-        .catch((error) => {
-
-            handleClose();
-        
-        });
-    }
 
     
     return(<>

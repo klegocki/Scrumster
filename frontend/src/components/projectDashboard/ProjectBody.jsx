@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import TaskBoxComponent from "./TaskBoxComponent";
 import BoxSprintComponent from "./BoxSprintComponent";
-import SpringDashboardComponent from "./SprintDashboardComponent";
+import SprintDashboardComponent from "./SprintDashboardComponent";
 import { Skeleton } from "@mui/material";
 import DialogProjectInfo from "../dialog/DialogProjectInfo";
 import DialogCreateTask from "../dialog/DialogCreateTask";
@@ -109,7 +109,7 @@ export default function ProjectBody(props){
         },2000)
       },[])
 
-      
+
     return(<>
     
     
@@ -135,6 +135,7 @@ export default function ProjectBody(props){
                       key={task.id}
                       title={task.title}
                       taskId={task.id}
+                      task={task}
                       projectId={props.id}
                       setTasksData={setTasksData}
                       />
@@ -146,7 +147,7 @@ export default function ProjectBody(props){
                 animation='wave'
                 sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                   :(<div>{sprintsData[0]?.ongoing?.map((sprint, index) => (
-                      <SpringDashboardComponent 
+                      <SprintDashboardComponent 
                       key={sprint.id}
                       title={sprint.title}
                       sprintId={sprint.id}
@@ -161,7 +162,7 @@ export default function ProjectBody(props){
                 animation='wave'
                 sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                 :(<div>{sprintsData[0]?.future?.map((sprint, index) => (
-                      <SpringDashboardComponent 
+                      <SprintDashboardComponent 
                       key={sprint.id}
                       title={sprint.title}
                       sprintId={sprint.id}
@@ -177,7 +178,7 @@ export default function ProjectBody(props){
                 animation='wave'
                 sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                 :(<div>{sprintsData[0]?.ended?.map((sprint, index) => (
-                  <SpringDashboardComponent 
+                  <SprintDashboardComponent 
                   key={sprint.id}
                   title={sprint.title}
                   sprintId={sprint.id}

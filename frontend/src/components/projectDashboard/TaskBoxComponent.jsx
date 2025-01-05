@@ -1,19 +1,18 @@
 import { IconButton } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
+
 import { useState } from "react";
 import axios from "axios";
 import { getCsrfToken } from "../../functions/utils";
 import DialogRemoveTask from "../dialog/DialogRemoveTask";
+import DialogTaskInfo from "../dialog/DialogTaskInfo";
 
 export default function TaskBoxComponent(props){
 
-    const {taskId, title, projectId} = props
+    const {taskId, title, projectId, task} = props
 
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
+    const [openInfo, setOpenInfo] = useState(false)
+    
+    const handleOpenInfo = () => setOpenInfo(true);
 
     const titleStyle = {
         display: 'flex',
@@ -30,19 +29,20 @@ export default function TaskBoxComponent(props){
     }  
     
 
-
     return(<>
         <div className="task-box">
-            <div style={titleStyle}>
+            <div style={titleStyle} onClick={handleOpenInfo}>
                 {title}
             </div>
             <DialogRemoveTask
                                 setTasksData={props.setTasksData}
                                 projectId={projectId}
                                 taskId={taskId}
-                                openParent={open}
-                                handleClose={handleClose}
             ></DialogRemoveTask>
+            <DialogTaskInfo task={task}
+                            open={openInfo}
+                            setOpen={setOpenInfo}
+            ></DialogTaskInfo>
         </div>
         </>)
 }
