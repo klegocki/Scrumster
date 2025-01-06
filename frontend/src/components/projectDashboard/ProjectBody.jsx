@@ -1,11 +1,10 @@
-import { Button } from "@mui/material";
 import BoxComponent from "../dashboard/BoxComponent";
 import { getCsrfToken } from "../../functions/utils";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import TaskBoxComponent from "./TaskBoxComponent";
-import BoxSprintComponent from "./BoxSprintComponent";
-import SprintDashboardComponent from "./SprintDashboardComponent";
+import SprintBoxComponent from "./SprintBoxComponent";
+import SprintProjectDashboardComponent from "./SprintProjectDashboardComponent";
 import { Skeleton } from "@mui/material";
 import DialogProjectInfo from "../dialog/DialogProjectInfo";
 import DialogCreateTask from "../dialog/DialogCreateTask";
@@ -114,7 +113,7 @@ export default function ProjectBody(props){
     
     
     <div className="project-dashboard-body">
-    {isLoading ? (<Skeleton variant="rounded" 
+        {isLoading ? (<Skeleton variant="rounded" 
                                 animation='wave'
                                 sx={{ width: '50%', 
                                       height: '90px',  
@@ -124,11 +123,13 @@ export default function ProjectBody(props){
                     :(            
                     <h2 className="project-body-title" style={titleStyle}>
                       {projectData.title}
-                    </h2>)}
+                    </h2>)
+        }
             <div className="project-boxes">
-            <BoxComponent header="Backlog produktu" body={isLoading ? (<Skeleton variant="rounded" 
-                                animation='wave'
-                                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+            <BoxComponent header="Backlog produktu" body={
+              isLoading ? (<Skeleton variant="rounded" 
+                                     animation='wave'
+                                     sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                     :(<div>{tasksData.map((task, index) => (
 
                       <TaskBoxComponent 
@@ -139,15 +140,19 @@ export default function ProjectBody(props){
                       projectId={props.id}
                       setTasksData={setTasksData}
                       />
-              ))}
-              {(tasksData.length > 0) ? (null) : (<h3>Brak tasków</h3>)}
-              </div>)}></BoxComponent>
-            <BoxSprintComponent 
-              ongoingSprints={isLoading ? (<Skeleton variant="rounded" 
-                animation='wave'
-                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                      ))}
+                        {(tasksData.length > 0) ? (null) : (<h3>Brak zadań</h3>)}
+                      </div>)}>
+              </BoxComponent>
+
+            <SprintBoxComponent 
+              ongoingSprints={
+                isLoading ? (<Skeleton variant="rounded" 
+                                       animation='wave'
+                                       sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                   :(<div>{sprintsData[0]?.ongoing?.map((sprint, index) => (
-                      <SprintDashboardComponent 
+                      
+                      <SprintProjectDashboardComponent 
                       key={sprint.id}
                       title={sprint.title}
                       sprintId={sprint.id}
@@ -156,53 +161,86 @@ export default function ProjectBody(props){
                       onGoingSprint={true}
                       setSprintsData={setSprintsData}
                       />
-              ))}
-                {(sprintsData[0]?.ongoing?.length > 0) ? (null) : (<h3>Brak obecnych sprintów</h3>)}
-              </div>)}
-              futureSprints={isLoading ? (<Skeleton variant="rounded" 
-                animation='wave'
-                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
-                :(<div>{sprintsData[0]?.future?.map((sprint, index) => (
-                      <SprintDashboardComponent 
-                      key={sprint.id}
-                      title={sprint.title}
-                      sprintId={sprint.id}
-                      projectId={props.id}
-                      fetchTasks={fetchTasks}
-                      onGoingSprint={false}
-                      setSprintsData={setSprintsData}
-                      />
                     ))}
-                    {(sprintsData[0]?.future?.length > 0) ? (null) : (<h3>Brak przyszłych sprintów</h3>)}
+                      {(sprintsData[0]?.ongoing?.length > 0) ? (null) : (<h3>Brak obecnych sprintów</h3>)}
+                  </div>)}
+                futureSprints={isLoading ? (<Skeleton variant="rounded" 
+                                                      animation='wave'
+                                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                  :(<div>{sprintsData[0]?.future?.map((sprint, index) => (
+
+                        <SprintProjectDashboardComponent 
+                        key={sprint.id}
+                        title={sprint.title}
+                        sprintId={sprint.id}
+                        projectId={props.id}
+                        fetchTasks={fetchTasks}
+                        onGoingSprint={false}
+                        setSprintsData={setSprintsData}
+                        />
+                      ))}
+                      {(sprintsData[0]?.future?.length > 0) ? (null) : (<h3>Brak przyszłych sprintów</h3>)}
                     </div>)}
-              ></BoxSprintComponent>
-            <BoxComponent header="Zakończone sprinty" body={isLoading ? (<Skeleton variant="rounded" 
-                animation='wave'
-                sx={{ width: '100%', height: '100%' }}></Skeleton>) 
-                :(<div>{sprintsData[0]?.ended?.map((sprint, index) => (
-                  <SprintDashboardComponent 
-                  key={sprint.id}
-                  title={sprint.title}
-                  sprintId={sprint.id}
-                  projectId={props.id}
-                  onGoingSprint={false}
-                  fetchTasks={fetchTasks}
-                  setSprintsData={setSprintsData}
-                  />
-              ))}
-              {(sprintsData[0]?.ended?.length > 0) ? (null) : (<h3>Brak zakończonych sprintów</h3>)}
-              </div>)}></BoxComponent>
+              >
+              </SprintBoxComponent>
+
+              <BoxComponent header="Zakończone sprinty" body={isLoading ? (<Skeleton variant="rounded" 
+                                                        animation='wave'
+                                                        sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                  :(<div>{sprintsData[0]?.ended?.map((sprint, index) => (
+                    
+                    <SprintProjectDashboardComponent 
+                    key={sprint.id}
+                    title={sprint.title}
+                    sprintId={sprint.id}
+                    projectId={props.id}
+                    onGoingSprint={false}
+                    fetchTasks={fetchTasks}
+                    setSprintsData={setSprintsData}
+                    />
+                ))}
+                {(sprintsData[0]?.ended?.length > 0) ? (null) : (<h3>Brak zakończonych sprintów</h3>)}
+                </div>)}>
+              </BoxComponent>
         </div>
+
         <div style={buttonsStyle}>
-            <DialogProjectInfo projectData={projectData}></DialogProjectInfo>
-            <DialogCreateTask id={props.id}
-                              fetchTasks={fetchTasks}>
-            </DialogCreateTask>
-            <DialogCreateSprint id={props.id}
-                                fetchSprints={fetchSprints}
-                                tasksData={tasksData}
-                                fetchTasks={fetchTasks}>
-            </DialogCreateSprint>
+
+            {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '15%', 
+                                      height: '50px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(<DialogProjectInfo projectData={projectData}></DialogProjectInfo>)
+            }
+            {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '15%', 
+                                      height: '50px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(            
+                      <DialogCreateTask id={props.id}
+                                        fetchTasks={fetchTasks}>
+                      </DialogCreateTask>)
+            }
+            {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '15%', 
+                                      height: '50px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(            
+                      <DialogCreateSprint id={props.id}
+                                          fetchSprints={fetchSprints}
+                                          tasksData={tasksData}
+                                          fetchTasks={fetchTasks}>
+                      </DialogCreateSprint>)
+            }
         </div>
     </div>
     </>);

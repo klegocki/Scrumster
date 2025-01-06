@@ -105,6 +105,7 @@ def handle_get_project_backlog(data):
                 "status": task.status,
                 "sprint": "Sprint " + str(task.sprint.start_date) + " " + str(task.sprint.end_date) if task.sprint else None,
                 "project_backlog": task.project_backlog.id,
+                "estimated_hours": task.estimated_hours,
                 'user': {
                     'id': task.user.id,
                     'username': task.user.username,
@@ -384,3 +385,90 @@ def handle_create_sprint(data):
 
     except Project.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
+
+
+def handle_get_sprint_backlog(request, data):
+    try:
+        project = Project.objects.get(id=data['project_id'])
+        sprint = Sprint.objects.get(id=data['sprint_id'])
+        tasks = Task.objects.filter(Q(project_backlog=project.id) & Q(sprint=sprint.id))
+
+        tasks_in_proggres = []
+        tasks_to_do = []
+        users_tasks = []
+        tasks_done = []
+        tasks_data = []
+        tasks_history_data = []
+        for task in tasks:
+
+            tasks_history = TaskHistory.objects.filter(task=task.id)
+            for task_history in tasks_history:
+                tasks_history_data.append({
+                    "id": task_history.id,
+                    "title": task_history.title,
+                    "description": task_history.description,
+                    "status": task_history.status,
+                    "sprint": "Sprint " + str(task_history.sprint.start_date) + " " + str(
+                        task_history.sprint.end_date) if task_history.sprint else None,
+                    'user': {
+                        'id': task_history.user.id,
+                        'username': task_history.user.username,
+                        'email': task_history.user.email,
+                        'first_name': task_history.user.first_name,
+                        'last_name': task_history.user.last_name
+                    } if task_history.user else None,
+                    "changed_at": parse_date(task_history.changed_at),
+                    "estimated_hours": task_history.estimated_hours,
+                })
+                pass
+
+            tasks_data_temp={
+                "id": task.id,
+                "title": task.title,
+                "description": task.description,
+                "status": task.status,
+                "sprint": "Sprint " + str(task.sprint.start_date) + " " + str(task.sprint.end_date) if task.sprint else None,
+                "project_backlog": task.project_backlog.id,
+                "estimated_hours": task.estimated_hours,
+                'user': {
+                    'id': task.user.id,
+                    'username': task.user.username,
+                    'email': task.user.email,
+                    'first_name': task.user.first_name,
+                    'last_name': task.user.last_name
+            } if task.user else None,
+                "created": parse_date(task.created),
+                "tasks_history": tasks_history_data[::-1]
+            }
+
+            if tasks_data_temp['user'] and tasks_data_temp['user']['id'] == request.user.id:
+                users_tasks.append(tasks_data_temp)
+                continue
+
+            if tasks_data_temp['status'] == "To Do":
+                tasks_to_do.append(tasks_data_temp)
+                continue
+
+            if tasks_data_temp['status']  == "In Progress":
+                tasks_in_proggres.append(tasks_data_temp)
+                continue
+
+            if tasks_data_temp['status']  == "Done":
+                tasks_done.append(tasks_data_temp)
+                continue
+
+        tasks_data.append({
+            "toDo": tasks_to_do,
+            "inProgress": tasks_in_proggres,
+            "done": tasks_done,
+            "usersTasks": users_tasks,
+            "sprintTitle":  "Sprint " + str(task.sprint.start_date) + " " + str(task.sprint.end_date)
+        })
+
+        return JsonResponse(tasks_data, status=200, safe=False)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Zadanie nie istnieje."}, status=400, safe=False)

@@ -53,7 +53,7 @@ export default function DialogTaskInfo(props) {
                                 <Typography variant="body2" sx={{ color: '#555' }}>
                                     Użytkownik:
                                     <br />
-                                    {history.user ? (
+                                    {task.user ? (
                                         <>
                                             {task.user?.first_name} {task.user?.last_name} <br />
                                             {task.user?.email}
@@ -100,6 +100,21 @@ export default function DialogTaskInfo(props) {
                                         Data zmiany:
                                         <br />
                                         {task.created}
+                                    </Typography>
+                                </Box>
+                                <Box
+                                    sx={{
+                                        border: '1px solid #e0e0e0',
+                                        borderRadius: '10px',
+                                        padding: '16px',
+                                        backgroundColor: '#fff',
+                                        flex: 1,
+                                    }}
+                                >
+                                    <Typography variant="body2" sx={{ color: '#555' }}>
+                                        Czas na zadanie:
+                                        <br />
+                                        {task.estimated_hours ? task.estimated_hours + "h": "Nie określono"}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -198,6 +213,21 @@ export default function DialogTaskInfo(props) {
                                         Data zmiany:
                                         <br />
                                         {history.changed_at}
+                                    </Typography>
+                                </Box>
+                                <Box
+                                    sx={{
+                                        border: '1px solid #e0e0e0',
+                                        borderRadius: '10px',
+                                        padding: '16px',
+                                        backgroundColor: '#fff',
+                                        flex: 1,
+                                    }}
+                                >
+                                    <Typography variant="body2" sx={{ color: '#555' }}>
+                                        Czas na zadanie:
+                                        <br />
+                                        {history.estimated_hours ? history.estimated_hours + "h" : "Nie określono"}
                                     </Typography>
                                 </Box>
                             </Box>

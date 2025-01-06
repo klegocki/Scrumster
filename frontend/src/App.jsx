@@ -3,6 +3,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import NoPage from './pages/NoPage'
 import ProjectDashboard from './pages/ProjectDashboard'
+import SprintDashboard from './pages/SprintDashboard'
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 function App() {
@@ -19,7 +20,7 @@ function App() {
             <Route path="*" element={<NoPage/>}></Route>
             <Route path="/app/projects" element={<Dashboard></Dashboard>}></Route>
             <Route path="/app/project/:id" element={<ProjectDashboard></ProjectDashboard>}></Route>
-
+            <Route path="/app/project/:projectId/sprint/:sprintId" element={<SprintDashboard></SprintDashboard>}></Route>
           </Routes>
         </BrowserRouter>
       </div>

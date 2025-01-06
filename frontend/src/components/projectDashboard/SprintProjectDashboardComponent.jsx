@@ -1,7 +1,8 @@
 import { useState } from "react";
 import DialogRemoveSprint from "../dialog/DialogRemoveSprint";
+import { useNavigate } from "react-router-dom";
 
-export default function SprintDashboardComponent(props){
+export default function SprintProjectDashboardComponent(props){
 
     const [open, setOpen] = useState(false);
 
@@ -9,6 +10,7 @@ export default function SprintDashboardComponent(props){
     const handleClose = () => setOpen(false);
 
     const {title, onGoingSprint, sprintId, projectId} = props
+    const navigate = useNavigate();
 
     const titleStyle = {
         display: 'flex',
@@ -23,11 +25,13 @@ export default function SprintDashboardComponent(props){
         color: 'black',
         fontWeight: "bold",
     }  
-
+    const navigateToSprint= () => {
+        navigate(`/app/project/${projectId}/sprint/${sprintId}`);
+    }
     
     return(<>
         <div className="task-box">
-            <div style={titleStyle}>
+            <div style={titleStyle} onClick={navigateToSprint}>
                 {title}
             </div>
             

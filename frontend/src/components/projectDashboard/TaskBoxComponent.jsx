@@ -1,8 +1,4 @@
-import { IconButton } from "@mui/material";
-
 import { useState } from "react";
-import axios from "axios";
-import { getCsrfToken } from "../../functions/utils";
 import DialogRemoveTask from "../dialog/DialogRemoveTask";
 import DialogTaskInfo from "../dialog/DialogTaskInfo";
 

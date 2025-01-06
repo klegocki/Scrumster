@@ -1,5 +1,5 @@
 
-export default function BoxSprintComponent(props){
+export default function SprintBoxComponent(props){
     const boxComponentHeaderStyle = {
         display: 'flex',
         justifyContent: 'center',
