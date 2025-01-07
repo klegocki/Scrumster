@@ -76,3 +76,7 @@ class CreateSprintSerializer(serializers.Serializer):
 class GetSprintBacklogSerializer(serializers.Serializer):
     project_id = serializers.UUIDField(required=True)
     sprint_id = serializers.UUIDField(required=True)
+
+class GetSprintInfoSerializer(serializers.Serializer):
+    project_id = serializers.UUIDField(required=True)
+    sprint_id = serializers.UUIDField(required=True)

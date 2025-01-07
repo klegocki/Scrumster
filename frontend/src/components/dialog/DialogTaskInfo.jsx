@@ -1,16 +1,13 @@
-import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 export default function DialogTaskInfo(props) {
     const { task, open, setOpen } = props;
-
     const handleClose = () => {
         setOpen(false);
     };
@@ -138,6 +135,11 @@ export default function DialogTaskInfo(props) {
                     <Typography variant="subtitle1" style={{
                         marginTop: '10px'
                     }}>Historia zadania</Typography>
+
+                    {task.tasks_history.length == 0 ? (
+                        <Typography variant="body2" sx={{ color: '#555' }}>Brak historii zadania</Typography>
+
+                    ) : (null)}
 
                     {task.tasks_history.map((history, index) => (
                         <Box

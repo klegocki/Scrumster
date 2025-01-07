@@ -74,8 +74,8 @@ def handle_get_project_backlog(data):
         tasks = Task.objects.filter(Q(project_backlog=project.id) & Q(sprint=None))
 
         tasks_data = []
-        tasks_history_data = []
         for task in tasks:
+            tasks_history_data = []
 
             tasks_history = TaskHistory.objects.filter(task=task.id)
             for task_history in tasks_history:
@@ -398,8 +398,8 @@ def handle_get_sprint_backlog(request, data):
         users_tasks = []
         tasks_done = []
         tasks_data = []
-        tasks_history_data = []
         for task in tasks:
+            tasks_history_data = []
 
             tasks_history = TaskHistory.objects.filter(task=task.id)
             for task_history in tasks_history:
@@ -420,7 +420,6 @@ def handle_get_sprint_backlog(request, data):
                     "changed_at": parse_date(task_history.changed_at),
                     "estimated_hours": task_history.estimated_hours,
                 })
-                pass
 
             tasks_data_temp={
                 "id": task.id,
@@ -462,7 +461,6 @@ def handle_get_sprint_backlog(request, data):
             "inProgress": tasks_in_proggres,
             "done": tasks_done,
             "usersTasks": users_tasks,
-            "sprintTitle":  "Sprint " + str(task.sprint.start_date) + " " + str(task.sprint.end_date)
         })
 
         return JsonResponse(tasks_data, status=200, safe=False)
@@ -472,3 +470,51 @@ def handle_get_sprint_backlog(request, data):
 
     except Task.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Zadanie nie istnieje."}, status=400, safe=False)
+
+
+def handle_remove_task_from_sprint(data):
+    try:
+        task = Task.objects.get(id=data['taskId'])
+        task.sprint = None
+        task.save()
+
+        return JsonResponse({"message": "Usunięto task pomyślnie."}, status=200, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas usuwania taska."}, status=400, safe=False)
+
+
+def handle_get_sprint_info(request, data):
+    try:
+        sprint = Sprint.objects.get(id=data['sprint_id'])
+        on_going_sprint = False
+
+        if sprint.start_date <= now().date() and sprint.end_date >= now().date():
+            on_going_sprint = True
+
+        try:
+            development_team = DevelopmentTeam.objects.get(Q(project=sprint.project) & Q(user=request.user))
+            if development_team.user == request.user:
+                role = development_team.role
+        except DevelopmentTeam.DoesNotExist:
+            if sprint.project.scrum_master == request.user:
+                role = "Scrum master"
+            elif sprint.project.product_owner == request.user:
+                role = "Product owner"
+            else:
+                role = None
+
+        sprint_data = {
+            'id': sprint.id,
+            'title': "Sprint " + str(sprint.start_date) + " " + str(sprint.end_date),
+            'loggedInUserRole': role,
+            'sprintReview':sprint.sprint_review,
+            'start_date': sprint.start_date,
+            'daily_meet_link': sprint.daily_meet_link,
+            'sprint_review': sprint.sprint_review,
+            'on_going_sprint': on_going_sprint,
+        }
+        return JsonResponse(sprint_data, status=200, safe=False)
+
+    except Sprint.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Nie ma takiego sprintu."}, status=400, safe=False)

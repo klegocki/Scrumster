@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 import { getCsrfToken } from "../../functions/utils";
 
-export default function DialogRemoveTask(props) {
+export default function DialogRemoveSprintTask(props) {
 
 
     const [openModal, setOpenModal] = useState(false);
@@ -46,7 +46,7 @@ const deleteTask = () => {
     }
 
     axios
-    .post("/api/projects/task/delete", payload,{
+    .post("/api/projects/sprint/task/delete", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
@@ -54,13 +54,13 @@ const deleteTask = () => {
       withCredentials: true 
     })
     .then((response) => {
-        props.setTasksData(prevTasksInfo => prevTasksInfo.filter((currentTask)=>currentTask.id !== props.taskId))
+        props.fetchTasks();
         handleClose();
-        handleOpenModal("Usunąć zadanie?", response.data.message);
+        handleOpenModal("Usunąć zadanie ze sprintu?", response.data.message);
     })
     .catch((error) => {
         handleClose();
-        handleOpenModal("Usunąć zadanie?", error.response.data.message);
+        handleOpenModal("Usunąć zadanie ze sprintu?", error.response.data.message);
     });
 }
 
@@ -89,11 +89,11 @@ const deleteTask = () => {
                 aria-describedby="alert-dialog-description"
             >
             <DialogTitle id="alert-dialog-title">
-                Usunąć zadanie?
+                Usunąć zadanie ze sprintu?
             </DialogTitle>
             <DialogContent>
             <DialogContentText id="alert-dialog-description">
-                Usunięcie taska jest nieodwracalne.
+                Czy na pewno chcesz usunąć zadanie ze sprintu?
             </DialogContentText>
             </DialogContent>
             <DialogActions>
