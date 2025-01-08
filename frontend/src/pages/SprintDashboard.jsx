@@ -48,7 +48,8 @@ export default function SprintDashboard(){
 
     return(<>
     
-      <TopBar userInfo={userInfo}              
+      <TopBar userInfo={userInfo}
+              fetchUserInfo={fetchUserInfo}
               textLeft="Panel"
               textRight="Sprintu"></TopBar>
       <MainBox content={<SprintBody projectId={projectId}

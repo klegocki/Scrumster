@@ -68,8 +68,25 @@ export default function Projects(props){
             
             </div>
             <div style={buttonStyle}>
-              <DialogCreateProject fetchUserProjects={fetchUserProjects}></DialogCreateProject>
-              <DialogJoinProject fetchUserProjects={fetchUserProjects}></DialogJoinProject>
+              {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '15%', 
+                                      height: '50px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(<DialogCreateProject fetchUserProjects={fetchUserProjects}></DialogCreateProject>)
+              }
+              {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '15%', 
+                                      height: '50px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(<DialogJoinProject fetchUserProjects={fetchUserProjects}></DialogJoinProject>)
+              }
+            
             </div>
     </>)
 }
