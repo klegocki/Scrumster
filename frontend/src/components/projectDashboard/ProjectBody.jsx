@@ -9,6 +9,7 @@ import { Skeleton } from "@mui/material";
 import DialogProjectInfo from "../dialog/DialogProjectInfo";
 import DialogCreateTask from "../dialog/DialogCreateTask";
 import DialogCreateSprint from "../dialog/DialogCreateSprint";
+import DialogAssignRoles from "../dialog/DialogAssingRoles";
 
 export default function ProjectBody(props){
 
@@ -32,7 +33,7 @@ export default function ProjectBody(props){
         justifyContent: 'space-between',
         width: "80%"
     }
-
+    
     const fetchProject = () => {
 
       const payload = {
@@ -223,6 +224,19 @@ export default function ProjectBody(props){
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
                     :(            
+                      <DialogAssignRoles  projectId={props.id}
+                                          fetchProject={fetchProject}
+                                          projectUsers={projectData?.project_users}>
+                      </DialogAssignRoles>)
+            }
+            {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '15%', 
+                                      height: '50px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(            
                       <DialogCreateTask id={props.id}
                                         fetchTasks={fetchTasks}>
                       </DialogCreateTask>)
@@ -241,6 +255,7 @@ export default function ProjectBody(props){
                                           fetchTasks={fetchTasks}>
                       </DialogCreateSprint>)
             }
+
         </div>
     </div>
     </>);

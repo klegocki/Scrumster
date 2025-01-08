@@ -54,6 +54,10 @@ class DeleteTaskSerializer(serializers.Serializer):
     id = serializers.UUIDField(required=True)
     taskId = serializers.UUIDField(required=True)
 
+class DeleteTaskFromSprintSerializer(serializers.Serializer):
+    sprint_id = serializers.UUIDField(required=True)
+    taskId = serializers.UUIDField(required=True)
+
 class DeleteSprintSerializer(serializers.Serializer):
     id = serializers.UUIDField(required=True)
     sprintId = serializers.UUIDField(required=True)
@@ -97,3 +101,26 @@ class SprintReviewAdditionSerializer(serializers.Serializer):
 
 class SprintEndSerializer(serializers.Serializer):
     sprint_id = serializers.UUIDField(required=True)
+
+class SetUserProjectRoleSerializer(serializers.Serializer):
+    project_id = serializers.UUIDField(required=True)
+    user_id = serializers.IntegerField(required=True)
+    role =  serializers.CharField(max_length=50, required=True)
+
+class DeleteUserProjectRoleSerializer(serializers.Serializer):
+    project_id = serializers.UUIDField(required=True)
+    user_id = serializers.IntegerField(required=True)
+
+class UserAlterUsernameSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=30)
+
+class UserAlterEmailSerializer(serializers.Serializer):
+    email = serializers.CharField(max_length=50)
+
+class UserAlterPasswordSerializer(serializers.Serializer):
+    password1 = serializers.CharField(max_length=30)
+    password2 = serializers.CharField(max_length=30)
+
+class UserAlterFirstAndLastNameSerializer(serializers.Serializer):
+    first_name = serializers.CharField(max_length=30, allow_blank=True)
+    last_name = serializers.CharField(max_length=30, allow_blank=True)

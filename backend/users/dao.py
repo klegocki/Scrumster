@@ -67,3 +67,110 @@ def logged_in_user_data_parsing(data):
         "email": data["email"]
     }
     return parsed_data
+
+def handle_alter_user_first_last_name(request, data):
+
+    logged_user = User.objects.get(id=request.user.id)
+
+    if data['first_name'].strip() == "" and data["last_name"].strip() == "":
+        return JsonResponse({"message": "Proszę wypełnić pole."}, status=400)
+
+
+    for value in data.values():
+        if ' ' in value:
+            return JsonResponse({"message": "Nie można używać spacji."}, status=400)
+
+
+    try:
+        if not data['first_name'] == "":
+            logged_user.first_name = data["first_name"]
+        if not data["last_name"] == "":
+            logged_user.last_name = data["last_name"]
+
+        logged_user.save()
+        logout(request)
+        login(request, logged_user)
+
+        return JsonResponse({"message": "Pomyślnie zmieniono imię i/lub nazwisko."}, status=200)
+    except:
+        return JsonResponse({"message": "Wystąpił błąd podczas modyfikacji danych użytkownika."}, status=400)
+
+def handle_alter_user_email(request, data):
+
+    if data['email'].trim() == "":
+        return JsonResponse({"message": "Proszę wypełnić pole."}, status=400)
+
+
+    logged_user = User.objects.get(id=request.user.id)
+
+    for value in data.values():
+        if ' ' in value:
+            return JsonResponse({"message": "Nie można używać spacji."}, status=400)
+
+    try:
+        validate_email(data['email'])
+    except ValidationError:
+        return JsonResponse({"message": "Podaj poprawny adres email."}, status=400)
+
+    if User.objects.filter(email=data['email']).exists():
+        return JsonResponse({"message": "Podany adres email jest już używany."}, status=400)
+
+    try:
+
+        logged_user.email = data["email"]
+        logged_user.save()
+        logout(request)
+        login(request, logged_user)
+
+        return JsonResponse({"message": "Pomyślnie zmieniono adres email."}, status=200)
+    except:
+        return JsonResponse({"message": "Wystąpił błąd podczas modyfikacji danych użytkownika."}, status=400)
+
+
+def handle_alter_user_username(request, data):
+
+    logged_user = User.objects.get(id=request.user.id)
+
+    if data['username'].trim() == "":
+        return JsonResponse({"message": "Proszę wypełnić pole."}, status=400)
+
+    for value in data.values():
+        if ' ' in value:
+            return JsonResponse({"message": "Nie można używać spacji."}, status=400)
+
+    if User.objects.filter(username=data['username'].lower()).exists():
+        return JsonResponse({"message": "Nazwa użytkownika jest już zajęta."}, status=400)
+
+    try:
+
+        logged_user.username = data["username"]
+        logged_user.save()
+        logout(request)
+        login(request, logged_user)
+
+        return JsonResponse({"message": "Pomyślnie zmieniono nazwę użytkownika."}, status=200)
+    except:
+        return JsonResponse({"message": "Wystąpił błąd podczas modyfikacji danych użytkownika."}, status=400)
+
+
+def handle_alter_user_password(request, data):
+
+    logged_user = User.objects.get(id=request.user.id)
+
+    for value in data.values():
+        if ' ' in value:
+            return JsonResponse({"message": "Nie można używać spacji."}, status=400)
+
+    if data['password1'] and data['password2'] and data['password1'] != data['password2']:
+        return JsonResponse({"message": "Podane hasła są różne."}, status=400)
+
+    try:
+
+        logged_user.set_password(data['password1'])
+        logged_user.save()
+        logout(request)
+        login(request, logged_user)
+
+        return JsonResponse({"message": "Pomyślnie zmieniono hasło."}, status=200)
+    except:
+        return JsonResponse({"message": "Wystąpił błąd podczas modyfikacji danych użytkownika."}, status=400)

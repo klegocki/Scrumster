@@ -53,10 +53,32 @@ export default function DialogTaskInfo(props) {
                                     {task.user ? (
                                         <>
                                             {task.user?.first_name} {task.user?.last_name} <br />
-                                            {task.user?.email}
+                                            {task.user?.email} <br />
+                                            {task.user?.role}
                                         </>
                                     ) : (
                                         'Brak przypisanego użytkownika'
+                                    )}
+                                </Typography>
+                            </Box>
+                            <Box
+                                sx={{
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: '10px',
+                                    padding: '16px',
+                                    marginBottom: '16px',
+                                    backgroundColor: '#fff',
+                                }}
+                            >
+                                <Typography variant="body2" sx={{ color: '#555' }}>
+                                    Sprint:
+                                    <br />
+                                    {task.sprint ? (
+                                        <>
+                                            {task.sprint}
+                                        </>
+                                    ) : (
+                                        'Brak przypisanego sprintu'
                                     )}
                                 </Typography>
                             </Box>
@@ -94,7 +116,7 @@ export default function DialogTaskInfo(props) {
                                     }}
                                 >
                                     <Typography variant="body2" sx={{ color: '#555' }}>
-                                        Data zmiany:
+                                        Data utworzenia:
                                         <br />
                                         {task.created}
                                     </Typography>
@@ -175,6 +197,27 @@ export default function DialogTaskInfo(props) {
                                         </>
                                     ) : (
                                         'Brak przypisanego użytkownika'
+                                    )}
+                                </Typography>
+                            </Box>
+                            <Box
+                                sx={{
+                                    border: '1px solid #e0e0e0',
+                                    borderRadius: '10px',
+                                    padding: '16px',
+                                    marginBottom: '16px',
+                                    backgroundColor: '#fff',
+                                }}
+                            >
+                                <Typography variant="body2" sx={{ color: '#555' }}>
+                                    Sprint:
+                                    <br />
+                                    {history.sprint ? (
+                                        <>
+                                            {history.sprint}
+                                        </>
+                                    ) : (
+                                        'Brak przypisanego sprintu'
                                     )}
                                 </Typography>
                             </Box>

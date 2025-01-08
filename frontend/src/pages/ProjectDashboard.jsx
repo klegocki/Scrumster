@@ -48,7 +48,8 @@ export default function ProjectDashboard(){
 
     return(<>
     
-      <TopBar userInfo={userInfo}              
+      <TopBar userInfo={userInfo}
+              fetchUserInfo={fetchUserInfo}
               textLeft="Panel"
               textRight="Projektu"></TopBar>
       <MainBox content={<ProjectBody id={id}></ProjectBody>}>

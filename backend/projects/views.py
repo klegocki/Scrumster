@@ -1,16 +1,18 @@
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from api.serializers import UserSerializer, DeleteProjectSerializer, LeaveProjectSerializer, JoinProjectSerializer, \
-    CreateProjectSerializer, GetProjectSerializer, DeleteTaskSerializer, DeleteSprintSerializer, CreateTaskSerializer, \
+    CreateProjectSerializer, GetProjectSerializer, DeleteSprintSerializer, CreateTaskSerializer, \
     CreateSprintSerializer, GetSprintBacklogSerializer, GetSprintInfoSerializer, \
     SprintReviewAdditionSerializer, \
-    SprintTaskCompletionSerializer, RevertTaskDeveloperSerializer, AssignDeveloperToTaskSerializer, SprintEndSerializer
+    SprintTaskCompletionSerializer, RevertTaskDeveloperSerializer, AssignDeveloperToTaskSerializer, SprintEndSerializer, \
+    DeleteTaskFromSprintSerializer, DeleteTaskSerializer, SetUserProjectRoleSerializer, DeleteUserProjectRoleSerializer
 from projects.dao import get_users_projects_dashboard, handle_remove_project, handle_delete_project, \
     handle_join_project, handle_create_project, handle_get_project, handle_get_project_backlog, handle_get_sprints, \
     handle_remove_task, handle_remove_sprint, handle_create_task, handle_create_sprint, handle_get_sprint_backlog, \
     handle_remove_task_from_sprint, handle_get_sprint_info, handle_assign_developer_task, \
-    handle_sprint_backlog_task_user_revert, handle_sprint_task_completion, handle_add_sprint_review, handle_end_sprint
-from projects.decorators import product_owner, project_owner, scrum_master
+    handle_sprint_backlog_task_user_revert, handle_sprint_task_completion, handle_add_sprint_review, handle_end_sprint, \
+    handle_set_user_project_role, handle_delete_user_project_role
+from projects.decorators import product_owner, project_owner, scrum_master, did_sprint_end
 
 
 # Create your views here.
@@ -114,7 +116,7 @@ def delete_task(request):
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
 
-#@scrum_master
+@scrum_master
 @api_view(['POST'])
 def delete_sprint(request):
     serializer = DeleteSprintSerializer(data=request.data)
@@ -124,7 +126,7 @@ def delete_sprint(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-#@product_owner
+@product_owner
 @api_view(['POST'])
 def create_task(request):
     serializer = CreateTaskSerializer(data=request.data)
@@ -134,7 +136,7 @@ def create_task(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-#@scrum_master
+@scrum_master
 @api_view(['POST'])
 def create_sprint(request):
     serializer = CreateSprintSerializer(data=request.data)
@@ -144,7 +146,7 @@ def create_sprint(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-
+@did_sprint_end
 @api_view(['GET'])
 def get_sprints_backlog(request):
     if request.user.is_authenticated:
@@ -157,17 +159,18 @@ def get_sprints_backlog(request):
     else:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
-#@scrum_master
+@scrum_master
+@did_sprint_end
 @api_view(['POST'])
-def delete_task(request):
-    serializer = DeleteTaskSerializer(data=request.data)
+def delete_task_from_sprint(request):
+    serializer = DeleteTaskFromSprintSerializer(data=request.data)
     if serializer.is_valid():
         response = handle_remove_task_from_sprint(serializer.data)
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-
+@did_sprint_end
 @api_view(['GET'])
 def get_sprint_info(request):
     if request.user.is_authenticated:
@@ -180,7 +183,7 @@ def get_sprint_info(request):
     else:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
-
+@did_sprint_end
 @api_view(['POST'])
 def assign_developer_task(request):
     serializer = AssignDeveloperToTaskSerializer(data=request.data)
@@ -190,7 +193,7 @@ def assign_developer_task(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-
+@did_sprint_end
 @api_view(['POST'])
 def sprint_backlog_task_user_revert(request):
     serializer = RevertTaskDeveloperSerializer(data=request.data)
@@ -200,7 +203,7 @@ def sprint_backlog_task_user_revert(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-
+@did_sprint_end
 @api_view(['POST'])
 def sprint_task_completion(request):
     serializer = SprintTaskCompletionSerializer(data=request.data)
@@ -226,6 +229,28 @@ def end_sprint(request):
     serializer = SprintEndSerializer(data=request.data)
     if serializer.is_valid():
         response = handle_end_sprint(serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@project_owner
+@api_view(['POST'])
+def set_user_project_role(request):
+    serializer = SetUserProjectRoleSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_set_user_project_role(serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@project_owner
+@api_view(['POST'])
+def delete_user_project_role(request):
+    serializer = DeleteUserProjectRoleSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_delete_user_project_role(serializer.data)
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)

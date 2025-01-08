@@ -1,7 +1,6 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.utils.timezone import now
-from django.forms.models import model_to_dict
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .models import Project, DevelopmentTeam, Task, TaskHistory, Sprint
@@ -19,10 +18,19 @@ def handle_get_project(data):
 
         for user in project_users:
             role = None
-            for developer in development_team:
-                if developer.user == user:
-                    role = developer.role
-                    break
+
+            if user == project.product_owner:
+                role = "Product owner"
+
+            elif user == project.scrum_master:
+                role = "Scrum master"
+
+            elif development_team:
+                for developer in development_team:
+                    if developer.user == user:
+                        role = developer.role
+                        break
+
 
             users_data.append({
                 'id': user.id,
@@ -206,10 +214,19 @@ def get_users_projects_dashboard(data):
             role = None
 
             for user in project_users:
-                for developer in development_team:
-                    if developer.user == user:
-                        role = developer.role
-                        break
+                role = None
+
+                if user == project.product_owner:
+                    role = "Product owner"
+
+                elif user == project.scrum_master:
+                    role = "Scrum master"
+
+                elif development_team:
+                    for developer in development_team:
+                        if developer.user == user:
+                            role = developer.role
+                            break
 
             project_data = {
                 'id': project.id,
@@ -593,8 +610,10 @@ def handle_end_sprint(data):
         for task in sprints_tasks:
             if task.status == 'To Do':
                 task.sprint = None
+                task.user = None
             elif task.status == 'In Progress':
                 task.sprint = None
+                task.user = None
                 task.status = 'To Do'
             task.save()
 
@@ -607,3 +626,74 @@ def handle_end_sprint(data):
 
     except Sprint.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd podczas kończenia sprintu."}, status=400, safe=False)
+
+def handle_set_user_project_role(data):
+    try:
+        project = Project.objects.get(id=data['project_id'])
+        user = User.objects.get(id=data['user_id'])
+
+        if data['role'] == "Scrum master":
+            project.scrum_master = user
+            project.save()
+
+            return JsonResponse({"message": "Dodane rolę scrum mastera."}, status=200, safe=False)
+
+        elif data['role'] == "Product owner":
+            project.product_owner = user
+            project.save()
+
+            return JsonResponse({"message": "Dodane rolę product ownera."}, status=200, safe=False)
+
+        else:
+
+            try:
+                test = DevelopmentTeam.objects.get(Q(project=project) & Q(user=user))
+                return JsonResponse({"message": "Wystąpił błąd: Użytkownik posiada rolę."}, status=400, safe=False)
+
+            except DevelopmentTeam.DoesNotExist:
+
+                developer = DevelopmentTeam(
+                    user=user,
+                    role=data['role'],
+                    project=project
+                )
+                developer.save()
+
+                return JsonResponse({"message": "Dodane rolę dewelopera."}, status=200, safe=False)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
+
+    except User.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Użytkownik nie istnieje."}, status=400, safe=False)
+
+def handle_delete_user_project_role(data):
+    try:
+        project = Project.objects.get(id=data['project_id'])
+        user = User.objects.get(id=data['user_id'])
+
+        if project.product_owner == user:
+            project.product_owner = None
+            project.save()
+
+        elif project.scrum_master == user:
+            project.scrum_master = None
+            project.save()
+
+        else:
+            try:
+                users_developer_role = DevelopmentTeam.objects.get(Q(project=project) & Q(user=user))
+                users_developer_role.delete()
+
+                return JsonResponse({"message": "Usunięto rolę pomyślnie."}, status=200, safe=False)
+
+            except DevelopmentTeam.DoesNotExist:
+                return JsonResponse({"message": "Wystąpił błąd: Użytkownik nie posiada roli."}, status=400, safe=False)
+
+        return JsonResponse({"message": "Usunięto rolę pomyślnie."}, status=200, safe=False)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
+
+    except User.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Użytkownik nie istnieje."}, status=400, safe=False)

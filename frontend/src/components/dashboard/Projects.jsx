@@ -19,8 +19,6 @@ export default function Projects(props){
     marginBottom: '15px',
   }
 
-
-
   const fetchUserProjects = () => {
       axios
         .get("/api/projects/get", {

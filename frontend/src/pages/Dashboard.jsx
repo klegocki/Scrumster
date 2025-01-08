@@ -47,6 +47,7 @@ export default function Dashboard(){
     return(<>
     
       <TopBar userInfo={userInfo}
+              fetchUserInfo={fetchUserInfo}
               textLeft="Panel"
               textRight="Główny"></TopBar>
       <MainBox content={<Projects  username={userInfo.username}></Projects>}>
