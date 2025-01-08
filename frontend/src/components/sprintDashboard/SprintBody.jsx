@@ -6,6 +6,8 @@ import { Button, Skeleton } from "@mui/material";
 import BoxComponent from "../dashboard/BoxComponent";
 import TaskSprintDashboardComponent from "./TaskSprintDashboardComponent";
 import ModalComponent from '../modal/ModalComponent';
+import DialogSprintReview from "../dialog/DialogSprintReview";
+import DialogEndSprint from "../dialog/DialogEndSprint";
 
 
 export default function SprintBody(props){
@@ -205,9 +207,19 @@ export default function SprintBody(props){
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
                     :(sprintsData?.daily_meet_link ? (
-                      <a href={sprintsData?.daily_meet_link} target="_blank"> 
+
+                      <a
+                        href={
+                          sprintsData?.daily_meet_link?.startsWith("http") 
+                            ? sprintsData.daily_meet_link 
+                            : `https://${sprintsData.daily_meet_link}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      > 
                         <Button variant="outlined">Daily scrum</Button>
                       </a>
+
                     ) : (
                       <>
                         <Button variant="outlined" onClick={handleClickOpen}>Daily scrum</Button>
@@ -227,7 +239,11 @@ export default function SprintBody(props){
                                       display: 'flex',
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
-                    :(<Button variant="outlined">Raport sprintu</Button>)
+                    :(<DialogSprintReview sprintReview={sprintsData?.sprint_review}
+                                          role={sprintsData?.loggedInUserRole}
+                                          sprintId={sprintsData?.id}
+                                          fetchSprint={fetchSprint}
+                    ></DialogSprintReview>)
             }
 
             {isLoading ? (<Skeleton variant="rounded" 
@@ -237,7 +253,15 @@ export default function SprintBody(props){
                                       display: 'flex',
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
-                    :(<Button variant="outlined">Zakończ sprint</Button>)
+                    :(
+                        <DialogEndSprint 
+                                         role={sprintsData?.loggedInUserRole}
+                                         sprintId={sprintsData?.id}
+                                         fetchSprint={fetchSprint}
+                                         fetchTasks={fetchTasks}>
+
+                        </DialogEndSprint>
+                    )
             }
       </div>
     </div>

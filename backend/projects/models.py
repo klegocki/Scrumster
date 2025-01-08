@@ -105,7 +105,7 @@ class Task(models.Model):
         blank=True
     )
     created = models.DateTimeField(auto_now_add=True)
-    estimated_hours = models.IntegerField(null=True, blank=True)
+    estimated_hours = models.FloatField(null=True, blank=True)
 
 
     def __str__(self):

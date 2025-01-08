@@ -80,3 +80,20 @@ class GetSprintBacklogSerializer(serializers.Serializer):
 class GetSprintInfoSerializer(serializers.Serializer):
     project_id = serializers.UUIDField(required=True)
     sprint_id = serializers.UUIDField(required=True)
+
+class AssignDeveloperToTaskSerializer(serializers.Serializer):
+    task_id = serializers.UUIDField(required=True)
+    estimated_hours = serializers.CharField(required=True, max_length=5)
+
+class RevertTaskDeveloperSerializer(serializers.Serializer):
+    task_id = serializers.UUIDField(required=True)
+
+class SprintTaskCompletionSerializer(serializers.Serializer):
+    task_id = serializers.UUIDField(required=True)
+
+class SprintReviewAdditionSerializer(serializers.Serializer):
+    sprint_id = serializers.UUIDField(required=True)
+    sprint_review = serializers.CharField(max_length=3000)
+
+class SprintEndSerializer(serializers.Serializer):
+    sprint_id = serializers.UUIDField(required=True)

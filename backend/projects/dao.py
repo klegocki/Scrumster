@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.utils.timezone import now
 from django.forms.models import model_to_dict
@@ -127,14 +127,14 @@ def handle_get_sprints(data):
         project = Project.objects.get(id=data['id'])
 
         ongoing_sprints = Sprint.objects.filter(
-            Q(start_date__lte=now().date()) & Q(end_date__gte=now().date()) & Q(project=project.id)
+            Q(start_date__lte=now().date()) & Q(end_date__gt=now().date()) & Q(project=project.id)
         )
         future_sprints= Sprint.objects.filter(
             Q(start_date__gt=now().date()) & Q(project=project.id)
         )
 
         ended_sprints = Sprint.objects.filter(
-            Q(end_date__lt=now().date()) & Q(project=project.id)
+            Q(end_date__lte=now().date()) & Q(project=project.id)
         )
 
         future_sprints_data = []
@@ -357,8 +357,11 @@ def handle_create_sprint(data):
     start_date = datetime.strptime(data['start_date'], "%Y-%m-%d").date()
     end_date = datetime.strptime(data['end_date'], "%Y-%m-%d").date()
 
-    if today > start_date or today > end_date:
+    if today > start_date:
+        return JsonResponse({"message": "Nie można stworzyć sprintu, który się rozpoczyna w przeszłości"}, status=400, safe=False)
+    elif today > end_date:
         return JsonResponse({"message": "Nie można stworzyć sprintu, który się zakończył"}, status=400, safe=False)
+
 
     if start_date > end_date:
         return JsonResponse({"message": "Data początkowa, nie może być późniejsza, niż data końcowa."}, status=400, safe=False)
@@ -440,7 +443,7 @@ def handle_get_sprint_backlog(request, data):
                 "tasks_history": tasks_history_data[::-1]
             }
 
-            if tasks_data_temp['user'] and tasks_data_temp['user']['id'] == request.user.id:
+            if tasks_data_temp['user'] and tasks_data_temp['user']['id'] == request.user.id and tasks_data_temp['status'] != "Done":
                 users_tasks.append(tasks_data_temp)
                 continue
 
@@ -489,20 +492,21 @@ def handle_get_sprint_info(request, data):
         sprint = Sprint.objects.get(id=data['sprint_id'])
         on_going_sprint = False
 
-        if sprint.start_date <= now().date() and sprint.end_date >= now().date():
+        if sprint.start_date <= now().date() <= sprint.end_date:
             on_going_sprint = True
 
+        role = None
         try:
             development_team = DevelopmentTeam.objects.get(Q(project=sprint.project) & Q(user=request.user))
             if development_team.user == request.user:
                 role = development_team.role
+
         except DevelopmentTeam.DoesNotExist:
             if sprint.project.scrum_master == request.user:
                 role = "Scrum master"
             elif sprint.project.product_owner == request.user:
                 role = "Product owner"
-            else:
-                role = None
+
 
         sprint_data = {
             'id': sprint.id,
@@ -518,3 +522,88 @@ def handle_get_sprint_info(request, data):
 
     except Sprint.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Nie ma takiego sprintu."}, status=400, safe=False)
+
+
+def handle_assign_developer_task(request, data):
+
+    if not request.user.is_authenticated:
+        return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
+
+    try:
+        task = Task.objects.get(id=data['task_id'])
+        task.estimated_hours = float(data['estimated_hours'])
+        task.status = "In Progress"
+        task.user = request.user
+        task.save()
+
+        return JsonResponse({"message": "Pomyślnie przypisano użytkownika do zadania ."}, status=200, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Nie ma takiego zadania."}, status=400, safe=False)
+
+
+def handle_sprint_backlog_task_user_revert(data):
+    try:
+        task = Task.objects.get(id=data['task_id'])
+        task.estimated_hours = None
+        task.status = "To Do"
+        task.user = None
+        task.save()
+
+        return JsonResponse({"message": "Przywrócono z powrotem zadanie do backlogu sprintu."}, status=200, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas przywracania zadania do backlogu sprintu."}, status=400, safe=False)
+
+
+def handle_sprint_task_completion(data):
+    try:
+        task = Task.objects.get(id=data['task_id'])
+        task.status = "Done"
+        task.save()
+
+        return JsonResponse({"message": "Zakończono zadanie pomyślnie"}, status=200, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas kończenia zadania."}, status=400, safe=False)
+
+
+def handle_add_sprint_review(data):
+    try:
+        sprint = Sprint.objects.get(id=data['sprint_id'])
+        sprint.sprint_review = data["sprint_review"]
+        sprint.save()
+
+        return JsonResponse({"message": "Dodano raport sprintu pomyślnie"}, status=200, safe=False)
+
+    except Sprint.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas dodawania raportu sprintu."}, status=400, safe=False)
+
+
+def handle_end_sprint(data):
+    try:
+        sprint = Sprint.objects.get(id=data['sprint_id'])
+
+        if sprint.end_date <= now().date():
+            return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)
+
+        sprint.end_date = now().date()
+        sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
+
+        for task in sprints_tasks:
+            if task.status == 'To Do':
+                task.sprint = None
+            elif task.status == 'In Progress':
+                task.sprint = None
+                task.status = 'To Do'
+            task.save()
+
+        sprint.save()
+
+        return JsonResponse({"message": "Zakończono sprint pomyślnie"}, status=200, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas kończenia sprintu."}, status=400, safe=False)
+
+    except Sprint.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas kończenia sprintu."}, status=400, safe=False)

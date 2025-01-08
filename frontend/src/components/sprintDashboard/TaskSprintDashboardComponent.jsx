@@ -1,6 +1,9 @@
 import { useState } from "react";
 import DialogTaskInfo from "../dialog/DialogTaskInfo";
 import DialogRemoveSprintTask from "../dialog/DialogRemoveSprintTask";
+import DialogDeveloperTask from "../dialog/DialogDeveloperTask";
+import DialogRevertTaskToBacklog from "../dialog/DialogRevertTaskToBacklog";
+import DialogCompleteTask from "../dialog/DialogCompleteTask";
 
 export default function TaskSprintDashboardComponent(props){
 
@@ -40,17 +43,27 @@ export default function TaskSprintDashboardComponent(props){
                         />
                     ) : null}
 
-                    {task?.status === 'To Do' && role !== 'Scrum master' && role !== 'Product owner' ? (
-                        <p>g</p>
+                    {task?.status === 'To Do' && role !== 'Scrum master' && role !== 'Product owner' && !usersTasks? (
+                        <DialogDeveloperTask fetchTasks={props.fetchTasks}
+                                             projectId={projectId}
+                                             taskId={taskId}
+                        ></DialogDeveloperTask>
                     ) : null}
 
-                    {usersTasks ? (
-                        <DialogRemoveSprintTask 
+                    {usersTasks ? (<div style={{
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}>
+                        <DialogCompleteTask
                             fetchTasks={props.fetchTasks}
-                            projectId={projectId}
                             taskId={taskId}
                         />
-                    ) : null}
+
+                        <DialogRevertTaskToBacklog 
+                            fetchTasks={props.fetchTasks}
+                            taskId={taskId}
+                        />
+                    </div>) : null}
                 </>
             ) : null}
 

@@ -2,11 +2,14 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from api.serializers import UserSerializer, DeleteProjectSerializer, LeaveProjectSerializer, JoinProjectSerializer, \
     CreateProjectSerializer, GetProjectSerializer, DeleteTaskSerializer, DeleteSprintSerializer, CreateTaskSerializer, \
-    CreateSprintSerializer, GetSprintBacklogSerializer, GetSprintInfoSerializer
+    CreateSprintSerializer, GetSprintBacklogSerializer, GetSprintInfoSerializer, \
+    SprintReviewAdditionSerializer, \
+    SprintTaskCompletionSerializer, RevertTaskDeveloperSerializer, AssignDeveloperToTaskSerializer, SprintEndSerializer
 from projects.dao import get_users_projects_dashboard, handle_remove_project, handle_delete_project, \
     handle_join_project, handle_create_project, handle_get_project, handle_get_project_backlog, handle_get_sprints, \
     handle_remove_task, handle_remove_sprint, handle_create_task, handle_create_sprint, handle_get_sprint_backlog, \
-    handle_remove_task_from_sprint, handle_get_sprint_info
+    handle_remove_task_from_sprint, handle_get_sprint_info, handle_assign_developer_task, \
+    handle_sprint_backlog_task_user_revert, handle_sprint_task_completion, handle_add_sprint_review, handle_end_sprint
 from projects.decorators import product_owner, project_owner, scrum_master
 
 
@@ -176,3 +179,53 @@ def get_sprint_info(request):
             return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
     else:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
+
+
+@api_view(['POST'])
+def assign_developer_task(request):
+    serializer = AssignDeveloperToTaskSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_assign_developer_task(request, serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@api_view(['POST'])
+def sprint_backlog_task_user_revert(request):
+    serializer = RevertTaskDeveloperSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_sprint_backlog_task_user_revert(serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@api_view(['POST'])
+def sprint_task_completion(request):
+    serializer = SprintTaskCompletionSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_sprint_task_completion(serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@api_view(['POST'])
+def add_sprint_review(request):
+    serializer = SprintReviewAdditionSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_add_sprint_review(serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+
+
+@api_view(['POST'])
+def end_sprint(request):
+    serializer = SprintEndSerializer(data=request.data)
+    if serializer.is_valid():
+        response = handle_end_sprint(serializer.data)
+        return response
+    else:
+        return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
