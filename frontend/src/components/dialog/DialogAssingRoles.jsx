@@ -172,7 +172,7 @@ export default function DialogAssignRoles({
                   >
                     <MenuItem value="Scrum master">Scrum master</MenuItem>
                     <MenuItem value="Product owner">Product owner</MenuItem>
-                    <MenuItem value="Developer">Developer</MenuItem>
+                    <MenuItem value="Developer">Deweloper</MenuItem>
                   </Select>
                 </FormControl>
                 {userRole.role === "Developer" && (
@@ -181,7 +181,7 @@ export default function DialogAssignRoles({
                       variant="body2"
                       sx={{ marginBottom: "12px", color: "#555" }}
                     >
-                      Szczegółowa rola (Developer)
+                      Szczegółowa rola (Deweloper)
                     </Typography>
                     <TextField
                       value={userRole.customRole || ""}

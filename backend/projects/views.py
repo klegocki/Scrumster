@@ -12,7 +12,7 @@ from projects.dao import get_users_projects_dashboard, handle_remove_project, ha
     handle_remove_task_from_sprint, handle_get_sprint_info, handle_assign_developer_task, \
     handle_sprint_backlog_task_user_revert, handle_sprint_task_completion, handle_add_sprint_review, handle_end_sprint, \
     handle_set_user_project_role, handle_delete_user_project_role
-from projects.decorators import product_owner, project_owner, scrum_master, did_sprint_end
+from projects.decorators import product_owner, project_owner, scrum_master, did_sprint_end, did_sprint_end_for_get
 
 
 # Create your views here.
@@ -146,7 +146,7 @@ def create_sprint(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-@did_sprint_end
+@did_sprint_end_for_get
 @api_view(['GET'])
 def get_sprints_backlog(request):
     if request.user.is_authenticated:
@@ -170,7 +170,7 @@ def delete_task_from_sprint(request):
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
 
-@did_sprint_end
+@did_sprint_end_for_get
 @api_view(['GET'])
 def get_sprint_info(request):
     if request.user.is_authenticated:

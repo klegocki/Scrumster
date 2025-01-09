@@ -143,3 +143,66 @@ def did_sprint_end(view_func):
             return JsonResponse({"message": "Wystąpił nieznany błąd.", "error:": str(e)}, status=400)
 
     return _wrapped_view
+
+def did_sprint_end_for_get(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        try:
+
+            if request.method == 'GET':
+                data = request.GET
+            elif request.method == 'POST':
+                data = json.loads(request.body)
+
+            if not request.user.is_authenticated:
+                return JsonResponse({"message": "Użytkownik nie jest zalogowany"}, status=403)
+
+
+            if data.get('sprint_id'):
+                sprint = Sprint.objects.get(id=data['sprint_id'])
+
+                if sprint.end_date <= now().date():
+
+                    sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
+
+                    for task in sprints_tasks:
+                        if task.status == 'To Do':
+                            task.sprint = None
+                            task.user = None
+                        elif task.status == 'In Progress':
+                            task.sprint = None
+                            task.user = None
+                            task.status = 'To Do'
+
+                        task.save()
+                    sprint.save()
+
+
+            elif data.get('task_id'):
+                task_temp = Task.objects.get(id=data['task_id'])
+                sprint = task_temp.sprint
+
+                if sprint.end_date <= now().date():
+
+                    sprints_tasks = Task.objects.filter(
+                        Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
+
+                    for task in sprints_tasks:
+                        if task.status == 'To Do':
+                            task.sprint = None
+                            task.user = None
+                            task.save()
+                        elif task.status == 'In Progress':
+                            task.sprint = None
+                            task.user = None
+                            task.status = 'To Do'
+                            task.save()
+
+
+                    sprint.save()
+
+            return view_func(request, *args, **kwargs)
+        except Exception as e:
+            return JsonResponse({"message": "Wystąpił nieznany błąd.", "error:": str(e)}, status=400)
+
+    return _wrapped_view

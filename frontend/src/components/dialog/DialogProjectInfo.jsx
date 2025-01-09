@@ -60,7 +60,7 @@ export default function DialogProjectInfo(props) {
                     <div>
                         Zespół:<br/>
                         <div className='dialog-project-info-user'>
-                        Administrator projektu:
+                        Administrator projektu
                             <p>
                             {projectData.project_owner ? (
                             projectData.project_owner.first_name + " " +
@@ -74,37 +74,9 @@ export default function DialogProjectInfo(props) {
                             </p>
 
                         </div>
-                        <div className='dialog-project-info-user'>
-                        Scrum master:
-                            <p>
-                            {projectData.scrum_master ? (
-                            projectData.scrum_master.first_name + " " +
-                            projectData.scrum_master.last_name )
-                            : ("Scrum master nie jest przypisany")}
-                            </p>
-                            <p>
-                            {projectData.scrum_master ? (
-                            projectData.scrum_master.email)
-                            : (null)}
-                            </p>
-                        </div>
-                        <div className='dialog-project-info-user'>
-                            Product owner:
-                            <p>
-                            {projectData.product_owner ? (
-                            projectData.product_owner.first_name + " " +
-                            projectData.product_owner.last_name )
-                            : ("Product owner nie jest przypisany")}
-                            </p>
-                            <p>
-                            {projectData.product_owner ? (
-                            projectData.product_owner.email)
-                            : (null)}
-                            </p>
-                        </div>
                         {projectData.project_users ? (projectData.project_users.map((value, index) =>(
                             <div className='dialog-project-info-user' key={index}>
-                                {value.role ? (value.role) : ("Deweloper:")}
+                                {value.role ? (value.role) : ("Deweloper")}
                                 <p>
                                 {value.first_name + " " +
                                 value.last_name} 
