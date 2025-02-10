@@ -87,14 +87,13 @@ export default function DialogSprintReview(props) {
           <DialogContentText>
 
             {props.role !== "Scrum master" ? (
-              props.sprintReview !== "" ? (props.sprintReview) : ("Brak raportu sprintu.")
+              props.sprintReview !== "" && props.sprintReview !== null? (props.sprintReview) : ("Brak raportu sprintu.")
             ) : (null)}
 
           </DialogContentText>
           {props.role === "Scrum master" ? (
 
             <TextField
-              autoFocus
               required
               margin="dense"
               id="sprintReview"

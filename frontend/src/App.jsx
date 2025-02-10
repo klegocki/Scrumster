@@ -19,7 +19,7 @@ function App() {
             <Route path="/register" element={<Register></Register>}></Route>
             <Route path="*" element={<NoPage/>}></Route>
             <Route path="/app/projects" element={<Dashboard></Dashboard>}></Route>
-            <Route path="/app/project/:id" element={<ProjectDashboard></ProjectDashboard>}></Route>
+            <Route path="/app/project/:projectId" element={<ProjectDashboard></ProjectDashboard>}></Route>
             <Route path="/app/project/:projectId/sprint/:sprintId" element={<SprintDashboard></SprintDashboard>}></Route>
           </Routes>
         </BrowserRouter>

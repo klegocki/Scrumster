@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import TaskBoxComponent from "../projectDashboard/TaskBoxComponent";
 import axios from "axios";
 import { getCsrfToken } from "../../functions/utils";
 import { Button, Skeleton } from "@mui/material";
@@ -27,19 +26,12 @@ export default function SprintBody(props){
     const [sprintsData, setSprintsData] = useState({})
 
 
-    const titleStyle = {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: "90%",
-        height: "50px",
-
-    }
 
     const buttonsStyle = {
         display: 'flex',
         justifyContent: 'space-between',
-        width: "80%"
+        width: "80%",
+        marginTop: "2%"
     }
 
     const fetchTasks = () => {
@@ -105,7 +97,7 @@ export default function SprintBody(props){
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
                     :(            
-                    <h2 className="sprint-body-title" style={titleStyle}>
+                    <h2>
                       {sprintsData?.title}
                     </h2>)
         }        

@@ -4,7 +4,7 @@ from django.utils.timezone import now
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .models import Project, DevelopmentTeam, Task, TaskHistory, Sprint
-from django.db.models import Q
+from django.db.models import Prefetch, Q
 from .utils import generate_random_string, parse_date
 
 
@@ -76,73 +76,75 @@ def handle_get_project(data):
         return JsonResponse({"message": "Wystąpił błąd: Nie ma takiego projektu."}, status=400, safe=False)
 
 
+from django.db.models import Prefetch
+from django.http import JsonResponse
+from .models import Project, Task, TaskHistory
+
 def handle_get_project_backlog(data):
     try:
-        project = Project.objects.get(id=data['id'])
-        tasks = Task.objects.filter(Q(project_backlog=project.id) & Q(sprint=None))
+        project = Project.objects.prefetch_related(
+            Prefetch('project_backlog_tasks',
+                queryset=Task.objects.select_related('user', 'sprint')
+                          .filter(sprint__isnull=True)
+                          .prefetch_related(
+                              Prefetch('project_backlog_tasks',
+                                  queryset=TaskHistory.objects.select_related('user', 'sprint')
+                                            .order_by('-changed_at')
+                              )
+                          )
+            )
+        ).get(id=data['id'])
 
-        tasks_data = []
-        for task in tasks:
-            tasks_history_data = []
-
-            tasks_history = TaskHistory.objects.filter(task=task.id)
-            for task_history in tasks_history:
-                tasks_history_data.append({
-                    "id": task_history.id,
-                    "title": task_history.title,
-                    "description": task_history.description,
-                    "status": task_history.status,
-                    "sprint": "Sprint " + str(task_history.sprint.start_date) + " " + str(
-                        task_history.sprint.end_date) if task_history.sprint else None,
-                    'user': {
-                        'id': task_history.user.id,
-                        'username': task_history.user.username,
-                        'email': task_history.user.email,
-                        'first_name': task_history.user.first_name,
-                        'last_name': task_history.user.last_name
-                    } if task_history.user else None,
-                    "changed_at": parse_date(task_history.changed_at),
-                    "estimated_hours": task_history.estimated_hours,
-                })
-                pass
-
-            tasks_data.append({
-                "id": task.id,
-                "title": task.title,
-                "description": task.description,
-                "status": task.status,
-                "sprint": "Sprint " + str(task.sprint.start_date) + " " + str(task.sprint.end_date) if task.sprint else None,
-                "project_backlog": task.project_backlog.id,
-                "estimated_hours": task.estimated_hours,
-                'user': {
-                    'id': task.user.id,
-                    'username': task.user.username,
-                    'email': task.user.email,
-                    'first_name': task.user.first_name,
-                    'last_name': task.user.last_name
+        return JsonResponse([{
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "status": task.status,
+            "sprint": f"Sprint {task.sprint.start_date} {task.sprint.end_date}" if task.sprint else None,
+            "project_backlog": task.project_backlog.id,
+            "estimated_hours": task.estimated_hours,
+            "user": {
+                'id': task.user.id,
+                'username': task.user.username,
+                'email': task.user.email,
+                'first_name': task.user.first_name,
+                'last_name': task.user.last_name
             } if task.user else None,
-                "created": parse_date(task.created),
-                "tasks_history": tasks_history_data[::-1]
-            })
-
-        return JsonResponse(tasks_data, status=200, safe=False)
+            "created": parse_date(task.created),
+            "tasks_history": [{
+                "id": history.id,
+                "title": history.title,
+                "description": history.description,
+                "status": history.status,
+                "sprint": f"Sprint {history.sprint.start_date} {history.sprint.end_date}" if history.sprint else None,
+                "user": {
+                    'id': history.user.id,
+                    'username': history.user.username,
+                    'email': history.user.email,
+                    'first_name': history.user.first_name,
+                    'last_name': history.user.last_name
+                } if history.user else None,
+                "changed_at": parse_date(history.changed_at),
+                "estimated_hours": history.estimated_hours
+            } for history in task.project_backlog_tasks.all()]
+        } for task in project.project_backlog_tasks.all()], safe=False, status=200)
 
     except Project.DoesNotExist:
-        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400)
 
 def handle_get_sprints(data):
     try:
         project = Project.objects.get(id=data['id'])
 
         ongoing_sprints = Sprint.objects.filter(
-            Q(start_date__lte=now().date()) & Q(end_date__gt=now().date()) & Q(project=project.id)
+            Q(start_date__lte=now().date()) & Q(end_date__gte=now().date()) & Q(project=project.id) & Q(manually_ended=False)
         )
         future_sprints= Sprint.objects.filter(
             Q(start_date__gt=now().date()) & Q(project=project.id)
         )
 
         ended_sprints = Sprint.objects.filter(
-            Q(end_date__lte=now().date()) & Q(project=project.id)
+            (Q(end_date__lt=now().date()) & Q(project=project.id)) | Q(manually_ended=True)
         )
 
         future_sprints_data = []
@@ -199,12 +201,14 @@ def handle_get_sprints(data):
 
 
 
-def get_users_projects_dashboard(data):
+def get_users_projects_dashboard(request, data):
 
     try:
         projects = Project.objects.filter(
             Q(project_owner=data['id']) | Q(project_users=data['id'])
         ).distinct()
+
+        logged_user = User.objects.get(id=request.user.id)
 
         projects_list = []
         for project in projects:
@@ -213,20 +217,23 @@ def get_users_projects_dashboard(data):
             project_users = project.project_users.all()
             role = None
 
-            for user in project_users:
-                role = None
+            if logged_user == project.project_owner:
+                role = "Administrator projektu"
+            else:
+                for user in project_users:
+                    role = None
 
-                if user == project.product_owner:
-                    role = "Product owner"
+                    if user == project.product_owner:
+                        role = "Product owner"
 
-                elif user == project.scrum_master:
-                    role = "Scrum master"
+                    elif user == project.scrum_master:
+                        role = "Scrum master"
 
-                elif development_team:
-                    for developer in development_team:
-                        if developer.user == user:
-                            role = developer.role
-                            break
+                    elif development_team:
+                        for developer in development_team:
+                            if developer.user == user:
+                                role = developer.role
+                                break
 
             project_data = {
                 'id': project.id,
@@ -247,13 +254,20 @@ def get_users_projects_dashboard(data):
         return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400, safe=False)
 
 
+
 def handle_remove_project(request, data):
     try:
         user_in_project = DevelopmentTeam.objects.filter(user_id=request.user.id, project_id=data['id'])
         project = Project.objects.get(id=data['id'])
-        user_to_remove = User.objects.get(id=request.user.id)
 
-        project.project_users.remove(user_to_remove)
+        users_tasks = Task.objects.filter(Q(project_backlog=project) & Q(user=request.user) & (Q(status='To Do') | Q(status="In Progress")))
+
+        for task in users_tasks:
+            task.user = None
+            task.status = "To Do"
+            task.save()
+
+        project.project_users.remove(request.user)
         user_in_project.delete()
 
         return JsonResponse({"message": "Opuszczono projekt pomyślnie."}, status=200, safe=False)
@@ -331,6 +345,11 @@ def handle_remove_task(data):
 def handle_remove_sprint(data):
     try:
         sprint = Sprint.objects.get(id=data['sprintId'])
+        done_tasks = Task.objects.filter(Q(sprint=sprint) & Q(status='Done'))
+
+        for task in done_tasks:
+            task.delete()
+
         sprint.delete()
 
         return JsonResponse({"message": "Usunięto sprint pomyślnie."}, status=200, safe=False)
@@ -340,7 +359,6 @@ def handle_remove_sprint(data):
 
 
 def handle_create_task(data):
-
     try:
         project = Project.objects.get(id=data['id'])
 
@@ -521,6 +539,8 @@ def handle_get_sprint_info(request, data):
         except DevelopmentTeam.DoesNotExist:
             if sprint.project.scrum_master == request.user:
                 role = "Scrum master"
+            if sprint.project.project_owner == request.user:
+                role = "Administrator projektu"
             elif sprint.project.product_owner == request.user:
                 role = "Product owner"
 
@@ -601,10 +621,14 @@ def handle_end_sprint(data):
     try:
         sprint = Sprint.objects.get(id=data['sprint_id'])
 
-        if sprint.end_date <= now().date():
+        if sprint.end_date < now().date():
             return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)
 
+        if sprint.start_date > now().date():
+            return JsonResponse({"message": "Nie można zakończyć sprintu, który się nie rozpoczął."}, status=400, safe=False)
+
         sprint.end_date = now().date()
+        sprint.manually_ended = True
         sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
 
         for task in sprints_tasks:
@@ -697,3 +721,55 @@ def handle_delete_user_project_role(data):
 
     except User.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Użytkownik nie istnieje."}, status=400, safe=False)
+
+def handle_get_project_completed_tasks(data):
+    try:
+        project = Project.objects.prefetch_related(
+            Prefetch('project_backlog_tasks',
+                queryset=Task.objects.select_related('user', 'sprint')
+                          .filter(status="Done")
+                          .prefetch_related(
+                              Prefetch('project_backlog_tasks',
+                                  queryset=TaskHistory.objects.select_related('user', 'sprint')
+                                            .order_by('-changed_at')
+                              )
+                          )
+            )
+        ).get(id=data['id'])
+
+        return JsonResponse([{
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "status": task.status,
+            "sprint": f"Sprint {task.sprint.start_date} {task.sprint.end_date}" if task.sprint else None,
+            "project_backlog": task.project_backlog.id,
+            "estimated_hours": task.estimated_hours,
+            "user": {
+                'id': task.user.id,
+                'username': task.user.username,
+                'email': task.user.email,
+                'first_name': task.user.first_name,
+                'last_name': task.user.last_name
+            } if task.user else None,
+            "created": parse_date(task.created),
+            "tasks_history": [{
+                "id": history.id,
+                "title": history.title,
+                "description": history.description,
+                "status": history.status,
+                "sprint": f"Sprint {history.sprint.start_date} {history.sprint.end_date}" if history.sprint else None,
+                "user": {
+                    'id': history.user.id,
+                    'username': history.user.username,
+                    'email': history.user.email,
+                    'first_name': history.user.first_name,
+                    'last_name': history.user.last_name
+                } if history.user else None,
+                "changed_at": parse_date(history.changed_at),
+                "estimated_hours": history.estimated_hours
+            } for history in task.project_backlog_tasks.all()]
+        } for task in project.project_backlog_tasks.all()], safe=False, status=200)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400)

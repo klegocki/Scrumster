@@ -190,6 +190,8 @@
     align-items: center;
     width: 80%;
     min-height: 530px;
+    height: 69vh;
+
     box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
 }
 
@@ -368,7 +370,6 @@
 .project-dashboard-body{    
     display: flex;
     width: 100%;
-    height: 100%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -517,7 +518,7 @@
 .sprint-dashboard-body{    
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 65vh;
     flex-direction: column;
     justify-content: center;
     align-items: center;

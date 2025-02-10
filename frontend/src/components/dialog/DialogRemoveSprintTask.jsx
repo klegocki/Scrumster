@@ -41,7 +41,7 @@ export default function DialogRemoveSprintTask(props) {
 const deleteTask = () => {
 
     const payload = {
-        project_id: props.projectId,
+        sprint_id: props.projectId,
         taskId: props.taskId,
     }
 

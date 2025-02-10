@@ -200,7 +200,6 @@ export default function DialogUserSettings(props) {
             </Typography>
 
             <TextField
-            autoFocus
             required
             margin="dense"
             id="name"
@@ -239,7 +238,6 @@ export default function DialogUserSettings(props) {
             </Typography>
 
             <TextField
-            autoFocus
             required
             margin="dense"
             id="name"
@@ -278,7 +276,6 @@ export default function DialogUserSettings(props) {
             </Typography>
 
             <TextField
-            autoFocus
             required
             margin="dense"
             id="name"
@@ -292,7 +289,6 @@ export default function DialogUserSettings(props) {
             />
 
             <TextField
-            autoFocus
             required
             margin="dense"
             id="name"
@@ -331,7 +327,6 @@ export default function DialogUserSettings(props) {
             </Typography>
 
             <TextField
-            autoFocus
             required
             margin="dense"
             id="name"
@@ -345,7 +340,6 @@ export default function DialogUserSettings(props) {
             />
 
             <TextField
-            autoFocus
             required
             margin="dense"
             id="name"

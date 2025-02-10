@@ -74,6 +74,7 @@ class Sprint(models.Model):
         blank=False,
         related_name="project_sprint"
     )
+    manually_ended = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
         return f"Sprint ({self.start_date} - {self.end_date})"

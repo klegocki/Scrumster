@@ -8,7 +8,9 @@ import { useParams } from 'react-router-dom';
 import ProjectBody from "../components/projectDashboard/ProjectBody";
 
 export default function ProjectDashboard(){
-    const { id } = useParams();
+    const { projectId } = useParams();
+
+    const id = projectId;
 
     const navigate = useNavigate();
 

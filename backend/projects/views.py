@@ -11,7 +11,7 @@ from projects.dao import get_users_projects_dashboard, handle_remove_project, ha
     handle_remove_task, handle_remove_sprint, handle_create_task, handle_create_sprint, handle_get_sprint_backlog, \
     handle_remove_task_from_sprint, handle_get_sprint_info, handle_assign_developer_task, \
     handle_sprint_backlog_task_user_revert, handle_sprint_task_completion, handle_add_sprint_review, handle_end_sprint, \
-    handle_set_user_project_role, handle_delete_user_project_role
+    handle_set_user_project_role, handle_delete_user_project_role, handle_get_project_completed_tasks
 from projects.decorators import product_owner, project_owner, scrum_master, did_sprint_end, did_sprint_end_for_get
 
 
@@ -20,7 +20,7 @@ from projects.decorators import product_owner, project_owner, scrum_master, did_
 def get_projects(request):
     if request.user.is_authenticated:
         serializer = UserSerializer(instance=request.user)
-        response = get_users_projects_dashboard(serializer.data)
+        response = get_users_projects_dashboard(request, serializer.data)
         return response
     else:
         return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
@@ -50,6 +50,17 @@ def get_project_backlog(request):
     else:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
+@api_view(['GET'])
+def get_project_completed_tasks(request):
+    if request.user.is_authenticated:
+        serializer = GetProjectSerializer(data=request.query_params)
+        if serializer.is_valid():
+            response = handle_get_project_completed_tasks(serializer.data)
+            return response
+        else:
+            return JsonResponse({"message": "Wystąpił nieoczekiwany błąd."}, status=400)
+    else:
+        return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
 @api_view(['GET'])
 def get_project_sprints(request):

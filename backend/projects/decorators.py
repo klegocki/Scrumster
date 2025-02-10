@@ -20,8 +20,10 @@ def product_owner(view_func):
                 return JsonResponse({"message": "Użytkownik nie jest zalogowany"}, status=403)
 
             project = Project.objects.get(Q(id=data.get('id')) | Q(id=data.get('project_id')))
-            user = User.objects.get(id=request.user.id)
-            if project.product_owner != user:
+            if project.project_owner == request.user:
+                return view_func(request, *args, **kwargs)
+
+            if project.product_owner != request.user:
                 return JsonResponse({"message": "Użytkownik nie jest product ownerem"}, status=400)
 
             return view_func(request, *args, **kwargs)
@@ -35,6 +37,7 @@ def scrum_master(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         try:
+
             if request.method == 'GET':
                 data = request.GET
             elif request.method == 'POST':
@@ -44,8 +47,10 @@ def scrum_master(view_func):
                 return JsonResponse({"message": "Użytkownik nie jest zalogowany"}, status=403)
 
             project = Project.objects.get(Q(id=data.get('id')) | Q(id=data.get('project_id')))
-            user = User.objects.get(id=request.user.id)
-            if project.scrum_master != user:
+            if project.project_owner == request.user:
+                return view_func(request, *args, **kwargs)
+
+            if project.scrum_master != request.user:
                 return JsonResponse({"message": "Użytkownik nie jest scrum masterem"}, status=400)
 
             return view_func(request, *args, **kwargs)
@@ -68,8 +73,7 @@ def project_owner(view_func):
                 return JsonResponse({"message": "Użytkownik nie jest zalogowany"}, status=403)
 
             project = Project.objects.get(Q(id=data.get('id')) | Q(id=data.get('project_id')))
-            user = User.objects.get(id=request.user.id)
-            if project.project_owner != user:
+            if project.project_owner != request.user:
                 return JsonResponse({"message": "Użytkownik nie jest administratorem projektu"}, status=400)
 
             return view_func(request, *args, **kwargs)
@@ -95,7 +99,7 @@ def did_sprint_end(view_func):
             if data.get('sprint_id'):
                 sprint = Sprint.objects.get(id=data['sprint_id'])
 
-                if sprint.end_date <= now().date():
+                if sprint.end_date < now().date():
 
                     sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
 
@@ -107,9 +111,7 @@ def did_sprint_end(view_func):
                             task.sprint = None
                             task.user = None
                             task.status = 'To Do'
-
                         task.save()
-                    sprint.save()
 
                     return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)
 
@@ -117,7 +119,7 @@ def did_sprint_end(view_func):
                 task_temp = Task.objects.get(id=data['task_id'])
                 sprint = task_temp.sprint
 
-                if sprint.end_date <= now().date():
+                if sprint.end_date < now().date():
 
                     sprints_tasks = Task.objects.filter(
                         Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
@@ -126,15 +128,11 @@ def did_sprint_end(view_func):
                         if task.status == 'To Do':
                             task.sprint = None
                             task.user = None
-                            task.save()
                         elif task.status == 'In Progress':
                             task.sprint = None
                             task.user = None
                             task.status = 'To Do'
-                            task.save()
-
-
-                    sprint.save()
+                        task.save()
 
                     return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)
 
@@ -161,7 +159,7 @@ def did_sprint_end_for_get(view_func):
             if data.get('sprint_id'):
                 sprint = Sprint.objects.get(id=data['sprint_id'])
 
-                if sprint.end_date <= now().date():
+                if sprint.end_date < now().date():
 
                     sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
 
@@ -173,16 +171,14 @@ def did_sprint_end_for_get(view_func):
                             task.sprint = None
                             task.user = None
                             task.status = 'To Do'
-
                         task.save()
-                    sprint.save()
 
 
             elif data.get('task_id'):
                 task_temp = Task.objects.get(id=data['task_id'])
                 sprint = task_temp.sprint
 
-                if sprint.end_date <= now().date():
+                if sprint.end_date < now().date():
 
                     sprints_tasks = Task.objects.filter(
                         Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
@@ -191,15 +187,11 @@ def did_sprint_end_for_get(view_func):
                         if task.status == 'To Do':
                             task.sprint = None
                             task.user = None
-                            task.save()
                         elif task.status == 'In Progress':
                             task.sprint = None
                             task.user = None
                             task.status = 'To Do'
-                            task.save()
-
-
-                    sprint.save()
+                        task.save()
 
             return view_func(request, *args, **kwargs)
         except Exception as e:

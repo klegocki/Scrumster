@@ -184,6 +184,8 @@ export default function ProjectComponent(props){
 
     }
 
+    
+
     const navigateToProject = () => {
         navigate(`/app/project/${id}`);
     }

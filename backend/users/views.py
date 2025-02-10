@@ -95,6 +95,6 @@ def alter_user_username(request):
             response = handle_alter_user_username(request, serializer.data)
             return response
         else:
-            return JsonResponse({"message": "Proszę wypełnić pole.."}, status=400)
+            return JsonResponse({"message": "Proszę wypełnić pole."}, status=400)
     else:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)

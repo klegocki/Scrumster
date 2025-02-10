@@ -18,20 +18,15 @@ export default function ProjectBody(props){
     const [projectData, setProjectData] = useState([]);
     const [tasksData, setTasksData] = useState([]);
     const [sprintsData, setSprintsData] = useState([]);
+    const [completedTasksData, setCompletedTasksData] = useState([]);
 
-    const titleStyle = {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: "90%",
-        height: "50px",
-
-    }
 
     const buttonsStyle = {
+      
         display: 'flex',
         justifyContent: 'space-between',
-        width: "80%"
+        width: "80%",
+        marginTop: "2%"
     }
     
     const fetchProject = () => {
@@ -78,6 +73,29 @@ export default function ProjectBody(props){
         });
       };
 
+
+      const fetchCompletedTasks = () => {
+
+        const payload = {
+            id: props.id,
+        }
+
+        axios
+          .get("/api/projects/get/completed/tasks", {
+            params: payload,
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": getCsrfToken(),
+            },
+            withCredentials: true 
+          })
+          .then((response) => {
+            setCompletedTasksData(prevCompletedTasksData => prevCompletedTasksData = response.data)
+          })
+          .catch((error) => {
+        });
+      };
+
       const fetchSprints = () => {
 
         const payload = {
@@ -104,6 +122,7 @@ export default function ProjectBody(props){
         fetchProject()
         fetchTasks()
         fetchSprints()
+        fetchCompletedTasks()
         setTimeout(()=>{
           setIsLoading(false);
         },2000)
@@ -122,7 +141,7 @@ export default function ProjectBody(props){
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
                     :(            
-                    <h2 className="project-body-title" style={titleStyle}>
+                    <h2>
                       {projectData.title}
                     </h2>)
         }
@@ -140,6 +159,25 @@ export default function ProjectBody(props){
                       task={task}
                       projectId={props.id}
                       setTasksData={setTasksData}
+                      />
+                      ))}
+                        {(tasksData.length > 0) ? (null) : (<h3>Brak zadań</h3>)}
+                      </div>)}>
+            </BoxComponent>
+
+            <BoxComponent header="Ukończone zadania" body={
+              isLoading ? (<Skeleton variant="rounded" 
+                                     animation='wave'
+                                     sx={{ width: '100%', height: '100%' }}></Skeleton>) 
+                    :(<div>{completedTasksData.map((task, index) => (
+
+                      <TaskBoxComponent 
+                      key={task.id}
+                      title={task.title}
+                      taskId={task.id}
+                      task={task}
+                      projectId={props.id}
+                      setTasksData={setCompletedTasksData}
                       />
                       ))}
                         {(tasksData.length > 0) ? (null) : (<h3>Brak zadań</h3>)}

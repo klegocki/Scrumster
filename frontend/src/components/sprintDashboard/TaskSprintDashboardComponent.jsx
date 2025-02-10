@@ -43,7 +43,7 @@ export default function TaskSprintDashboardComponent(props){
                         />
                     ) : null}
 
-                    {task?.status === 'To Do' && role !== 'Scrum master' && role !== 'Product owner' && !usersTasks? (
+                    {task?.status === 'To Do' && role !== 'Scrum master' && role !== 'Product owner' && role !== 'Administrator projektu' && !usersTasks ? (
                         <DialogDeveloperTask fetchTasks={props.fetchTasks}
                                              projectId={projectId}
                                              taskId={taskId}
