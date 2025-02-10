@@ -1,8 +1,8 @@
-FROM postgres:latest
+FROM postgres:17.2
 
 ENV POSTGRES_USER=postgres
 ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_DB=scrumster
+ENV POSTGRES_DB=ScrumSter
 
 EXPOSE 5432
 

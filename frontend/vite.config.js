@@ -9,17 +9,14 @@ export default defineConfig({
       '/api': 'http://localhost:8000', 
     },
   },
-  build: {
-    outDir: '../backend/static/frontend', 
-    emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        entryFileNames: 'assets/index-build.js',
-        chunkFileNames: 'assets/index-build.js',
-        assetFileNames: 'assets/index-build.css',
-        
-
+  preview: {
+    host: '0.0.0.0', // Dla `vite preview`
+    port: 4173,      // Dopasuj port
+    proxy: {
+      '/api': {
+        target: 'http://backend:8000', // Użyj nazwy usługi 'backend'
+        changeOrigin: true,
       },
     },
-},
+  },
 })
