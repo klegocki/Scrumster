@@ -33,15 +33,15 @@ export default function TaskSprintDashboardComponent(props){
             <div style={titleStyle} onClick={handleOpenInfo}>
                 {title}
             </div>
-            {onGoingSprint ? (
-                <>
-                    {task?.status === 'To Do' && role === 'Scrum master' ? (
+            {task?.status === 'To Do' && (role === 'Scrum master' || role === "Administrator projektu") ? (
                         <DialogRemoveSprintTask 
                             fetchTasks={props.fetchTasks}
                             projectId={projectId}
                             taskId={taskId}
                         />
                     ) : null}
+            {onGoingSprint ? (
+                <>
 
                     {task?.status === 'To Do' && role !== 'Scrum master' && role !== 'Product owner' && role !== 'Administrator projektu' && !usersTasks ? (
                         <DialogDeveloperTask fetchTasks={props.fetchTasks}
@@ -67,13 +67,11 @@ export default function TaskSprintDashboardComponent(props){
                 </>
             ) : null}
 
-
-
-
             <DialogTaskInfo task={task}
                             open={openInfo}
                             setOpen={setOpenInfo}
             ></DialogTaskInfo>
+
         </div>
         </>)
 }

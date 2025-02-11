@@ -134,3 +134,11 @@ class SearchUsersTasksSerializer(serializers.Serializer):
     project_id = serializers.UUIDField(required=True)
     user_id = serializers.IntegerField(required=True)
     search = serializers.CharField(max_length=60, allow_null=True, allow_blank=True)
+
+class AddTasksToExistingSprintSerializer(serializers.Serializer):
+    sprint_id = serializers.UUIDField(required=True)
+    project_id = serializers.UUIDField(required=True)
+    task_ids = serializers.ListField(
+        child=serializers.UUIDField(),
+        allow_empty=True,
+    )

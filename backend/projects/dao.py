@@ -856,3 +856,22 @@ def handle_search_users_tasks(data):
 
     except Project.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400)
+
+def handle_add_tasks_to_existing_sprint(data):
+
+    task_ids = data['task_ids']
+
+    if not task_ids:
+        return JsonResponse({"message": "Aby utworzyć sprint, musisz przypisać do niego zadania."}, status=400, safe=False)
+
+    try:
+        sprint = Sprint.objects.get(id=data['sprint_id'])
+        for task_id in task_ids:
+            task = Task.objects.get(id=task_id)
+            task.sprint = sprint
+            task.save()
+
+        return JsonResponse({"message": "Dodano zadania pomyślnie."}, status=200, safe=False)
+
+    except Sprint.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Sprint nie istnieje."}, status=400, safe=False)

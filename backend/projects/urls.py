@@ -28,5 +28,5 @@ urlpatterns = [
     path('set/role', views.set_user_project_role),
     path('delete/role', views.delete_user_project_role),
     path('search/users/tasks', views.search_users_tasks),
-
+    path('sprint/add/tasks', views.add_tasks_to_existing_sprint),
 ]

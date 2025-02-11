@@ -95,103 +95,30 @@ def did_sprint_end(view_func):
             if not request.user.is_authenticated:
                 return JsonResponse({"message": "Użytkownik nie jest zalogowany"}, status=403)
 
-
+            sprint_id = None
             if data.get('sprint_id'):
-                sprint = Sprint.objects.get(id=data['sprint_id'])
-
-                if sprint.end_date < now().date():
-
-                    sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
-
-                    for task in sprints_tasks:
-                        if task.status == 'To Do':
-                            task.sprint = None
-                            task.user = None
-                        elif task.status == 'In Progress':
-                            task.sprint = None
-                            task.user = None
-                            task.status = 'To Do'
-                        task.save()
-
-                    return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)
-
+                sprint_id = data.get('sprint_id')
             elif data.get('task_id'):
-                task_temp = Task.objects.get(id=data['task_id'])
-                sprint = task_temp.sprint
+                sprint_id = data.get('task_id')
 
-                if sprint.end_date < now().date():
+            sprint = Sprint.objects.get(id=sprint_id)
 
-                    sprints_tasks = Task.objects.filter(
-                        Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
+            if sprint.end_date < now().date() or sprint.manually_ended:
 
-                    for task in sprints_tasks:
-                        if task.status == 'To Do':
-                            task.sprint = None
-                            task.user = None
-                        elif task.status == 'In Progress':
-                            task.sprint = None
-                            task.user = None
-                            task.status = 'To Do'
-                        task.save()
+                sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
 
-                    return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)
+                for task in sprints_tasks:
+                    if task.status == 'To Do':
+                        task.sprint = None
+                        task.user = None
+                    elif task.status == 'In Progress':
+                        task.sprint = None
+                        task.user = None
+                        task.status = 'To Do'
+                    task.save()
 
-            return view_func(request, *args, **kwargs)
-        except Exception as e:
-            return JsonResponse({"message": "Wystąpił nieznany błąd.", "error:": str(e)}, status=400)
+                return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)
 
-    return _wrapped_view
-
-def did_sprint_end_for_get(view_func):
-    @wraps(view_func)
-    def _wrapped_view(request, *args, **kwargs):
-        try:
-
-            if request.method == 'GET':
-                data = request.GET
-            elif request.method == 'POST':
-                data = json.loads(request.body)
-
-            if not request.user.is_authenticated:
-                return JsonResponse({"message": "Użytkownik nie jest zalogowany"}, status=403)
-
-
-            if data.get('sprint_id'):
-                sprint = Sprint.objects.get(id=data['sprint_id'])
-
-                if sprint.end_date < now().date():
-
-                    sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
-
-                    for task in sprints_tasks:
-                        if task.status == 'To Do':
-                            task.sprint = None
-                            task.user = None
-                        elif task.status == 'In Progress':
-                            task.sprint = None
-                            task.user = None
-                            task.status = 'To Do'
-                        task.save()
-
-
-            elif data.get('task_id'):
-                task_temp = Task.objects.get(id=data['task_id'])
-                sprint = task_temp.sprint
-
-                if sprint.end_date < now().date():
-
-                    sprints_tasks = Task.objects.filter(
-                        Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
-
-                    for task in sprints_tasks:
-                        if task.status == 'To Do':
-                            task.sprint = None
-                            task.user = None
-                        elif task.status == 'In Progress':
-                            task.sprint = None
-                            task.user = None
-                            task.status = 'To Do'
-                        task.save()
 
             return view_func(request, *args, **kwargs)
         except Exception as e:

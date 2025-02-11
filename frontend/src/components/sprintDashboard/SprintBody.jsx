@@ -7,7 +7,7 @@ import TaskSprintDashboardComponent from "./TaskSprintDashboardComponent";
 import ModalComponent from '../modal/ModalComponent';
 import DialogSprintReview from "../dialog/DialogSprintReview";
 import DialogEndSprint from "../dialog/DialogEndSprint";
-
+import DialogAddTasksToSprint from "../dialog/DialogAddTasksToSprints";
 
 export default function SprintBody(props){
 
@@ -24,6 +24,7 @@ export default function SprintBody(props){
     const [isLoading, setIsLoading] = useState(true);
     const [tasksData, setTasksData] = useState([])
     const [sprintsData, setSprintsData] = useState({})
+    const [projectsBacklogTasksData, setProjectsBacklogTasksData] = useState([])
 
 
 
@@ -33,6 +34,28 @@ export default function SprintBody(props){
         width: "80%",
         marginTop: "2%"
     }
+
+    const fetchProjectBacklogTasks = () => {
+
+      const payload = {
+          id: projectId,
+      }
+
+      axios
+        .get("/api/projects/get/backlog", {
+          params: payload,
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCsrfToken(),
+          },
+          withCredentials: true 
+        })
+        .then((response) => {
+          setProjectsBacklogTasksData(ProjectsBacklogTasksData => ProjectsBacklogTasksData = response.data)
+        })
+        .catch((error) => {
+      });
+    };
 
     const fetchTasks = () => {
 
@@ -83,6 +106,7 @@ export default function SprintBody(props){
     useEffect(() => {
         fetchTasks();
         fetchSprint();
+        fetchProjectBacklogTasks();
         setTimeout(()=>{
             setIsLoading(false);
         },2000)
@@ -98,7 +122,8 @@ export default function SprintBody(props){
                                       alignItems: 'center', }}></Skeleton>) 
                     :(            
                     <h2>
-                      {sprintsData?.title}
+                      {sprintsData?.title}<br/>
+                      {sprintsData?.alt_title ? (sprintsData.alt_title) : (null)}
                     </h2>)
         }        
 
@@ -222,6 +247,25 @@ export default function SprintBody(props){
                         </ModalComponent>
                       </>
                     ))
+            }
+                        {isLoading ? (<Skeleton variant="rounded" 
+                                animation='wave'
+                                sx={{ width: '15%', 
+                                      height: '50px',  
+                                      display: 'flex',
+                                      justifyContent: 'center',
+                                      alignItems: 'center', }}></Skeleton>) 
+                    :(
+                        <DialogAddTasksToSprint 
+                                         sprintId={sprintsData?.id}
+                                         projectId={projectId}
+                                         tasksData={projectsBacklogTasksData}
+                                         fetchSprint={fetchSprint}
+                                         fetchTasks={fetchTasks}
+                                         fetchProjectBacklogTasks={fetchProjectBacklogTasks}>
+
+                        </DialogAddTasksToSprint>
+                    )
             }
 
             {isLoading ? (<Skeleton variant="rounded" 
