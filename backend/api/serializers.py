@@ -70,6 +70,7 @@ class CreateTaskSerializer(serializers.Serializer):
 class CreateSprintSerializer(serializers.Serializer):
     id = serializers.UUIDField(required=True)
     daily_meet_link = serializers.CharField(max_length=3000, allow_null=True, allow_blank=True)
+    title = serializers.CharField(max_length=60, allow_null=True, allow_blank=True)
     start_date = serializers.DateField(required=True)
     end_date = serializers.DateField(required=True)
     task_ids = serializers.ListField(
@@ -124,3 +125,12 @@ class UserAlterPasswordSerializer(serializers.Serializer):
 class UserAlterFirstAndLastNameSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=30, allow_blank=True)
     last_name = serializers.CharField(max_length=30, allow_blank=True)
+
+class GetUsersTasksSerializer(serializers.Serializer):
+    project_id = serializers.UUIDField(required=True)
+    user_id = serializers.IntegerField(required=True)
+
+class SearchUsersTasksSerializer(serializers.Serializer):
+    project_id = serializers.UUIDField(required=True)
+    user_id = serializers.IntegerField(required=True)
+    search = serializers.CharField(max_length=60, allow_null=True, allow_blank=True)

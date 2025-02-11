@@ -161,6 +161,7 @@ def handle_get_sprints(data):
                 "sprint_review": sprint.sprint_review,
                 "project":project.id,
                 "title": "Sprint " + str(sprint.start_date) + " " + str(sprint.end_date),
+                "alt_title": sprint.title,
             })
 
         for sprint in future_sprints:
@@ -172,6 +173,7 @@ def handle_get_sprints(data):
                 "sprint_review": sprint.sprint_review,
                 "project":project.id,
                 "title": "Sprint " + str(sprint.start_date) + " " + str(sprint.end_date),
+                "alt_title": sprint.title,
 
             })
 
@@ -184,6 +186,7 @@ def handle_get_sprints(data):
                 "sprint_review": sprint.sprint_review,
                 "project":project.id,
                 "title": "Sprint " + str(sprint.start_date) + " " + str(sprint.end_date),
+                "alt_title": sprint.title,
 
             })
 
@@ -406,11 +409,16 @@ def handle_create_sprint(data):
 
     try:
         project = Project.objects.get(id=data['id'])
+        if data['title']:
+            sprint_title = data['title']
+        else:
+            sprint_title = None
         sprint = Sprint(
             start_date=data['start_date'],
             end_date=data['end_date'],
             daily_meet_link=data['daily_meet_link'],
-            project=project
+            project=project,
+            title=sprint_title
 
         )
         sprint.save()
@@ -769,6 +777,81 @@ def handle_get_project_completed_tasks(data):
                 "changed_at": parse_date(history.changed_at),
                 "estimated_hours": history.estimated_hours
             } for history in task.project_backlog_tasks.all()]
+        } for task in project.project_backlog_tasks.all()], safe=False, status=200)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400)
+
+def handle_get_users_tasks(data):
+    try:
+        project = Project.objects.prefetch_related(
+            Prefetch('project_backlog_tasks',
+                queryset=Task.objects.select_related('user', 'sprint')
+                          .filter(user=data['user_id'])
+                          .prefetch_related(
+                              Prefetch('project_backlog_tasks',
+                                  queryset=TaskHistory.objects.select_related('user', 'sprint')
+                                            .order_by('-changed_at')
+                              )
+                          )
+            )
+        ).get(id=data['project_id'])
+
+        return JsonResponse([{
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "status": task.status,
+            "sprint": f"Sprint {task.sprint.start_date} {task.sprint.end_date}" if task.sprint else None,
+            "created": parse_date(task.created),
+        } for task in project.project_backlog_tasks.all()], safe=False, status=200)
+
+    except Project.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd: Projekt nie istnieje."}, status=400)
+
+
+def handle_search_users_tasks(data):
+    try:
+        if data['search']:
+            project = Project.objects.prefetch_related(
+                Prefetch('project_backlog_tasks',
+                    queryset=Task.objects.select_related('user', 'sprint')
+                              .filter(
+                                    Q(user=data['user_id']) & (
+                                    Q(title__icontains=data['search']) |
+                                    Q(description__icontains=data['search']) |
+                                    Q(status__icontains=data['search'])
+                                    )
+                                )
+                              .prefetch_related(
+                                  Prefetch('project_backlog_tasks',
+                                      queryset=TaskHistory.objects.select_related('user', 'sprint')
+                                                .order_by('-changed_at')
+                                  )
+                              )
+                )
+            ).get(id=data['project_id'])
+        else:
+            project = Project.objects.prefetch_related(
+                Prefetch('project_backlog_tasks',
+                         queryset=Task.objects.select_related('user', 'sprint')
+                         .filter(user=data['user_id'])
+                         .prefetch_related(
+                             Prefetch('project_backlog_tasks',
+                                      queryset=TaskHistory.objects.select_related('user', 'sprint')
+                                      .order_by('-changed_at')
+                                      )
+                         )
+                         )
+            ).get(id=data['project_id'])
+
+        return JsonResponse([{
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "status": task.status,
+            "sprint": f"Sprint {task.sprint.start_date} {task.sprint.end_date}" if task.sprint else None,
+            "created": parse_date(task.created),
         } for task in project.project_backlog_tasks.all()], safe=False, status=200)
 
     except Project.DoesNotExist:

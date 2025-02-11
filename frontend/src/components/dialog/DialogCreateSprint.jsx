@@ -58,6 +58,7 @@ export default function DialogCreateSprint(props) {
         const payload = {
             id: props.id,
             daily_meet_link: data.daily_meet_link,
+            title: data.title,
             start_date: data.startDate,
             end_date: data.endDate,
             task_ids: selectedTasks,
@@ -110,7 +111,19 @@ export default function DialogCreateSprint(props) {
                 <DialogContent>
                     <DialogContentText>
                         Aby stworzyć sprint, proszę podaj niezbędne informacje.
+                        
                     </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        name="title"
+                        label="Podaj tytuł sprintu (opcjonalne)"
+                        type="textarea"
+                        fullWidth
+                        variant="standard"
+                        inputProps={{ maxLength: 20 }}
+                    />
                     <TextField
                         autoFocus
                         margin="dense"

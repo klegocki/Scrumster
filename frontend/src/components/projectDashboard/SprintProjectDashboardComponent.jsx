@@ -6,10 +6,9 @@ export default function SprintProjectDashboardComponent(props){
 
     const [open, setOpen] = useState(false);
 
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const {title, onGoingSprint, sprintId, projectId} = props
+    const {altTitle, title, onGoingSprint, sprintId, projectId} = props
     const navigate = useNavigate();
 
     const titleStyle = {
@@ -32,7 +31,9 @@ export default function SprintProjectDashboardComponent(props){
     return(<>
         <div className="task-box">
             <div style={titleStyle} onClick={navigateToSprint}>
-                {title}
+
+                {title}<br/>
+                {altTitle ? (altTitle) : (null)}
             </div>
             
             <DialogRemoveSprint setSprintsData={props.setSprintsData}

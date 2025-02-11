@@ -10,6 +10,7 @@ urlpatterns = [
     path('create', views.create_project),
     path('get/project', views.get_project),
     path('get/backlog', views.get_project_backlog),
+    path('get/users/tasks', views.get_users_tasks),
     path('get/completed/tasks',views.get_project_completed_tasks),
     path('get/sprints', views.get_project_sprints),
     path('task/delete', views.delete_task),
@@ -26,5 +27,6 @@ urlpatterns = [
     path('sprint/end', views.end_sprint),
     path('set/role', views.set_user_project_role),
     path('delete/role', views.delete_user_project_role),
+    path('search/users/tasks', views.search_users_tasks),
 
 ]

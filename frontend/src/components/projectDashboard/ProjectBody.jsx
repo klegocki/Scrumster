@@ -195,6 +195,7 @@ export default function ProjectBody(props){
                       key={sprint.id}
                       title={sprint.title}
                       sprintId={sprint.id}
+                      altTitle={sprint.alt_title}
                       projectId={props.id}
                       fetchTasks={fetchTasks}
                       onGoingSprint={true}
@@ -212,6 +213,7 @@ export default function ProjectBody(props){
                         key={sprint.id}
                         title={sprint.title}
                         sprintId={sprint.id}
+                        altTitle={sprint.alt_title}
                         projectId={props.id}
                         fetchTasks={fetchTasks}
                         onGoingSprint={false}
@@ -232,6 +234,7 @@ export default function ProjectBody(props){
                     key={sprint.id}
                     title={sprint.title}
                     sprintId={sprint.id}
+                    altTitle={sprint.alt_title}
                     projectId={props.id}
                     onGoingSprint={false}
                     fetchTasks={fetchTasks}
@@ -252,7 +255,9 @@ export default function ProjectBody(props){
                                       display: 'flex',
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
-                    :(<DialogProjectInfo projectData={projectData}></DialogProjectInfo>)
+                    :(<DialogProjectInfo projectData={projectData}
+                                         projectId={props.id}>
+                      </DialogProjectInfo>)
             }
             {isLoading ? (<Skeleton variant="rounded" 
                                 animation='wave'

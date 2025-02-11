@@ -5,11 +5,11 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import DialogUsersTasks from './DialogUsersTasks';
 export default function DialogProjectInfo(props) {
 
 
-    const {projectData, projectTasks, projectSprints} = props
+    const {projectData} = props
 
 
     const [open, setOpen] = useState(false);
@@ -38,6 +38,7 @@ export default function DialogProjectInfo(props) {
             <DialogContentText
                 id="scroll-dialog-description"
                 tabIndex={-1}
+                component="div"
             >
                 <div className='dialog-project-info'>
                     <div className='dialog-project-info-title'>
@@ -73,6 +74,7 @@ export default function DialogProjectInfo(props) {
                             : (null)}
                             </p>
 
+
                         </div>
                         {projectData.project_users ? (projectData.project_users.map((value, index) =>(
                             <div className='dialog-project-info-user' key={index}>
@@ -84,6 +86,13 @@ export default function DialogProjectInfo(props) {
                                 <p>
                                 {value.email}
                                 </p>
+                                <br/>
+                                <DialogUsersTasks projectId={projectData.id}
+                                                  userId={value.id}
+                                                  firstName={value.first_name}
+                                                  lastName={value.last_name}>
+
+                                </DialogUsersTasks>
                             </div>
                         ))) : (null)}
                     </div>

@@ -63,6 +63,7 @@ class DevelopmentTeam(models.Model):
 
 class Sprint(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
+    title = models.TextField(max_length=60, null=True, blank=True, default=None)
     start_date = models.DateField( null=False, blank=False)
     end_date = models.DateField( null=False, blank=False)
     daily_meet_link = models.CharField(max_length=500, null=True, blank=True)
