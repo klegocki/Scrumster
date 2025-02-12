@@ -24,8 +24,7 @@ SECRET_KEY = 'django-insecure-nv2izj6dt_j99v7qqpdb-2xbdqunn3)(@wc8*r9v@9j-op+f33
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','backend']
-
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -131,16 +130,19 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:4173",
     "http://frontend:4173",
+    "http://192.168.49.2:30417",
     ]
 CSRF_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:4173",
     "http://frontend:4173",
+    "http://192.168.49.2:30417",
     ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:4173",
     "http://frontend:4173",
+    "http://192.168.49.2:30417",
     ]
 CORS_ALLOW_CREDENTIALS = True
 ROOT_URLCONF = 'scrumster.urls'
