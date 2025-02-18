@@ -219,7 +219,7 @@
     justify-content: flex-start; 
     align-items: center; 
     width: 80%; 
-    height: 400px; 
+    height: 90%; 
     margin: 15px;
     box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
 }

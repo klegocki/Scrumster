@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .models import Project, DevelopmentTeam, Task, TaskHistory, Sprint
 from django.db.models import Prefetch, Q
-from .utils import generate_random_string, parse_date
+from .utils import generate_random_string, get_polish_datetime_with_timezone
 
 
 def handle_get_project(data):
@@ -110,7 +110,7 @@ def handle_get_project_backlog(data):
                 'first_name': task.user.first_name,
                 'last_name': task.user.last_name
             } if task.user else None,
-            "created": parse_date(task.created),
+            "created": get_polish_datetime_with_timezone(task.created),
             "tasks_history": [{
                 "id": history.id,
                 "title": history.title,
@@ -124,7 +124,7 @@ def handle_get_project_backlog(data):
                     'first_name': history.user.first_name,
                     'last_name': history.user.last_name
                 } if history.user else None,
-                "changed_at": parse_date(history.changed_at),
+                "changed_at": get_polish_datetime_with_timezone(history.changed_at),
                 "estimated_hours": history.estimated_hours
             } for history in task.project_backlog_tasks.all()]
         } for task in project.project_backlog_tasks.all()], safe=False, status=200)
@@ -463,7 +463,7 @@ def handle_get_sprint_backlog(request, data):
                         'first_name': task_history.user.first_name,
                         'last_name': task_history.user.last_name
                     } if task_history.user else None,
-                    "changed_at": parse_date(task_history.changed_at),
+                    "changed_at": get_polish_datetime_with_timezone(task_history.changed_at),
                     "estimated_hours": task_history.estimated_hours,
                 })
 
@@ -482,7 +482,7 @@ def handle_get_sprint_backlog(request, data):
                     'first_name': task.user.first_name,
                     'last_name': task.user.last_name
             } if task.user else None,
-                "created": parse_date(task.created),
+                "created": get_polish_datetime_with_timezone(task.created),
                 "tasks_history": tasks_history_data[::-1]
             }
 
@@ -760,7 +760,7 @@ def handle_get_project_completed_tasks(data):
                 'first_name': task.user.first_name,
                 'last_name': task.user.last_name
             } if task.user else None,
-            "created": parse_date(task.created),
+            "created": get_polish_datetime_with_timezone(task.created),
             "tasks_history": [{
                 "id": history.id,
                 "title": history.title,
@@ -774,7 +774,7 @@ def handle_get_project_completed_tasks(data):
                     'first_name': history.user.first_name,
                     'last_name': history.user.last_name
                 } if history.user else None,
-                "changed_at": parse_date(history.changed_at),
+                "changed_at": get_polish_datetime_with_timezone(history.changed_at),
                 "estimated_hours": history.estimated_hours
             } for history in task.project_backlog_tasks.all()]
         } for task in project.project_backlog_tasks.all()], safe=False, status=200)
@@ -803,7 +803,7 @@ def handle_get_users_tasks(data):
             "description": task.description,
             "status": task.status,
             "sprint": f"Sprint {task.sprint.start_date} {task.sprint.end_date}" if task.sprint else None,
-            "created": parse_date(task.created),
+            "created": get_polish_datetime_with_timezone(task.created),
         } for task in project.project_backlog_tasks.all()], safe=False, status=200)
 
     except Project.DoesNotExist:
@@ -851,7 +851,7 @@ def handle_search_users_tasks(data):
             "description": task.description,
             "status": task.status,
             "sprint": f"Sprint {task.sprint.start_date} {task.sprint.end_date}" if task.sprint else None,
-            "created": parse_date(task.created),
+            "created": get_polish_datetime_with_timezone(task.created),
         } for task in project.project_backlog_tasks.all()], safe=False, status=200)
 
     except Project.DoesNotExist:

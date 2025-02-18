@@ -16,7 +16,7 @@ export default function Projects(props){
     width: '80%',
     display: 'flex',
     justifyContent: 'space-between',
-    marginBottom: '15px',
+    margin: '1%'
   }
 
   const fetchUserProjects = () => {

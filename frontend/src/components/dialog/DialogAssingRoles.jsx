@@ -130,7 +130,7 @@ export default function DialogAssignRoles({
           Ustaw rolę członków zespołu
         </DialogTitle>
         <DialogContent dividers={true}>
-          {projectUsers.map((user) => {
+          {projectUsers?.map((user) => {
             const userRole = userRoles.find((u) => u.id === user.id);
             return (
               <Box
