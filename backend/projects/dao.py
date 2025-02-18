@@ -1,12 +1,10 @@
 from datetime import datetime
-
 from django.utils.timezone import now
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .models import Project, DevelopmentTeam, Task, TaskHistory, Sprint
 from django.db.models import Prefetch, Q
 from .utils import generate_random_string, get_polish_datetime_with_timezone
-
 
 def handle_get_project(data):
     try:
@@ -75,10 +73,6 @@ def handle_get_project(data):
     except Project.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Nie ma takiego projektu."}, status=400, safe=False)
 
-
-from django.db.models import Prefetch
-from django.http import JsonResponse
-from .models import Project, Task, TaskHistory
 
 def handle_get_project_backlog(data):
     try:
