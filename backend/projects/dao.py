@@ -342,11 +342,6 @@ def handle_remove_task(data):
 def handle_remove_sprint(data):
     try:
         sprint = Sprint.objects.get(id=data['sprintId'])
-        done_tasks = Task.objects.filter(Q(sprint=sprint) & Q(status='Done'))
-
-        for task in done_tasks:
-            task.delete()
-
         sprint.delete()
 
         return JsonResponse({"message": "Usunięto sprint pomyślnie."}, status=200, safe=False)
@@ -639,6 +634,7 @@ def handle_end_sprint(data):
                 task.user = None
             elif task.status == 'In Progress':
                 task.sprint = None
+                task.estimated_hours = None
                 task.user = None
                 task.status = 'To Do'
             task.save()

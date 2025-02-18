@@ -150,16 +150,19 @@ export default function ProjectBody(props){
               isLoading ? (<Skeleton variant="rounded" 
                                      animation='wave'
                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
-                    :(<div>{tasksData.map((task, index) => (
+                    :(<div>{tasksData?.map((task, index) => (
+                      task.status !== "Done" ? (
+                        <TaskBoxComponent 
+                          key={task.id}
+                          title={task.title}
+                          taskId={task.id}
+                          task={task}
+                          projectId={props.id}
+                          setTasksData={setTasksData}
+                        />
+                      ) : (null)
 
-                      <TaskBoxComponent 
-                      key={task.id}
-                      title={task.title}
-                      taskId={task.id}
-                      task={task}
-                      projectId={props.id}
-                      setTasksData={setTasksData}
-                      />
+                      
                       ))}
                         {(tasksData.length > 0) ? (null) : (<h3>Brak zadań</h3>)}
                       </div>)}>
