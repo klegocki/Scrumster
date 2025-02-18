@@ -10,8 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,10 +21,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nv2izj6dt_j99v7qqpdb-2xbdqunn3)(@wc8*r9v@9j-op+f33'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -80,11 +82,11 @@ WSGI_APPLICATION = 'scrumster.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'postgres',
-        'PORT': '5432',
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
@@ -118,30 +120,35 @@ REST_FRAMEWORK = {
 
 LANGUAGE_CODE = 'en-us'
 
+USE_TZ = True
+
 TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:4173",
     "http://frontend:4173",
+    "http://127.0.0.1",
     "http://192.168.49.2:30417",
     ]
 CSRF_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:4173",
     "http://frontend:4173",
+    "http://127.0.0.1",
     "http://192.168.49.2:30417",
     ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:4173",
     "http://frontend:4173",
+    "http://127.0.0.1",
     "http://192.168.49.2:30417",
     ]
 CORS_ALLOW_CREDENTIALS = True

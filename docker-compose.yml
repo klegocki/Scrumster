@@ -18,8 +18,7 @@ services:
 
 
   frontend:
-    build:
-      context: ./frontend
+    image: klegocki/scrumster-frontend:latest
     ports:
       - "4173:4173"
     networks:
@@ -28,8 +27,7 @@ services:
       - backend
 
   backend:
-    build:
-      context: ./backend
+    image: klegocki/scrumster-backend:latest
     ports:
       - "8000:8000"
     depends_on:
