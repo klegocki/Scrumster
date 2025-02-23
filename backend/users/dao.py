@@ -31,7 +31,7 @@ def handle_register_user(request, data):
             return JsonResponse({"message": "Nie można używać spacji."}, status=400)
 
     if User.objects.filter(username=data['username'].lower()).exists():
-        return JsonResponse({"message": "Nazwa użytkownika jest już zajęta."}, status=400)
+        return JsonResponse({"message": "Nazwa użytkownika jest już używana."}, status=400)
 
     if data['password1'] != data['password2']:
         return JsonResponse({"message": "Podane hasła są różne."}, status=400)

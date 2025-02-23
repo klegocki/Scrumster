@@ -38,6 +38,7 @@ export default function ProjectComponent(props){
         first_name: props.first_name,
         last_name: props.last_name,
         title: props.title,
+        altRole: props.altRole,
         id: props.id
         
     };
@@ -49,9 +50,14 @@ export default function ProjectComponent(props){
     }
 
     if(data.role == null || data.role.trim() == ""){
-        data.role = "Brak roli"
+        data.role = "Deweloper"
     }
 
+    if(data.altRole  && data.role){
+        data.role += " / " + data.altRole
+        
+    }
+    console.log(data)
     const buttonRemoveStyle = {
         width: '50px',
         height: '50px',
@@ -80,35 +86,7 @@ export default function ProjectComponent(props){
 
     }
 
-    const childBoxStyle = {
-        backgroundColor: "hsl(128, 55%, 76%)",
-        fontFamily: "Arial, Helvetica, sans-serif",
-        border: "solid 3px hsl(128, 55%, 70%)",
-        borderRadius: "10px",
-        width: "calc(100% - 10px)",
-        height: "65px",
-        margin: "5px",
-        maxWidth: '700px',
-        padding: "10px",
-        boxSizing: "border-box",
 
-    };
-    
-
-    const rightDiv = {
-        width: '20%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
-
-    const leftDiv = {
-        width: '80%',
-        overflow: 'hidden',
-        wordWrap: 'break-word',
-        boxSizing: 'border-box',
-    };
     
 
     const deleteProjectRequest = () => {
@@ -193,31 +171,50 @@ export default function ProjectComponent(props){
     
     return(<>
         <div className="project-component-child">
-            <div style={leftDiv}>
+            <div className="project-component-child-left-div">
 
-                    <div style={childBoxStyle} className="project-top-boxes">
+                    <div className="project-top-boxes">
                     <strong>Tytuł projektu:</strong><br/>
                         {data.title}
                     </div>
 
-                    <div style={childBoxStyle} className="project-top-boxes">
+                    <div className="project-top-boxes">
                     <strong>Właściciel projektu:</strong><br/>
                         {data.first_name} {data.last_name}
                     </div>
 
-                    <div style={childBoxStyle} className="project-top-boxes">
+                    <div className="project-top-boxes">
                     <strong>Twoja rola:</strong><br/>
                         {data.role}
                     </div>
                 
 
-                <div className="project-description-box">
+
+
+            </div>
+            <div className="project-description-box">
                 <strong>Opis:</strong><br/>
                     {data.description}
                 </div>
+            <div className="project-component-child-right-div">
 
-            </div>
-            <div style={rightDiv}>
+                <IconButton    sx={{
+                                    width: 50,
+                                    height: 50,
+                                    backgroundColor: 'hsl(0, 100%, 43%)',
+                                    borderRadius: '10px',
+                                    margin: '20px',
+                                    color: 'black',
+                                    fontWeight: 'bold',
+                                    fontSize: '2rem',
+                                    '&:hover': {
+                                        backgroundColor: 'hsl(0, 100%, 37%)',
+                                    }
+                                }}  
+                                className="project-component-remove-button"
+                                onClick={handleRemoveButton}>
+                    <DeleteIcon />
+                </IconButton>
 
                 <IconButton     sx={{
                                     width: 50,
@@ -237,23 +234,6 @@ export default function ProjectComponent(props){
                     <SendIcon />
                 </IconButton>
 
-                <IconButton    sx={{
-                                    width: 50,
-                                    height: 50,
-                                    backgroundColor: 'hsl(0, 100%, 43%)',
-                                    borderRadius: '10px',
-                                    margin: '20px',
-                                    color: 'black',
-                                    fontWeight: 'bold',
-                                    fontSize: '2rem',
-                                    '&:hover': {
-                                        backgroundColor: 'hsl(0, 100%, 37%)',
-                                    }
-                                }}  
-                                className="project-component-remove-button"
-                                onClick={handleRemoveButton}>
-                    <DeleteIcon />
-                </IconButton>
             </div>
             <DialogRemoveLeaveProject   header={header.current}
                                     body={body.current}

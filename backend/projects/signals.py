@@ -14,7 +14,8 @@ def save_task_history(sender, instance, **kwargs):
                previous_instance.sprint != instance.sprint or \
                previous_instance.project_backlog != instance.project_backlog or \
                previous_instance.estimated_hours != instance.estimated_hours or \
-               previous_instance.user != instance.user:
+               previous_instance.user != instance.user or \
+               previous_instance.git_link != instance.git_link:
 
                 TaskHistory.objects.create(
                     task=instance,
@@ -25,6 +26,7 @@ def save_task_history(sender, instance, **kwargs):
                     project_backlog=previous_instance.project_backlog,
                     estimated_hours=previous_instance.estimated_hours,
                     user=previous_instance.user,
+                    git_link=previous_instance.git_link,
                 )
         except Task.DoesNotExist:
             print(f"Task with pk={instance.pk} does not exist.")

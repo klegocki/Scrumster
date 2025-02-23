@@ -101,16 +101,14 @@ def did_sprint_end(view_func):
                 if sprint.end_date < now().date() or sprint.manually_ended:
 
                     sprints_tasks = Task.objects.filter(
-                        Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
+                        Q(sprint=sprint) & (Q(status='Do zrobienia') | Q(status='W trakcie')))
 
                     for task in sprints_tasks:
-                        if task.status == 'To Do':
+                        if task.status == 'Do zrobienia':
                             task.sprint = None
                             task.user = None
-                        elif task.status == 'In Progress':
-                            task.sprint = None
-                            task.user = None
-                            task.status = 'To Do'
+                        elif task.status == 'W trakcie':
+                            task.status = 'Do zatwierdzenia'
                         task.save()
 
                 return view_func(request, *args, **kwargs)
@@ -130,16 +128,14 @@ def did_sprint_end(view_func):
                 if sprint.end_date < now().date() or sprint.manually_ended:
 
                     sprints_tasks = Task.objects.filter(
-                        Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
+                        Q(sprint=sprint) & (Q(status='Do zrobienia') | Q(status='W trakcie')))
 
                     for task in sprints_tasks:
-                        if task.status == 'To Do':
+                        if task.status == 'Do zrobienia':
                             task.sprint = None
                             task.user = None
-                        elif task.status == 'In Progress':
-                            task.sprint = None
-                            task.user = None
-                            task.status = 'To Do'
+                        elif task.status == 'W trakcie':
+                            task.status = 'Do zatwierdzenia'
                         task.save()
 
                     return JsonResponse({"message": "Sprint się już zakończył."}, status=400, safe=False)

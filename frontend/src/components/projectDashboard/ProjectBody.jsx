@@ -151,7 +151,7 @@ export default function ProjectBody(props){
                                      animation='wave'
                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                     :(<div>{tasksData?.map((task, index) => (
-                      task.status !== "Done" ? (
+                      task.status !== "Ukończone" ? (
                         <TaskBoxComponent 
                           key={task.id}
                           title={task.title}
@@ -249,7 +249,7 @@ export default function ProjectBody(props){
               </BoxComponent>
         </div>
 
-        <div style={buttonsStyle}>
+        <div className="all-dashboards-buttons">
 
             {isLoading ? (<Skeleton variant="rounded" 
                                 animation='wave'
@@ -259,7 +259,8 @@ export default function ProjectBody(props){
                                       justifyContent: 'center',
                                       alignItems: 'center', }}></Skeleton>) 
                     :(<DialogProjectInfo projectData={projectData}
-                                         projectId={props.id}>
+                                         projectId={props.id}
+                                         className>
                       </DialogProjectInfo>)
             }
             {isLoading ? (<Skeleton variant="rounded" 

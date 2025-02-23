@@ -1,4 +1,8 @@
-
+body{
+    min-width: 375px;
+    margin-left: 5%;
+    margin-right: 5%;
+}
 
 .register-window {
     position: absolute;
@@ -109,13 +113,11 @@
     flex-direction: row;
     align-items: center;
     flex-wrap: wrap;
-    width: 20%;
-    min-width: 300px;
+    width: 100%;
+    max-width: 350px;
     min-height: 180px;
-    margin: 20px;
+    margin-bottom: 20px;
     box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
-
-
 }
 
 .user-image{
@@ -145,6 +147,7 @@
     justify-content: space-between;
 }
 
+
 .logout-box{
     background-color: hsl(208, 89%, 85%);
     font-family: Arial, Helvetica, sans-serif;
@@ -154,10 +157,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 20%;
-    min-width: 300px;
+    width: 100%;
+    max-width: 320px;
     min-height: 180px;
-    margin: 20px;
+    margin-bottom: 20px;    
     box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
 }
 
@@ -166,11 +169,11 @@
     flex-direction: row;
     align-items: center;
     width: auto;
-    min-height: 180px;
+    height: auto;
 }
 .logo-text p{
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 4.5rem;
+    font-size: 3.5rem;
     display: flex;
     width: 300px;
     font-weight: bold;
@@ -188,7 +191,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 80%;
+    width: 100%;
     min-height: 530px;
     height: 69vh;
 
@@ -237,71 +240,6 @@
     background: #555;
 }
 
-.project-component-child{
-    background-color: hsl(128, 55%, 76%);
-    font-family: Arial, Helvetica, sans-serif;
-    border: solid 3px hsl(128, 55%, 70%);
-    border-radius: 25px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%; 
-    min-width: 600px;
-
-    height: 320px; 
-    margin: 15px;
-    padding: 10px;
-    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
-}
-
-.project-description-box{
-    background-color: hsl(128, 55%, 76%);
-    font-family: Arial, Helvetica, sans-serif;
-    border: solid 3px hsl(128, 55%, 70%);
-    border-radius: 10px;
-    width: calc(100% - 10px);
-    height: 100px;
-    margin: 5px;
-    max-width: 700px;
-    padding: 10px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.project-top-boxes{
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.project-top-boxes::-webkit-scrollbar {
-    width: 8px;
-}
-
-.project-top-boxes::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
-
-.project-top-boxes::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-
-.project-description-box::-webkit-scrollbar {
-    width: 8px;
-}
-
-.project-description-box::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
-
-.project-description-box::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
 .project-component-remove-button {
     width: 50px;
     height: 50px;
@@ -335,7 +273,6 @@
     background-color: hsl(208, 96%, 79%);
     font-family: Arial, Helvetica, sans-serif;    border: solid 3px hsl(208, 79%, 72%);
     border-radius: 10px;
-    width: 100%; 
     height: 300px; 
     min-width: 280px;
     margin: 15px;
@@ -532,3 +469,203 @@
     justify-content: center;
     align-items: center;
 }
+
+.all-dashboards-buttons{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 80%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.project-component-child{
+    background-color: hsl(128, 55%, 76%);
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 3px hsl(128, 55%, 70%);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: auto; 
+    height: auto; 
+    margin: 15px;
+    padding: 10px;
+    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
+}
+
+.project-top-boxes{
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: hsl(128, 55%, 76%);
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 3px hsl(128, 55%, 70%);
+    border-radius: 10px;
+    width: auto;
+    height: auto;
+    margin: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.project-description-box{
+    background-color: hsl(128, 55%, 76%);
+    font-family: Arial, Helvetica, sans-serif;
+    border: solid 3px hsl(128, 55%, 70%);
+    border-radius: 10px;
+    width: 100%;
+    height: 110px;
+    margin: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.project-component-child-left-div{
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    word-wrap: break-word;
+    box-sizing: border-box;
+}
+
+.project-component-child-right-div{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+}
+
+.project-top-boxes::-webkit-scrollbar {
+    width: 8px;
+}
+
+.project-top-boxes::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.project-top-boxes::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
+.project-description-box::-webkit-scrollbar {
+    width: 8px;
+}
+
+.project-description-box::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.project-description-box::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.dashboard-projects2{
+    background-color: hsl(208, 89%, 85%);
+    font-family: Arial, Helvetica, sans-serif;    border: solid 3px hsl(208, 79%, 72%);
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 530px;
+    height: 69vh;
+
+    box-shadow: 5px 5px 5px hsl(0, 0%, 0%, 0.3);
+}
+
+@media screen and (max-width: 1595px) {
+
+    .project-boxes, .sprint-boxes{
+        flex-wrap: wrap;
+    }
+    .user-information-component, .logout-box {
+        width: 90%;
+        min-width: auto;
+    }
+    .dashboard-projects ,.sprint-dashboard-body{
+        flex-direction: column;
+        height: auto;
+    }
+    .project-component-child {
+        flex-direction: column;
+    }
+    .logo-text p {
+        font-size: 3.5rem;
+    }
+}
+
+@media screen and (max-width: 940px) {
+    .all-dashboards-buttons{
+        flex-direction: column;
+        gap: 25px;
+    }
+    .register-window h2, .login-window h2{
+        font-size: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 870px) {
+    .project-component-child-right-div{
+        justify-content: space-between;
+
+    
+    }
+    .project-boxes, .sprint-boxes{
+        flex-wrap: wrap,;
+    }
+    .dashboard-top {
+        flex-direction: column;
+        align-items: center;
+    }
+    .dashboard-projects {
+        flex-direction: column;
+        height: auto;
+    }
+    .logo-text p {
+        font-size: 2.5rem;
+        width: auto;
+    }
+    .logo-text img {
+        max-width: 100px;
+        max-height: 100px;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    .project-component-child-left-div{
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .project-boxes, .sprint-boxes{
+        flex-wrap: wrap;
+    }
+    .user-information-component, .logout-box {
+        width: 90%;
+        min-width: auto;
+    }
+    .dashboard-projects {
+        min-height: auto;
+    }
+    .project-component-child {
+        flex-direction: column;
+    }
+    .logo-text p {
+        font-size: 2rem;
+    }
+}
+

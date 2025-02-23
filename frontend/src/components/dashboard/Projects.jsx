@@ -12,12 +12,7 @@ export default function Projects(props){
   const [isLoading, setIsLoading] = useState(true);
   const [projectInfo, setProjectInfo] = useState({});
 
-  const buttonStyle = {
-    width: '80%',
-    display: 'flex',
-    justifyContent: 'space-between',
-    margin: '1%'
-  }
+
 
   const fetchUserProjects = () => {
       axios
@@ -43,6 +38,8 @@ export default function Projects(props){
   }, []); 
 
     return(<>
+        <div className="dashboard-bottom">
+          <div className="dashboard-projects2">
             <h2>Twoje projekty</h2>
             <div className="project-component-parent">
               
@@ -55,6 +52,7 @@ export default function Projects(props){
                                     first_name={value.project_owner_first_name}
                                     last_name={value.project_owner_last_name}
                                     role={value.role}
+                                    altRole={value.altRole}
                                     description={value.description}
                                     title = {value.title}
                                     project_owner_username = {value.project_owner_username}
@@ -67,7 +65,7 @@ export default function Projects(props){
               }
             
             </div>
-            <div style={buttonStyle}>
+            <div className="all-dashboards-buttons">
               {isLoading ? (<Skeleton variant="rounded" 
                                 animation='wave'
                                 sx={{ width: '15%', 
@@ -88,5 +86,7 @@ export default function Projects(props){
               }
             
             </div>
+          </div>
+        </div>
     </>)
 }
