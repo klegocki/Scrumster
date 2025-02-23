@@ -4,11 +4,12 @@ import DialogRemoveSprintTask from "../dialog/DialogRemoveSprintTask";
 import DialogDeveloperTask from "../dialog/DialogDeveloperTask";
 import DialogRevertTaskToBacklog from "../dialog/DialogRevertTaskToBacklog";
 import DialogCompleteTask from "../dialog/DialogCompleteTask";
+import DialogApproveTask from "../dialog/DialogApproveTask";
 
 export default function TaskSprintDashboardComponent(props){
 
-    const {taskId, title, projectId, task, role, usersTasks, onGoingSprint} = props
-
+    const {taskId, title, projectId, task, role, usersTasks, onGoingSprint, isScrumMasterDeveloper, toApprove} = props
+    console.log(isScrumMasterDeveloper)
     const [openInfo, setOpenInfo] = useState(false)
     
     const handleOpenInfo = () => setOpenInfo(true);
@@ -27,30 +28,58 @@ export default function TaskSprintDashboardComponent(props){
         fontWeight: "bold",
     }  
     
-
+    console.log(task)
+    console.log("rola: " + role)
     return(<>
         <div className="task-box">
             <div style={titleStyle} onClick={handleOpenInfo}>
                 {title}
             </div>
-            {task?.status === 'To Do' && (role === 'Scrum master' || role === "Administrator projektu") ? (
+            {toApprove ? (
+                <DialogApproveTask
+                                    fetchTasks={props.fetchTasks}
+                                    projectId={projectId}
+                                    taskId={taskId}
+                ></DialogApproveTask>
+            ) : (null)}
+            {task?.status === 'Do zrobienia' && role === "Administrator projektu" ? (
                         <DialogRemoveSprintTask 
+ 
+                        />
+                    ) : null}
+            {task?.status === 'Do zrobienia' && role === 'Scrum master' ? (
+                <>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}>
+                        <DialogDeveloperTask fetchTasks={props.fetchTasks}
+                                             projectId={projectId}
+                                             taskId={taskId}
+                        ></DialogDeveloperTask>
+
+                        {isScrumMasterDeveloper ? (
+
+                            <DialogRevertTaskToBacklog 
                             fetchTasks={props.fetchTasks}
-                            projectId={projectId}
                             taskId={taskId}
                         />
+                        ) : (null)}
+                    </div>
+
+                        </>
                     ) : null}
             {onGoingSprint ? (
                 <>
 
-                    {task?.status === 'To Do' && role !== 'Scrum master' && role !== 'Product owner' && role !== 'Administrator projektu' && !usersTasks ? (
+                    {task?.status === 'Do zrobienia' && role !== 'Scrum master' && role !== 'Product owner' && role !== 'Administrator projektu' && !usersTasks ? (
                         <DialogDeveloperTask fetchTasks={props.fetchTasks}
                                              projectId={projectId}
                                              taskId={taskId}
                         ></DialogDeveloperTask>
                     ) : null}
 
-                    {usersTasks ? (<div style={{
+                    {usersTasks && task?.status !== "Do zatwierdzenia" ? (<div style={{
                         display: 'flex',
                         flexDirection: 'column'
                     }}>

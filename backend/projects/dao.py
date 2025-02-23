@@ -13,19 +13,23 @@ def handle_get_project(data):
         development_team = DevelopmentTeam.objects.filter(project=project.id)
         project_users = project.project_users.all()
         users_data = []
-
+        alt_role = None
         for user in project_users:
             role = None
 
             if user == project.product_owner:
                 role = "Product owner"
 
-            elif user == project.scrum_master:
+            if user == project.scrum_master:
                 role = "Scrum master"
 
-            elif development_team:
+            if development_team:
                 for developer in development_team:
                     if developer.user == user:
+                        if user == project.scrum_master:
+                            role = "Scrum master"
+                            alt_role=developer.role
+                            break
                         role = developer.role
                         break
 
@@ -36,7 +40,8 @@ def handle_get_project(data):
                 'email': user.email,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
-                'role': role
+                'role': role,
+                "altRole": alt_role,
             })
 
         project_data = {
@@ -105,6 +110,7 @@ def handle_get_project_backlog(data):
                 'last_name': task.user.last_name
             } if task.user else None,
             "created": get_polish_datetime_with_timezone(task.created),
+            "git_link": task.git_link,
             "tasks_history": [{
                 "id": history.id,
                 "title": history.title,
@@ -210,27 +216,31 @@ def get_users_projects_dashboard(request, data):
         projects_list = []
         for project in projects:
 
-            development_team = DevelopmentTeam.objects.filter(project=project.id)
-            project_users = project.project_users.all()
             role = None
-
+            alt_role = None
             if logged_user == project.project_owner:
                 role = "Administrator projektu"
+
+            elif logged_user == project.product_owner:
+                role = "Product owner"
+
+            elif logged_user == project.scrum_master:
+                role = "Scrum master"
+                try:
+                    development_team = DevelopmentTeam.objects.get(Q(project=project.id) & Q(user=logged_user))
+                    if role:
+                        alt_role = development_team.role
+                    else:
+                        role = development_team.role
+                except:
+                    pass
+
             else:
-                for user in project_users:
-                    role = None
-
-                    if user == project.product_owner:
-                        role = "Product owner"
-
-                    elif user == project.scrum_master:
-                        role = "Scrum master"
-
-                    elif development_team:
-                        for developer in development_team:
-                            if developer.user == user:
-                                role = developer.role
-                                break
+                try:
+                    development_team = DevelopmentTeam.objects.get(Q(project=project.id) & Q(user=logged_user))
+                    role = development_team.role
+                except:
+                    pass
 
             project_data = {
                 'id': project.id,
@@ -239,6 +249,7 @@ def get_users_projects_dashboard(request, data):
                 'project_owner_first_name': project.project_owner.first_name,
                 'project_owner_last_name': project.project_owner.last_name,
                 'role': role,
+                'altRole': alt_role,
                 'description': project.description,
             }
 
@@ -257,11 +268,11 @@ def handle_remove_project(request, data):
         user_in_project = DevelopmentTeam.objects.filter(user_id=request.user.id, project_id=data['id'])
         project = Project.objects.get(id=data['id'])
 
-        users_tasks = Task.objects.filter(Q(project_backlog=project) & Q(user=request.user) & (Q(status='To Do') | Q(status="In Progress")))
+        users_tasks = Task.objects.filter(Q(project_backlog=project) & Q(user=request.user) & (Q(status='Do zrobienia') | Q(status="W trakcie")))
 
         for task in users_tasks:
             task.user = None
-            task.status = "To Do"
+            task.status = "Do zrobienia"
             task.save()
 
         project.project_users.remove(request.user)
@@ -363,7 +374,7 @@ def handle_create_task(data):
         task = Task(
             title=data['title'],
             description=data['description'],
-            status="To Do",
+            status="Do zrobienia",
             sprint=None,
             project_backlog=project,
             user=None,
@@ -432,6 +443,7 @@ def handle_get_sprint_backlog(request, data):
         tasks_to_do = []
         users_tasks = []
         tasks_done = []
+        tasks_to_approve = []
         tasks_data = []
         for task in tasks:
             tasks_history_data = []
@@ -456,6 +468,7 @@ def handle_get_sprint_backlog(request, data):
                     "estimated_hours": task_history.estimated_hours,
                 })
 
+            tasks_history_data.sort(key=lambda x: x['changed_at'], reverse=True)
             tasks_data_temp={
                 "id": task.id,
                 "title": task.title,
@@ -464,6 +477,7 @@ def handle_get_sprint_backlog(request, data):
                 "sprint": "Sprint " + str(task.sprint.start_date) + " " + str(task.sprint.end_date) if task.sprint else None,
                 "project_backlog": task.project_backlog.id,
                 "estimated_hours": task.estimated_hours,
+                "git_link":task.git_link,
                 'user': {
                     'id': task.user.id,
                     'username': task.user.username,
@@ -472,30 +486,30 @@ def handle_get_sprint_backlog(request, data):
                     'last_name': task.user.last_name
             } if task.user else None,
                 "created": get_polish_datetime_with_timezone(task.created),
-                "tasks_history": tasks_history_data[::-1]
+                "tasks_history": tasks_history_data
             }
 
-            if tasks_data_temp['user'] and tasks_data_temp['user']['id'] == request.user.id and tasks_data_temp['status'] != "Done":
+            if tasks_data_temp['user'] and tasks_data_temp['user']['id'] == request.user.id and tasks_data_temp['status'] != "Ukończone" and tasks_data_temp['status'] != "Do zatwierdzenia":
                 users_tasks.append(tasks_data_temp)
-                continue
 
-            if tasks_data_temp['status'] == "To Do":
+            elif tasks_data_temp['status'] == "Do zrobienia":
                 tasks_to_do.append(tasks_data_temp)
-                continue
 
-            if tasks_data_temp['status']  == "In Progress":
+            elif tasks_data_temp['status']  == "W trakcie":
                 tasks_in_proggres.append(tasks_data_temp)
-                continue
 
-            if tasks_data_temp['status']  == "Done":
+            elif tasks_data_temp['status']  == "Ukończone":
                 tasks_done.append(tasks_data_temp)
-                continue
+
+            elif tasks_data_temp['status']  == "Do zatwierdzenia":
+                tasks_to_approve.append(tasks_data_temp)
 
         tasks_data.append({
             "toDo": tasks_to_do,
             "inProgress": tasks_in_proggres,
             "done": tasks_done,
             "usersTasks": users_tasks,
+            "toApprove" : tasks_to_approve,
         })
 
         return JsonResponse(tasks_data, status=200, safe=False)
@@ -528,10 +542,14 @@ def handle_get_sprint_info(request, data):
             on_going_sprint = True
 
         role = None
+        is_scrum_master_developer = False
         try:
             development_team = DevelopmentTeam.objects.get(Q(project=sprint.project) & Q(user=request.user))
             if development_team.user == request.user:
                 role = development_team.role
+                if sprint.project.scrum_master == request.user:
+                    is_scrum_master_developer = True
+                    role = "Scrum master"
 
         except DevelopmentTeam.DoesNotExist:
             if sprint.project.scrum_master == request.user:
@@ -543,6 +561,7 @@ def handle_get_sprint_info(request, data):
 
 
         sprint_data = {
+            "isScrumMasterDeveloper": is_scrum_master_developer,
             'id': sprint.id,
             'title': "Sprint " + str(sprint.start_date) + " " + str(sprint.end_date),
             'loggedInUserRole': role,
@@ -563,10 +582,14 @@ def handle_assign_developer_task(request, data):
     if not request.user.is_authenticated:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
+    if not data['git_link']:
+        return JsonResponse({"message": "Proszę podać link do strony kontroli wersji"}, status=400)
+
     try:
         task = Task.objects.get(id=data['task_id'])
         task.estimated_hours = float(data['estimated_hours'])
-        task.status = "In Progress"
+        task.status = "W trakcie"
+        task.git_link = data['git_link']
         task.user = request.user
         task.save()
 
@@ -580,11 +603,12 @@ def handle_sprint_backlog_task_user_revert(data):
     try:
         task = Task.objects.get(id=data['task_id'])
         task.estimated_hours = None
-        task.status = "To Do"
+        task.status = "Do zrobienia"
+        task.git_link = None
         task.user = None
         task.save()
 
-        return JsonResponse({"message": "Przywrócono z powrotem zadanie do backlogu sprintu."}, status=200, safe=False)
+        return JsonResponse({"message": "Przywrócono z zadanie spowrotem do backlogu sprintu."}, status=200, safe=False)
 
     except Task.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd podczas przywracania zadania do backlogu sprintu."}, status=400, safe=False)
@@ -593,13 +617,13 @@ def handle_sprint_backlog_task_user_revert(data):
 def handle_sprint_task_completion(data):
     try:
         task = Task.objects.get(id=data['task_id'])
-        task.status = "Done"
+        task.status = "Do zatwierdzenia"
         task.save()
 
-        return JsonResponse({"message": "Zakończono zadanie pomyślnie"}, status=200, safe=False)
+        return JsonResponse({"message": "Oddano zadanie do zatwierdzenia pomyślnie."}, status=200, safe=False)
 
     except Task.DoesNotExist:
-        return JsonResponse({"message": "Wystąpił błąd podczas kończenia zadania."}, status=400, safe=False)
+        return JsonResponse({"message": "Wystąpił błąd podczas oddawania zadania do potwierdzenia."}, status=400, safe=False)
 
 
 def handle_add_sprint_review(data):
@@ -626,17 +650,14 @@ def handle_end_sprint(data):
 
         sprint.end_date = now().date()
         sprint.manually_ended = True
-        sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='To Do') | Q(status='In Progress')))
+        sprints_tasks = Task.objects.filter(Q(sprint=sprint) & (Q(status='Do zrobienia') | Q(status='W trakcie')))
 
         for task in sprints_tasks:
-            if task.status == 'To Do':
+            if task.status == 'Do zrobienia':
                 task.sprint = None
-                task.user = None
-            elif task.status == 'In Progress':
-                task.sprint = None
-                task.estimated_hours = None
-                task.user = None
-                task.status = 'To Do'
+            elif task.status == "W trakcie":
+                task.status = "Do zatwierdzenia"
+
             task.save()
 
         sprint.save()
@@ -673,6 +694,8 @@ def handle_set_user_project_role(data):
                 return JsonResponse({"message": "Wystąpił błąd: Użytkownik posiada rolę."}, status=400, safe=False)
 
             except DevelopmentTeam.DoesNotExist:
+                if project.product_owner == user:
+                    return JsonResponse({"message": "Wystąpił błąd: Product owner nie może być deweloperem."}, status=400, safe=False)
 
                 developer = DevelopmentTeam(
                     user=user,
@@ -701,7 +724,12 @@ def handle_delete_user_project_role(data):
         elif project.scrum_master == user:
             project.scrum_master = None
             project.save()
+            try:
+                users_developer_role = DevelopmentTeam.objects.get(Q(project=project) & Q(user=user))
+                users_developer_role.delete()
 
+            except DevelopmentTeam.DoesNotExist:
+                pass
         else:
             try:
                 users_developer_role = DevelopmentTeam.objects.get(Q(project=project) & Q(user=user))
@@ -725,7 +753,7 @@ def handle_get_project_completed_tasks(data):
         project = Project.objects.prefetch_related(
             Prefetch('project_backlog_tasks',
                 queryset=Task.objects.select_related('user', 'sprint')
-                          .filter(status="Done")
+                          .filter(status="Ukończone")
                           .prefetch_related(
                               Prefetch('project_backlog_tasks',
                                   queryset=TaskHistory.objects.select_related('user', 'sprint')
@@ -743,6 +771,7 @@ def handle_get_project_completed_tasks(data):
             "sprint": f"Sprint {task.sprint.start_date} {task.sprint.end_date}" if task.sprint else None,
             "project_backlog": task.project_backlog.id,
             "estimated_hours": task.estimated_hours,
+            "git_link": task.git_link,
             "user": {
                 'id': task.user.id,
                 'username': task.user.username,
@@ -766,7 +795,7 @@ def handle_get_project_completed_tasks(data):
                 } if history.user else None,
                 "changed_at": get_polish_datetime_with_timezone(history.changed_at),
                 "estimated_hours": history.estimated_hours
-            } for history in task.project_backlog_tasks.all()]
+            } for history in sorted(task.project_backlog_tasks.all(), key=lambda h: h.changed_at, reverse=True)]
         } for task in project.project_backlog_tasks.all()], safe=False, status=200)
 
     except Project.DoesNotExist:
@@ -865,3 +894,42 @@ def handle_add_tasks_to_existing_sprint(data):
 
     except Sprint.DoesNotExist:
         return JsonResponse({"message": "Wystąpił błąd: Sprint nie istnieje."}, status=400, safe=False)
+
+def handle_approve_task(data):
+    try:
+        task = Task.objects.get(id=data['task_id'])
+        task.status = "Ukończone"
+        task.save()
+
+        return JsonResponse({"message": "Zakończono zadanie pomyślnie"}, status=200, safe=False)
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas kończenia zadania."}, status=400, safe=False)
+
+
+def handle_reject_task(data):
+    try:
+        task = Task.objects.get(id=data['task_id'])
+        sprint = task.sprint
+
+        if sprint.end_date < now().date() or sprint.manually_ended:
+            task.status = "Do zrobienia"
+            task.sprint = None
+            task.estimated_hours = None
+            task.git_link = None
+            task.user = None
+            task.save()
+            return JsonResponse({"message": "Odrzucono zadanie pomyślnie. Zadanie wraca do backlogu produktu."}, status=200, safe=False)
+
+        else:
+            task.status = "Do zrobienia"
+            task.user = None
+            task.estimated_hours = None
+            task.git_link = None
+            task.save()
+            return JsonResponse({"message": "Odrzucono zadanie pomyślnie. Zadanie wraca do backlogu sprintu."}, status=200, safe=False)
+
+
+
+    except Task.DoesNotExist:
+        return JsonResponse({"message": "Wystąpił błąd podczas odrzucania zadania."}, status=400, safe=False)

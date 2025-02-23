@@ -22,6 +22,8 @@ urlpatterns = [
     path('sprint/get', views.get_sprint_info),
     path('sprint/task/set/user', views.assign_developer_task),
     path('sprint/task/completion', views.sprint_task_completion),
+    path('sprint/task/approval', views.approve_task),
+    path('sprint/task/rejection', views.reject_task),
     path('sprint/task/revert', views.sprint_backlog_task_user_revert),
     path('sprint/review/set', views.add_sprint_review),
     path('sprint/end', views.end_sprint),

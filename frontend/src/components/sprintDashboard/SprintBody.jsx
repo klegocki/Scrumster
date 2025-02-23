@@ -26,15 +26,6 @@ export default function SprintBody(props){
     const [sprintsData, setSprintsData] = useState({})
     const [projectsBacklogTasksData, setProjectsBacklogTasksData] = useState([])
 
-
-
-    const buttonsStyle = {
-        display: 'flex',
-        justifyContent: 'space-between',
-        width: "80%",
-        marginTop: "2%"
-    }
-
     const fetchProjectBacklogTasks = () => {
 
       const payload = {
@@ -128,7 +119,7 @@ export default function SprintBody(props){
         }        
 
         <div className="sprint-boxes">
-            <BoxComponent header="To Do" body={
+            <BoxComponent header="Do zrobienia" body={
               isLoading ? (<Skeleton variant="rounded" 
                                      animation='wave'
                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
@@ -141,6 +132,7 @@ export default function SprintBody(props){
                 task={task}
                 role={sprintsData?.loggedInUserRole}
                 projectId={projectId}
+                isScrumMasterDeveloper={sprintsData?.isScrumMasterDeveloper}
                 fetchTasks={fetchTasks}
                 usersTasks={false}
                 onGoingSprint={sprintsData?.on_going_sprint}
@@ -150,12 +142,12 @@ export default function SprintBody(props){
                 </div>)}>
             </BoxComponent>
 
-            <BoxComponent header="In Progress" body={
+            <BoxComponent header="W trakcie" body={
               isLoading ? (<Skeleton variant="rounded" 
                                      animation='wave'
                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                 :(<div>{tasksData[0]?.inProgress?.map((task, index) => (
-
+                  
                 <TaskSprintDashboardComponent 
                 key={task.id}
                 title={task.title}
@@ -170,29 +162,47 @@ export default function SprintBody(props){
                 {(tasksData[0]?.inProgress?.length  > 0) ? (null) : (<h3>Brak zadań</h3>)}
                 </div>)}>
             </BoxComponent>
-
+            
             <BoxComponent header="Twoje zadania" body={
               isLoading ? (<Skeleton variant="rounded" 
                                      animation='wave'
                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
                 :(<div>{tasksData[0]?.usersTasks?.map((task, index) => (
-                    
+
                 <TaskSprintDashboardComponent 
                 key={task.id}
                 title={task.title}
                 taskId={task.id}
                 task={task}
+                isScrumMasterDeveloper={sprintsData?.isScrumMasterDeveloper}
                 projectId={projectId}
                 fetchTasks={fetchTasks}
                 usersTasks={true}
                 onGoingSprint={sprintsData?.on_going_sprint}
                 />
                 ))}
-                {(tasksData[0]?.usersTasks?.length > 0) ? (null) : (<h3>Brak zadań</h3>)}
+                <>{sprintsData?.isScrumMasterDeveloper ? (
+                                  tasksData[0]?.toApprove?.map((task, index) => (
+
+                                    <TaskSprintDashboardComponent 
+                                    key={task.id}
+                                    title={task.title}
+                                    taskId={task.id}
+                                    task={task}
+                                    projectId={projectId}
+                                    fetchTasks={fetchTasks}
+                                    toApprove={true}
+                                    />
+                                  ))
+                ) : (null)}
+
+                </>
+
+                {(tasksData[0]?.usersTasks?.length || (sprintsData?.loggedInUserRole === "Scrum master" && tasksData[0]?.toApprove?.length)> 0) ? (null) : (<h3>Brak zadań</h3>)}
                 </div>)}>
             </BoxComponent>
 
-            <BoxComponent header="Done" body={
+            <BoxComponent header="Ukończone" body={
               isLoading ? (<Skeleton variant="rounded" 
                                      animation='wave'
                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
@@ -215,7 +225,7 @@ export default function SprintBody(props){
 
         </div>
 
-        <div style={buttonsStyle}>
+        <div className="all-dashboards-buttons">
             {isLoading ? (<Skeleton variant="rounded" 
                                 animation='wave'
                                 sx={{ width: '15%', 

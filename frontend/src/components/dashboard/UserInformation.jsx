@@ -29,7 +29,7 @@ export default function UserInformation(props) {
 
       {isLoading ? (<Skeleton variant="text" 
                               animation='wave'
-                              sx={{ width: '180px', height: '50px' }}></Skeleton>) 
+                              sx={{ width: '160px', height: '50px' }}></Skeleton>) 
                               : 
                               (<><p style={paragraphStyle}>Imię i nazwisko:</p>
                                  <p>{props.first_name} {props.last_name}</p></>)
@@ -37,7 +37,7 @@ export default function UserInformation(props) {
 
       {isLoading ? (<Skeleton variant="text" 
                               animation='wave'
-                              sx={{ width: '180px', height: '50px'  }}></Skeleton>) 
+                              sx={{ width: '160px', height: '50px'  }}></Skeleton>) 
                               : 
                               (<><p style={paragraphStyle}>Adres email:</p>
                                  <p>{props.email}</p></>)

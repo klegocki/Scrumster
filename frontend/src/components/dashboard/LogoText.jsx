@@ -4,29 +4,29 @@ export default function LogoText(props){
 
 
     const leftParagraphStyle = {
-        justifyContent: 'right'
     }
 
     const rightParagraphStyle = {
-        justifyContent: 'left'
+        display: "flex",
+        flexDirection: 'row',
+        alignItems: 'center',        
+
     }
 
     const logoStyle = {
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
-        gap: '1rem',
-        
+        alignItems: 'center',        
     }
 
     return(<>
     <div className="logo-text">
-        <p style={leftParagraphStyle}>{props.textLeft}</p>
-        <div style={logoStyle}>
+    <div style={logoStyle}>
             <img src="/static/frontend/ScrumSter.svg" alt="scrumsterLogo"></img>
             <ReturnComponent></ReturnComponent>
         </div>
-        <p style={rightParagraphStyle}>{props.textRight}</p>
+
+        <p style={rightParagraphStyle}>{props.textLeft} {props.textRight}</p>
     </div>
     </>);
 }

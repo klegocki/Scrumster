@@ -108,7 +108,8 @@ class Task(models.Model):
     )
     created = models.DateTimeField(auto_now_add=True)
     estimated_hours = models.FloatField(null=True, blank=True)
-
+    git_link = models.CharField(blank=True,null=True, max_length=600)
+    approved = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return self.title
@@ -148,6 +149,8 @@ class TaskHistory(models.Model):
     )
     changed_at = models.DateTimeField(auto_now_add=True)
     estimated_hours = models.FloatField(null=True, blank=True)
+    git_link = models.CharField(blank=True, null=True, max_length=600)
+    approved = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return f"History: {self.title} ({self.changed_at})"

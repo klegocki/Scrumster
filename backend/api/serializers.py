@@ -88,7 +88,8 @@ class GetSprintInfoSerializer(serializers.Serializer):
 
 class AssignDeveloperToTaskSerializer(serializers.Serializer):
     task_id = serializers.UUIDField(required=True)
-    estimated_hours = serializers.CharField(required=True, max_length=5)
+    git_link = serializers.CharField()
+    estimated_hours = serializers.FloatField(required=True)
 
 class RevertTaskDeveloperSerializer(serializers.Serializer):
     task_id = serializers.UUIDField(required=True)

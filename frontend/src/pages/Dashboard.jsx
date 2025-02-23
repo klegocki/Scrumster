@@ -50,9 +50,7 @@ export default function Dashboard(){
               fetchUserInfo={fetchUserInfo}
               textLeft="Panel"
               textRight="Główny"></TopBar>
-      <MainBox content={<Projects  username={userInfo.username}></Projects>}>
-        
-      </MainBox>
+      <Projects  username={userInfo.username}></Projects>
 
     </>);
 }

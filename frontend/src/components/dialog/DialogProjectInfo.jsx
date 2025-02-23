@@ -79,6 +79,7 @@ export default function DialogProjectInfo(props) {
                         {projectData.project_users ? (projectData.project_users.map((value, index) =>(
                             <div className='dialog-project-info-user' key={index}>
                                 {value.role ? (value.role) : ("Deweloper")}
+                                {value.altRole ? (<><br/>{value.altRole}</>) : (null)}
                                 <p>
                                 {value.first_name + " " +
                                 value.last_name} 

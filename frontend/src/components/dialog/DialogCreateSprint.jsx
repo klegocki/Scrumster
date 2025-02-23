@@ -158,16 +158,17 @@ export default function DialogCreateSprint(props) {
                         {props.tasksData.map((task) => (
                             <Card key={task.id} style={{ width: '95%', margin: '8px', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
                                 <CardContent>
-                                    <Typography variant="h6">{task.title}</Typography>
-                                    <Typography variant="body2" color="textSecondary">{task.description || "Brak opisu"}</Typography>
-                                </CardContent>
-                                <CardActions>
-                                <Checkbox
+                                <div    style={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center' 
+                                        }}>
+                                    <Checkbox
                                         checked={selectedTasks.includes(task.id)}
                                         onChange={() => handleTaskSelection(task.id)}
                                     />
-                                
-                                </CardActions>
+                                    <Typography variant="h6">{task.title}</Typography>
+                                    </div>                                    <Typography variant="body2" color="textSecondary">{task.description || "Brak opisu"}</Typography>
+                                </CardContent>
                             </Card>
                         ))}
                     </div>

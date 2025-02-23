@@ -42,6 +42,7 @@ export default function DialogDeveloperTask(props) {
     const payload = {
         task_id: props.taskId,
         estimated_hours: data.estimated_time,
+        git_link: data.git_link
     }
 
     axios
@@ -66,18 +67,17 @@ export default function DialogDeveloperTask(props) {
   return (
     <>
     <IconButton sx={{
-                width: 30,
-                height: 30,
-                borderRadius: '5px',
-                margin: '10px',
-                color: 'black',
-                fontWeight: 'bold',
-                fontSize: '2rem',
+                        width: 25,
+                        height: 25,
+                        borderRadius: '5px',
+                        margin: '5px',
+                        color: 'black',
+                        fontWeight: 'bold',
+                        fontSize: '2rem',
                 backgroundColor: 'hsl(125, 100%, 42%)',
                 '&:hover': {
                     backgroundColor: 'hsl(125, 100%, 37%)',
                 }}}  
-                className="project-component-remove-button"
                 onClick={handleClickOpen}>
             <SendIcon/>
     </IconButton>
@@ -102,7 +102,7 @@ export default function DialogDeveloperTask(props) {
         
         <DialogContent>
         <DialogContentText id="alert-dialog-description">
-                Aby podjąć się zadania, wpisz czas potrzebny na wykonanie.
+                Aby podjąć się zadania, wpisz czas potrzebny na wykonanie oraz link do strony kontroli wersji.
             </DialogContentText>
             <TextField
                 autoFocus
@@ -129,6 +129,21 @@ export default function DialogDeveloperTask(props) {
                     event.target.value = value.slice(0, -1);
                     }
                 }}
+            />
+            <TextField
+                autoFocus
+                required
+                margin="dense"
+                id="name"
+                name="git_link"
+                label="Podaj link do strony kontroli wersji"
+                type="text"
+                fullWidth
+                variant="standard"
+                inputProps={{
+                    maxLength: 600,
+                }}
+
             />
         </DialogContent>
 
