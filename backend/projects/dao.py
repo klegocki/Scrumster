@@ -84,7 +84,7 @@ def handle_get_project_backlog(data):
         project = Project.objects.prefetch_related(
             Prefetch('project_backlog_tasks',
                 queryset=Task.objects.select_related('user', 'sprint')
-                          .filter(sprint__isnull=True)
+                          .filter(Q(sprint__isnull=True) & Q(status="Do zrobienia"))
                           .prefetch_related(
                               Prefetch('project_backlog_tasks',
                                   queryset=TaskHistory.objects.select_related('user', 'sprint')
