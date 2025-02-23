@@ -66,8 +66,8 @@ const completeTaskRequest = () => {
   return (
     <>
             <IconButton sx={{
-                        width: 25,
-                        height: 25,
+                        width: 30,
+                        height: 30,
                         borderRadius: '5px',
                         margin: '5px',
                         color: 'black',

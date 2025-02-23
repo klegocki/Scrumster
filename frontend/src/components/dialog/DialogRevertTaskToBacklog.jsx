@@ -66,8 +66,8 @@ const reassignTaskToSprintBacklog = () => {
   return (
     <>
             <IconButton sx={{
-                        width: 25,
-                        height: 25,
+                        width: 30,
+                        height: 30,
                         backgroundColor: 'hsl(0, 100%, 43%)',
                         borderRadius: '5px',
                         margin: '5px',

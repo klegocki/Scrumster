@@ -116,7 +116,9 @@ export default function DialogAssignRoles({
 
   return (
     <>
-      <Button variant="outlined" onClick={handleOpen}>
+      <Button   sx={{
+              fontSize: "1rem"
+            }} variant="outlined" onClick={handleOpen}>
         Ustaw rolę
       </Button>
       <Dialog
@@ -171,7 +173,7 @@ export default function DialogAssignRoles({
                     onChange={(e) => handleRoleChange(user.id, e.target.value)}
                   >
                     <MenuItem value="Scrum master">Scrum master</MenuItem>
-                    <MenuItem value="Product owner">Product owner</MenuItem>
+                    <MenuItem value="Właściciel produktu">Właściciel produktu</MenuItem>
                     <MenuItem value="Developer">Deweloper</MenuItem>
                   </Select>
                 </FormControl>

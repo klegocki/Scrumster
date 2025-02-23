@@ -18,7 +18,7 @@ def handle_get_project(data):
             role = None
 
             if user == project.product_owner:
-                role = "Product owner"
+                role = "Właściciel produktu"
 
             if user == project.scrum_master:
                 role = "Scrum master"
@@ -222,7 +222,7 @@ def get_users_projects_dashboard(request, data):
                 role = "Administrator projektu"
 
             elif logged_user == project.product_owner:
-                role = "Product owner"
+                role = "Właściciel produktu"
 
             elif logged_user == project.scrum_master:
                 role = "Scrum master"
@@ -557,7 +557,7 @@ def handle_get_sprint_info(request, data):
             if sprint.project.project_owner == request.user:
                 role = "Administrator projektu"
             elif sprint.project.product_owner == request.user:
-                role = "Product owner"
+                role = "Właściciel produktu"
 
 
         sprint_data = {
@@ -681,11 +681,11 @@ def handle_set_user_project_role(data):
 
             return JsonResponse({"message": "Dodane rolę scrum mastera."}, status=200, safe=False)
 
-        elif data['role'] == "Product owner":
+        elif data['role'] == "Właściciel produktu":
             project.product_owner = user
             project.save()
 
-            return JsonResponse({"message": "Dodane rolę product ownera."}, status=200, safe=False)
+            return JsonResponse({"message": "Dodane rolę właściciela produktu."}, status=200, safe=False)
 
         else:
 
@@ -695,7 +695,7 @@ def handle_set_user_project_role(data):
 
             except DevelopmentTeam.DoesNotExist:
                 if project.product_owner == user:
-                    return JsonResponse({"message": "Wystąpił błąd: Product owner nie może być deweloperem."}, status=400, safe=False)
+                    return JsonResponse({"message": "Wystąpił błąd: właściciel produktu nie może być deweloperem."}, status=400, safe=False)
 
                 developer = DevelopmentTeam(
                     user=user,

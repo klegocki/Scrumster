@@ -244,12 +244,16 @@ export default function SprintBody(props){
                         target="_blank"
                         rel="noopener noreferrer"
                       > 
-                        <Button variant="outlined">Daily scrum</Button>
+                        <Button   sx={{
+              fontSize: "1rem"
+            }} variant="outlined">Daily scrum</Button>
                       </a>
 
                     ) : (
                       <>
-                        <Button variant="outlined" onClick={handleClickOpen}>Daily scrum</Button>
+                        <Button   sx={{
+              fontSize: "1rem"
+            }} variant="outlined" onClick={handleClickOpen}>Daily scrum</Button>
                         <ModalComponent   open={open} 
                                           handleClose={handleClose} 
                                           header={"Spotkanie daily scrum"} 

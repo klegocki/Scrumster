@@ -19,37 +19,35 @@ export default function DialogTaskInfo(props) {
             scroll="paper"
             aria-labelledby="scroll-dialog-title"
             aria-describedby="scroll-dialog-description"
-            maxWidth="sm"     // Możesz też użyć "xs" dla jeszcze mniejszej szerokości
-            fullWidth         // Dla lepszego dopasowania do ekranu
+            maxWidth="sm"    
+            fullWidth 
         >
-            {/* Zmniejszamy padding w tytule */}
+
             <DialogTitle
                 id="scroll-dialog-title"
                 sx={{
                     fontSize: '1rem',
-                    p: 1   // Mniejszy padding
+                    p: 1 
                 }}
             >
                 Informacje o zadaniu
             </DialogTitle>
 
-            {/* Zmniejszamy padding w zawartości */}
+
             <DialogContent
                 dividers
-                sx={{ p: 1 }} // Mniejszy padding
+                sx={{ p: 1 }}
             >
-                {/* Mniejsza czcionka w tytule sekcji */}
                 <Typography variant="subtitle2" sx={{ fontSize: '0.95rem' }}>
                     Obecny stan zadania
                 </Typography>
 
-                {/* BOX z głównymi informacjami o zadaniu */}
                 <Box
                     sx={{
                         border: '1px solid #ccc',
                         borderRadius: '4px',
-                        p: 0.5,          // Mniejszy padding
-                        mb: 0.5,         // Mniejszy odstęp dolny
+                        p: 0.5,          
+                        mb: 0.5,         
                         boxShadow: 1,
                         backgroundColor: '#f9f9f9'
                     }}
@@ -111,7 +109,6 @@ export default function DialogTaskInfo(props) {
                         </Typography>
                     </Box>
 
-                    {/* Przykład z flex-wrap, mniejszymi paddingami i czcionką */}
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 0.5 }}>
                         <Typography
                             variant="body2"
@@ -185,7 +182,6 @@ export default function DialogTaskInfo(props) {
                     </Typography>
                 </Box>
 
-                {/* Historia zadania */}
                 <Typography variant="subtitle2" sx={{ mt: 0.5, fontSize: '0.95rem' }}>
                     Historia zadania
                 </Typography>

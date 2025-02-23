@@ -25,7 +25,9 @@ export default function DialogProjectInfo(props) {
 
     return (
         <>
-        <Button variant="outlined" onClick={handleClickOpen()}>Informacje o projekcie</Button>
+        <Button  sx={{
+              fontSize: "1rem"
+            }} variant="outlined" onClick={handleClickOpen()}>Informacje o projekcie</Button>
         <Dialog
             open={open}
             onClose={handleClose}
