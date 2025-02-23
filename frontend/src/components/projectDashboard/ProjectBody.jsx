@@ -172,7 +172,7 @@ export default function ProjectBody(props){
               isLoading ? (<Skeleton variant="rounded" 
                                      animation='wave'
                                      sx={{ width: '100%', height: '100%' }}></Skeleton>) 
-                    :(<div>{completedTasksData.map((task, index) => (
+                    :(<div>{completedTasksData?.map((task, index) => (
 
                       <TaskBoxComponent 
                       key={task.id}
@@ -183,7 +183,7 @@ export default function ProjectBody(props){
                       setTasksData={setCompletedTasksData}
                       />
                       ))}
-                        {(tasksData.length > 0) ? (null) : (<h3>Brak zadań</h3>)}
+                        {(completedTasksData?.length > 0) ? (null) : (<h3>Brak zadań</h3>)}
                       </div>)}>
               </BoxComponent>
 

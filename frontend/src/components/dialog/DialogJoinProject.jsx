@@ -62,7 +62,9 @@ export default function DialogJoinProject(props) {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button sx={{
+        fontSize: '1rem'
+      }} variant="outlined" onClick={handleClickOpen}>
         Dołącz do projektu
       </Button>
       <Dialog

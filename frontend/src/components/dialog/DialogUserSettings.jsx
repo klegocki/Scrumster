@@ -157,7 +157,9 @@ export default function DialogUserSettings(props) {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button  sx={{
+        fontSize: '1rem'
+      }} variant="outlined" onClick={handleClickOpen}>
         Ustawiena
       </Button>
       <Dialog

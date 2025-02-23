@@ -49,7 +49,9 @@ export default function LogoutButton(){
     
 
     return(<>
-        <Button style={buttonStyle} variant="outlined" onClick={() => handleLogout()}>
+        <Button sx={{
+        fontSize: '1rem'
+      }} style={buttonStyle} variant="outlined" onClick={() => handleLogout()}>
             Wyloguj
         </Button>
         <ModalComponent open={open} handleClose={handleClose} header={modalHeader} mainText={modalMainText}></ModalComponent>

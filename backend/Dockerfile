@@ -1,6 +1,6 @@
 FROM python:3.10.12-slim-buster
 
-WORKDIR /backend
+WORKDIR /app
 
 COPY requirements.txt .
 

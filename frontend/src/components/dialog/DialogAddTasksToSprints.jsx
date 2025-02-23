@@ -84,7 +84,9 @@ export default function DialogAddTasksToSprint(props) {
 
     return (
         <>
-            <Button variant="outlined" onClick={handleClickOpen}>
+            <Button  sx={{
+              fontSize: "1rem"
+            }} variant="outlined" onClick={handleClickOpen}>
                 Dodaj zadania
             </Button>
             <Dialog

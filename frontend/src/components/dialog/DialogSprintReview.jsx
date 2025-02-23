@@ -62,7 +62,9 @@ export default function DialogSprintReview(props) {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button   sx={{
+              fontSize: "1rem"
+            }} variant="outlined" onClick={handleClickOpen}>
         Raport sprintu
       </Button>
       <Dialog

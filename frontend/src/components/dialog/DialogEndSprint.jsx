@@ -62,7 +62,9 @@ export default function DialogEndSprint(props) {
 
   return (
     <>
-      <Button variant="outlined"
+      <Button   sx={{
+              fontSize: "1rem"
+            }} variant="outlined"
               onClick={handleClickOpen}
               disabled={props.role === "Scrum master" || props.role ==="Administrator projektu" ? (false) : (true)}>
         Zakończ sprint

@@ -64,7 +64,9 @@ export default function DialogCreateTask(props) {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <Button  sx={{
+              fontSize: "1rem"
+            }} variant="outlined" onClick={handleClickOpen}>
         Dodaj Zadania
       </Button>
       <Dialog
