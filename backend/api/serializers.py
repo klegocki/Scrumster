@@ -55,8 +55,7 @@ class DeleteTaskSerializer(serializers.Serializer):
     taskId = serializers.UUIDField(required=True)
 
 class DeleteTaskFromSprintSerializer(serializers.Serializer):
-    sprint_id = serializers.UUIDField(required=True)
-    taskId = serializers.UUIDField(required=True)
+    task_id = serializers.UUIDField(required=True)
 
 class DeleteSprintSerializer(serializers.Serializer):
     id = serializers.UUIDField(required=True)

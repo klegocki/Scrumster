@@ -173,7 +173,6 @@ def get_sprints_backlog(request):
     else:
         return JsonResponse({"message": "Użytkownik nie jest zalogowany."}, status=400)
 
-@scrum_master
 @did_sprint_end
 @api_view(['POST'])
 def delete_task_from_sprint(request):
