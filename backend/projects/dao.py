@@ -523,7 +523,7 @@ def handle_get_sprint_backlog(request, data):
 
 def handle_remove_task_from_sprint(data):
     try:
-        task = Task.objects.get(id=data['taskId'])
+        task = Task.objects.get(id=data['task_id'])
         task.sprint = None
         task.save()
 

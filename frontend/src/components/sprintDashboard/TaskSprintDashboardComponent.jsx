@@ -44,7 +44,9 @@ export default function TaskSprintDashboardComponent(props){
             ) : (null)}
             {task?.status === 'Do zrobienia' && role === "Administrator projektu" ? (
                         <DialogRemoveSprintTask 
- 
+                        fetchTasks={props.fetchTasks}
+                        projectId={projectId}
+                        taskId={taskId}
                         />
                     ) : null}
             {task?.status === 'Do zrobienia' && role === 'Scrum master' ? (
