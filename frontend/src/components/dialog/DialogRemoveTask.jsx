@@ -46,7 +46,7 @@ const deleteTask = () => {
     }
 
     axios
-    .post("/api/projects/task/delete", payload,{
+    .post("/api/tasks/delete", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),

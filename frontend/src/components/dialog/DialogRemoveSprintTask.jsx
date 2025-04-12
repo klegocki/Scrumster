@@ -45,7 +45,7 @@ const deleteTask = () => {
     }
 
     axios
-    .post("/api/projects/sprint/task/delete", payload,{
+    .post("/api/tasks/sprint/delete", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
@@ -70,7 +70,7 @@ const deleteTask = () => {
                         height: 30,
                         backgroundColor: 'hsl(0, 100%, 43%)',
                         borderRadius: '5px',
-                        margin: '10px',
+                        margin: '5px',
                         color: 'black',
                         fontWeight: 'bold',
                         fontSize: '2rem',

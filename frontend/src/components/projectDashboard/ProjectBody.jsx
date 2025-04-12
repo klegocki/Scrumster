@@ -36,7 +36,7 @@ export default function ProjectBody(props){
       }
 
       axios
-        .get("/api/projects/get/project", {
+        .get("/api/projects/project/info/get", {
           params: payload,
           headers: {
             "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export default function ProjectBody(props){
         }
 
         axios
-          .get("/api/projects/get/backlog", {
+          .get("/api/projects/backlog/get", {
             params: payload,
             headers: {
               "Content-Type": "application/json",
@@ -81,7 +81,7 @@ export default function ProjectBody(props){
         }
 
         axios
-          .get("/api/projects/get/completed/tasks", {
+          .get("/api/tasks/completed/get", {
             params: payload,
             headers: {
               "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export default function ProjectBody(props){
         }
 
         axios
-          .get("/api/projects/get/sprints", {
+          .get("/api/sprints/get", {
             params: payload,
             headers: {
               "Content-Type": "application/json",

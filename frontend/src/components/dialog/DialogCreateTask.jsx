@@ -44,7 +44,7 @@ export default function DialogCreateTask(props) {
     }
 
     axios
-    .post("/api/projects/task/create", payload,{
+    .post("/api/tasks/create", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),

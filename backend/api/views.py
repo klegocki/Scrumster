@@ -1,12 +1,8 @@
-from http.client import HTTPResponse
-from django.contrib.auth import logout
+
 from django.contrib.auth.models import Group, User
 from rest_framework import permissions, viewsets
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
 from tutorial.quickstart.serializers import GroupSerializer, UserSerializer
-from api.serializers import UserRegistrationSerializer, UserLoginSerializer
-from users.views import handle_register_user, handle_login_user
+
 
 
 

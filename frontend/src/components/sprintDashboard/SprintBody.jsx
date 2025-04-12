@@ -33,7 +33,7 @@ export default function SprintBody(props){
       }
 
       axios
-        .get("/api/projects/get/backlog", {
+        .get("/api/projects/backlog/get", {
           params: payload,
           headers: {
             "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export default function SprintBody(props){
         }
 
         axios
-          .get("/api/projects/get/sprint/backlog", {
+          .get("/api/sprints/backlog/get", {
             params: payload,
             headers: {
               "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export default function SprintBody(props){
       }
 
       axios
-        .get("/api/projects/sprint/get", {
+        .get("/api/sprints/sprint/info/get", {
           params: payload,
           headers: {
             "Content-Type": "application/json",

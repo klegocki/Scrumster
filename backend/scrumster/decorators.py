@@ -1,8 +1,9 @@
 import json
 from functools import wraps
 from django.http import JsonResponse
-from django.contrib.auth.models import User
-from projects.models import Project, Sprint, Task
+from projects.models import Project
+from sprints.models import Sprint
+from tasks.models import Task
 from django.utils.timezone import now
 from django.db.models import Q
 

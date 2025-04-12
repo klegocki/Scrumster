@@ -1,6 +1,4 @@
-import json
 from django.contrib.auth.forms import UserCreationForm
-from django.http import JsonResponse
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
 
@@ -87,7 +85,7 @@ class GetSprintInfoSerializer(serializers.Serializer):
 
 class AssignDeveloperToTaskSerializer(serializers.Serializer):
     task_id = serializers.UUIDField(required=True)
-    git_link = serializers.CharField()
+    git_link = serializers.CharField(required=False, allow_blank=True)
     estimated_hours = serializers.FloatField(required=True)
 
 class RevertTaskDeveloperSerializer(serializers.Serializer):

@@ -9,7 +9,6 @@ import DialogApproveTask from "../dialog/DialogApproveTask";
 export default function TaskSprintDashboardComponent(props){
 
     const {taskId, title, projectId, task, role, usersTasks, onGoingSprint, isScrumMasterDeveloper, toApprove} = props
-    console.log(isScrumMasterDeveloper)
     const [openInfo, setOpenInfo] = useState(false)
     
     const handleOpenInfo = () => setOpenInfo(true);
@@ -28,8 +27,6 @@ export default function TaskSprintDashboardComponent(props){
         fontWeight: "bold",
     }  
     
-    console.log(task)
-    console.log("rola: " + role)
     return(<>
         <div className="task-box">
             <div style={titleStyle} onClick={handleOpenInfo}>
@@ -62,10 +59,11 @@ export default function TaskSprintDashboardComponent(props){
 
                         {isScrumMasterDeveloper ? (
 
-                            <DialogRevertTaskToBacklog 
+                            <DialogRemoveSprintTask 
                             fetchTasks={props.fetchTasks}
+                            projectId={projectId}
                             taskId={taskId}
-                        />
+                            />
                         ) : (null)}
                     </div>
 

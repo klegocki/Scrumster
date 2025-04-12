@@ -10,11 +10,11 @@ export default defineConfig({
     },
   },
   preview: {
-    host: '0.0.0.0', // Dla `vite preview`
-    port: 4173,      // Dopasuj port
+    host: '0.0.0.0',
+    port: 4173,
     proxy: {
       '/api': {
-        target: 'http://backend:8000', // Użyj nazwy usługi 'backend'
+        target: 'http://backend:8000',
         changeOrigin: true,
       },
     },

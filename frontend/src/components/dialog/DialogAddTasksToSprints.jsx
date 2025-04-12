@@ -62,7 +62,7 @@ export default function DialogAddTasksToSprint(props) {
         };
 
         axios
-            .post("/api/projects/sprint/add/tasks", payload, {
+            .post("/api/tasks/sprint/add", payload, {
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRFToken": getCsrfToken(),
@@ -137,7 +137,7 @@ export default function DialogAddTasksToSprint(props) {
 
                 <DialogActions>
                     <Button onClick={handleClose}>Odrzuć</Button>
-                    <Button type="submit">Stwórz</Button>
+                    <Button type="submit">Dodaj</Button>
                 </DialogActions>
             </Dialog>
             <ModalComponent open={openModal}

@@ -34,7 +34,7 @@ export default function DialogUsersTasks(props) {
         }
   
         axios
-          .get("/api/projects/get/users/tasks", {
+          .get("/api/tasks/users/get", {
             params: payload,
             headers: {
               "Content-Type": "application/json",

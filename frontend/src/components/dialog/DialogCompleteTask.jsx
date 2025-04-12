@@ -45,7 +45,7 @@ const completeTaskRequest = () => {
     }
 
     axios
-    .post("/api/projects/sprint/task/completion", payload,{
+    .post("/api/tasks/completion", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),

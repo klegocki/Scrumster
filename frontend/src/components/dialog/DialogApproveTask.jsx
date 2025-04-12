@@ -45,7 +45,7 @@ const completeTaskRequest = () => {
     }
 
     axios
-    .post("/api/projects/sprint/task/approval", payload,{
+    .post("/api/tasks/approval", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
@@ -70,7 +70,7 @@ const rejectTaskRequest = () => {
   }
 
   axios
-  .post("/api/projects/sprint/task/rejection", payload,{
+  .post("/api/tasks/rejection", payload,{
     headers: {
       "Content-Type": "application/json",
       "X-CSRFToken": getCsrfToken(),

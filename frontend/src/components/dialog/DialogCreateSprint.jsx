@@ -65,7 +65,7 @@ export default function DialogCreateSprint(props) {
         };
 
         axios
-            .post("/api/projects/sprint/create", payload, {
+            .post("/api/sprints/create", payload, {
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRFToken": getCsrfToken(),
