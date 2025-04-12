@@ -41,7 +41,7 @@ export default function DialogEndSprint(props) {
     }
 
     axios
-    .post("/api/projects/sprint/end", payload,{
+    .post("/api/sprints/end", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),

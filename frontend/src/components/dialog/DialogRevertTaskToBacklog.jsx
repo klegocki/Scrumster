@@ -45,7 +45,7 @@ const reassignTaskToSprintBacklog = () => {
     }
 
     axios
-    .post("/api/projects/sprint/task/revert", payload,{
+    .post("/api/tasks/revert", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),

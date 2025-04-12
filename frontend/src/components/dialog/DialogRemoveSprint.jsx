@@ -46,7 +46,7 @@ export default function DialogRemoveSprint(props) {
     }
 
     axios
-    .post("/api/projects/sprint/delete", payload,{
+    .post("/api/sprints/delete", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),

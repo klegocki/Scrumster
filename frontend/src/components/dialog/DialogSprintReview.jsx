@@ -42,7 +42,7 @@ export default function DialogSprintReview(props) {
     }
 
     axios
-    .post("/api/projects/sprint/review/set", payload,{
+    .post("/api/sprints/review/set", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),

@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'projects.apps.ProjectsConfig',
     'api.apps.ScrumsterConfig',
     'users.apps.UsersConfig',
+    'sprints.apps.SprintsConfig',
+    'tasks.apps.TasksConfig',
 ]
 
 MIDDLEWARE = [

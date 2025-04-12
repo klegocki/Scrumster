@@ -46,7 +46,7 @@ export default function DialogDeveloperTask(props) {
     }
 
     axios
-    .post("/api/projects/sprint/task/set/user", payload,{
+    .post("/api/tasks/set/user", payload,{
       headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": getCsrfToken(),
@@ -132,7 +132,6 @@ export default function DialogDeveloperTask(props) {
             />
             <TextField
                 autoFocus
-                required
                 margin="dense"
                 id="name"
                 name="git_link"

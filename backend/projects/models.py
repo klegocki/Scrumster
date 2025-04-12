@@ -3,7 +3,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Create your models here.
 class Project(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     title = models.CharField(null=False, blank=False, max_length=200)
@@ -13,7 +12,7 @@ class Project(models.Model):
         on_delete=models.CASCADE,
         null=False,
         blank=False,
-        related_name='owned_projects'
+        related_name='project_owner'
     )
     project_users = models.ManyToManyField(
         User,
@@ -40,6 +39,7 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+
 class DevelopmentTeam(models.Model):
     id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
@@ -59,98 +59,3 @@ class DevelopmentTeam(models.Model):
     )
     def __str__(self):
         return self.project.title + " " + self.role
-
-
-class Sprint(models.Model):
-    id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
-    title = models.TextField(max_length=60, null=True, blank=True, default=None)
-    start_date = models.DateField( null=False, blank=False)
-    end_date = models.DateField( null=False, blank=False)
-    daily_meet_link = models.CharField(max_length=500, null=True, blank=True)
-    sprint_review = models.TextField(max_length=5000, null=True, blank=True)
-    project = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name="project_sprint"
-    )
-    manually_ended = models.BooleanField(default=False, null=True, blank=True)
-
-    def __str__(self):
-        return f"Sprint ({self.start_date} - {self.end_date})"
-
-class Task(models.Model):
-    id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
-    title = models.CharField(null=False, blank=False, max_length=60)
-    description = models.TextField(max_length=3000, null=True, blank=True)
-    status = models.CharField(max_length=60, null=True, blank=True)
-    sprint = models.ForeignKey(
-        Sprint,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="sprint_tasks"
-    )
-    project_backlog = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name="project_backlog_tasks"
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        related_name='assigned_user_to_task',
-        null=True,
-        blank=True
-    )
-    created = models.DateTimeField(auto_now_add=True)
-    estimated_hours = models.FloatField(null=True, blank=True)
-    git_link = models.CharField(blank=True,null=True, max_length=600)
-    approved = models.BooleanField(default=False, blank=True)
-
-    def __str__(self):
-        return self.title
-
-class TaskHistory(models.Model):
-    id = models.UUIDField(primary_key=True, unique=True, default=uuid.uuid4, editable=False)
-    task = models.ForeignKey(
-        Task,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=True,
-        related_name="project_backlog_tasks"
-    )
-    title = models.CharField(max_length=60)
-    description = models.TextField(max_length=3000, null=True, blank=True)
-    status = models.CharField(max_length=60, null=True, blank=True)
-    sprint = models.ForeignKey(
-        Sprint,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name="sprint_history_tasks"
-    )
-    project_backlog = models.ForeignKey(
-        Project,
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name="project_backlog_history_tasks"
-    )
-    user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        related_name='assigned_user_to_task_history',
-        null=True,
-        blank=True
-    )
-    changed_at = models.DateTimeField(auto_now_add=True)
-    estimated_hours = models.FloatField(null=True, blank=True)
-    git_link = models.CharField(blank=True, null=True, max_length=600)
-    approved = models.BooleanField(default=False, blank=True)
-
-    def __str__(self):
-        return f"History: {self.title} ({self.changed_at})"
